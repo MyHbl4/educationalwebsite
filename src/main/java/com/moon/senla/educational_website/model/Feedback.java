@@ -25,11 +25,11 @@ public class Feedback extends AbstractEntity {
     @ManyToOne
     private User user;
 
-    @Column(name = "detention")
+    @Column(name = "detention", nullable = false)
     @Lob
     private String detention;
 
-    @Column(name = "rank")
+    @Column(name = "rank", nullable = false)
     @Min(1)
     @Max(5)
     private int rank;

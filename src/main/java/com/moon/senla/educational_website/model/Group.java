@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Group extends AbstractEntity {
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     @Size(max = 128)
     private String name;
 

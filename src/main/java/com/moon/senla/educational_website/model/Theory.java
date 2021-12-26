@@ -19,12 +19,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Theory extends AbstractEntity {
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     @Size(max = 128)
     private String name;
 
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     @Lob
     private String description;
 
