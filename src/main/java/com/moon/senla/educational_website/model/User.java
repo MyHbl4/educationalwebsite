@@ -1,6 +1,11 @@
 package com.moon.senla.educational_website.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -18,16 +23,17 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
+import org.springframework.util.ObjectUtils;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-@ToString(callSuper = true, exclude = "password")
 public class User extends AbstractEntity {
 
     @Column(name = "email", nullable = false, unique = true)
@@ -50,13 +56,16 @@ public class User extends AbstractEntity {
 
     @Column(name = "password", nullable = false)
     @Size(max = 128)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @OneToMany
-    private List<Course> courses;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Course> courses = new ArrayList<>();
 
-    @OneToMany
-    private List<Feedback> feedbacks;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Feedback> feedbacks = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
@@ -64,11 +73,74 @@ public class User extends AbstractEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Role> roles;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "user_group",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "group_id"))
-    private List<Group> groups;
+    private List<Group> groups = new ArrayList<>();
 
+    public void setEmail(String email) {
+        this.email = ObjectUtils.isEmpty(email) ? "" : email.toLowerCase();
+    }
 
+    public void addCourse(Course course) {
+        courses.add(course);
+        course.setUser(this);
+    }
+
+    public void removeCourse(Course course) {
+        courses.remove(course);
+        course.setUser(null);
+    }
+
+    public void addFeedback(Feedback feedback) {
+        feedbacks.add(feedback);
+        feedback.setUser(this);
+    }
+
+    public void removeFeedback(Feedback feedback) {
+        feedbacks.remove(feedback);
+        feedback.setUser(null);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
+        User user = (User) o;
+        return Objects.equals(getEmail(), user.getEmail()) && Objects.equals(
+            getUsername(), user.getUsername()) && Objects.equals(getFirstName(),
+            user.getFirstName()) && Objects.equals(getLastName(), user.getLastName())
+            && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(
+            getCourses(), user.getCourses()) && Objects.equals(getFeedbacks(),
+            user.getFeedbacks()) && Objects.equals(getRoles(), user.getRoles())
+            && Objects.equals(getGroups(), user.getGroups());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmail(), getUsername(), getFirstName(), getLastName(), getPassword(),
+            getCourses(), getFeedbacks(), getRoles(), getGroups());
+    }
+
+    @Override
+    public String   toString() {
+        return "User{" +
+            "id=" + id +
+            ", email='" + email + '\'' +
+            ", username='" + username + '\'' +
+            ", firstName='" + firstName + '\'' +
+            ", lastName='" + lastName + '\'' +
+            ", password='" + password + '\'' +
+            ", courses=" + courses +
+            ", feedbacks=" + feedbacks +
+            ", roles=" + roles +
+            ", groups=" + groups +
+            "} " + super.toString();
+    }
 }

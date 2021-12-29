@@ -1,12 +1,17 @@
 package com.moon.senla.educational_website.model;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.Setter;
 
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class AbstractEntity {
 
     @Id
@@ -14,11 +19,20 @@ public abstract class AbstractEntity {
     @Column(name = "id")
     protected Long id;
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractEntity)) {
+            return false;
+        }
+        AbstractEntity that = (AbstractEntity) o;
+        return Objects.equals(getId(), that.getId());
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

@@ -1,20 +1,24 @@
 package com.moon.senla.educational_website.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
-import javax.persistence.CollectionTable;
+import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "courses")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Course extends AbstractEntity {
@@ -25,24 +29,76 @@ public class Course extends AbstractEntity {
     @Column(name = "price")
     private int price;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private User owner;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User user;
 
-    @OneToMany
-    @CollectionTable(name = "course_groups", joinColumns = @JoinColumn(name = "course_id"))
-    @Column(name = "group")
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Group> groups;
 
-    @OneToMany
-    @CollectionTable(name = "course_feedbacks", joinColumns = @JoinColumn(name = "course_id"))
-    @Column(name = "feedback")
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Feedback> feedbacks;
 
     @Column(name = "ranking")
     private int rankings = 0;
 
-    @ManyToOne
-    @JoinColumn(name = "topic_id")
+    @ManyToOne(fetch = FetchType.EAGER)
     private Topic topic;
+
+    public void addGroup(Group group) {
+        groups.add(group);
+        group.setCourse(this);
+    }
+
+    public void removeGroup(Group group) {
+        groups.remove(group);
+        group.setCourse(null);
+    }
+
+    public void addFeedback(Feedback feedback) {
+        feedbacks.add(feedback);
+        feedback.setCourse(this);
+    }
+
+    public void removeFeedback(Feedback feedback) {
+        feedbacks.remove(feedback);
+        feedback.setCourse(null);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Course)) {
+            return false;
+        }
+        Course course = (Course) o;
+        return getPrice() == course.getPrice() && getRankings() == course.getRankings()
+            && Objects.equals(getName(), course.getName()) && Objects.equals(
+            getUser(), course.getUser()) && Objects.equals(getGroups(), course.getGroups())
+            && Objects.equals(getFeedbacks(), course.getFeedbacks())
+            && Objects.equals(getTopic(), course.getTopic());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getPrice(), getUser(), getGroups(), getFeedbacks(),
+            getRankings(), getTopic());
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", price=" + price +
+            ", user=" + user +
+            ", groups=" + groups +
+            ", feedbacks=" + feedbacks +
+            ", rankings=" + rankings +
+            ", topic=" + topic +
+            "} " + super.toString();
+    }
 }
