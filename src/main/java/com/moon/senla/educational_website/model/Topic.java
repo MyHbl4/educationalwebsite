@@ -1,6 +1,7 @@
 package com.moon.senla.educational_website.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -9,6 +10,9 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -26,7 +30,12 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Topic extends AbstractEntity {
+public class Topic implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "name", nullable = false, unique = true)
     @Size(max = 128)
@@ -85,6 +94,6 @@ public class Topic extends AbstractEntity {
             ", name='" + name + '\'' +
             ", courses=" + courses +
             ", theories=" + theories +
-            "} " + super.toString();
+            '}';
     }
 }

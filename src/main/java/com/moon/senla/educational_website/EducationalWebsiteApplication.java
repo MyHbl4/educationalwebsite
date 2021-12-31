@@ -20,7 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @AllArgsConstructor
-public class EducationalWebsiteApplication implements ApplicationRunner{
+public class EducationalWebsiteApplication {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final TopicService topicService;
@@ -34,8 +34,8 @@ public class EducationalWebsiteApplication implements ApplicationRunner{
         SpringApplication.run(EducationalWebsiteApplication.class, args);
     }
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
+//    @Override
+//    public void run(ApplicationArguments args) throws Exception {
 //        Topic top = new Topic();
 //        top = topicService.findById(1);
 //        System.out.println(top);
@@ -67,8 +67,5 @@ public class EducationalWebsiteApplication implements ApplicationRunner{
 //            topicService.getById(3L), LocalDate.now()));
 //        theoryRepository.save(new Theory("Python start", "some information",
 //            topicService.getById(2L), LocalDate.now()));
-
-
-
-    }
+//    }
 }

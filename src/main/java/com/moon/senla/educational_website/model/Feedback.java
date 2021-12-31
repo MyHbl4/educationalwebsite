@@ -1,11 +1,15 @@
 package com.moon.senla.educational_website.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -24,7 +28,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "feedbacks")
-public class Feedback extends AbstractEntity {
+public class Feedback implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Course course;
@@ -73,6 +82,6 @@ public class Feedback extends AbstractEntity {
             ", detention='" + detention + '\'' +
             ", rank=" + rank +
             ", date=" + date +
-            "} " + super.toString();
+            '}';
     }
 }

@@ -1,5 +1,6 @@
 package com.moon.senla.educational_website.controller;
 
+import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.UserService;
 import java.util.List;
@@ -46,4 +47,7 @@ public class UserController {
     public void delete(@PathVariable(name = "id") long id) {
         userService.deleteById(id);
     }
+
+    @GetMapping("/{id}/courses")
+    public List<Course> findAllCoursesByUserId(@PathVariable(name = "id") long id) {return userService.findAllCoursesByUserId(id);}
 }

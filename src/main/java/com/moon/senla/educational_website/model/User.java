@@ -2,6 +2,9 @@ package com.moon.senla.educational_website.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.moon.senla.educational_website.util.JsonDeserializers;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +16,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -34,7 +40,12 @@ import org.springframework.util.ObjectUtils;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User extends AbstractEntity {
+public class User implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "email", nullable = false, unique = true)
     @Email
@@ -55,8 +66,9 @@ public class User extends AbstractEntity {
     private String lastName;
 
     @Column(name = "password", nullable = false)
-    @Size(max = 128)
+    @Size(max = 256)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonDeserialize(using = JsonDeserializers.PasswordDeserializer.class)
     private String password;
 
     @JsonIgnore
@@ -104,6 +116,10 @@ public class User extends AbstractEntity {
         feedback.setUser(null);
     }
 
+    public boolean isNew() {
+        return id == null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -129,7 +145,7 @@ public class User extends AbstractEntity {
     }
 
     @Override
-    public String   toString() {
+    public String toString() {
         return "User{" +
             "id=" + id +
             ", email='" + email + '\'' +
@@ -141,6 +157,6 @@ public class User extends AbstractEntity {
             ", feedbacks=" + feedbacks +
             ", roles=" + roles +
             ", groups=" + groups +
-            "} " + super.toString();
+            '}';
     }
 }

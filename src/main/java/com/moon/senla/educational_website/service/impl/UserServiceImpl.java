@@ -1,6 +1,7 @@
 package com.moon.senla.educational_website.service.impl;
 
 import com.moon.senla.educational_website.dao.UserRepository;
+import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.UserService;
 import java.util.List;
@@ -39,5 +40,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Course> findAllCoursesByUserId(long id) {
+        User user = findById(id);
+        if(user == null){
+            return null;
+        }
+        return user.getCourses();
     }
 }
