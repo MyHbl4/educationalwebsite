@@ -2,11 +2,9 @@ package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.model.AuthUser;
-import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.util.ValidationUtil;
+import com.moon.senla.educational_website.service.AccountService;
 import java.net.URI;
-import java.util.Collections;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +28,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Slf4j
 public class AccountController {
 
-    private final UserRepository userRepository;
+    private final AccountService accountService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(@AuthenticationPrincipal AuthUser authUser) {
         log.info("get {}", authUser);
-        return authUser.getUser();
+        return accountService.get(authUser);
     }
 
 
@@ -43,16 +41,14 @@ public class AccountController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
         log.info("delete {}", authUser);
-        userRepository.deleteById(authUser.id());
+        accountService.delete(authUser);
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<User> register(@Valid @RequestBody User user) {
         log.info("register {}", user);
-        ValidationUtil.checkNew(user);
-        user.setRoles(Collections.singletonList(Role.USER));
-        user = userRepository.save(user);
+        user = accountService.register(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
             .path("/api/account")
             .build().toUri();
@@ -63,12 +59,6 @@ public class AccountController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody User user, @AuthenticationPrincipal AuthUser authUser) {
         log.info("update {} to {}", authUser, user);
-        User oldUser = authUser.getUser();
-        ValidationUtil.assureIdConsistent(user, oldUser.getId());
-        user.setRoles(oldUser.getRoles());
-        if (user.getPassword() == null) {
-            user.setPassword(oldUser.getPassword());
-        }
-        userRepository.save(user);
+        accountService.update(user, authUser);
     }
 }

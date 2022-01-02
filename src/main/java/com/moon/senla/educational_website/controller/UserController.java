@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.UserService;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/users")
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -25,29 +27,36 @@ public class UserController {
 
     @GetMapping()
     public List<User> findAll() {
+        log.info("find all users");
         return userService.findAll();
     }
 
     @GetMapping(path = "/{id}")
     public User findById(@PathVariable(name = "id") long id) {
+        log.info("find user by id {}", id);
         return userService.findById(id);
     }
 
     @PostMapping()
     public User save(@RequestBody User user) {
+        log.info("save user {}", user);
         return userService.save(user);
     }
 
     @PutMapping()
     public User update(@RequestBody User userToUpdate) {
+        log.info("update user {}", userToUpdate);
         return userService.save(userToUpdate);
     }
 
     @DeleteMapping(path = "/{id}")
     public void delete(@PathVariable(name = "id") long id) {
+        log.info("delete user by id {}", id);
         userService.deleteById(id);
     }
 
     @GetMapping("/{id}/courses")
-    public List<Course> findAllCoursesByUserId(@PathVariable(name = "id") long id) {return userService.findAllCoursesByUserId(id);}
+    public List<Course> findAllCoursesByUserId(@PathVariable(name = "id") long id) {
+        log.info("find all courses by user id {}", id);
+        return userService.findAllCoursesByUserId(id);}
 }
