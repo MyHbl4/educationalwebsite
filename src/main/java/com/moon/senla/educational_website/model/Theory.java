@@ -46,6 +46,9 @@ public class Theory implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Topic topic;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User user;
+
     @Column(name = "date")
     private LocalDate date = LocalDate.now();
 
@@ -58,14 +61,15 @@ public class Theory implements Serializable {
             return false;
         }
         Theory theory = (Theory) o;
-        return Objects.equals(getName(), theory.getName()) && Objects.equals(
-            getDescription(), theory.getDescription()) && Objects.equals(getTopic(),
-            theory.getTopic()) && Objects.equals(getDate(), theory.getDate());
+        return Objects.equals(getId(), theory.getId()) && Objects.equals(getName(),
+            theory.getName()) && Objects.equals(getDescription(), theory.getDescription())
+            && Objects.equals(getTopic(), theory.getTopic()) && Objects.equals(
+            getUser(), theory.getUser()) && Objects.equals(getDate(), theory.getDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getDescription(), getTopic(), getDate());
+        return Objects.hash(getId(), getName(), getDescription(), getTopic(), getUser(), getDate());
     }
 
     @Override
@@ -75,6 +79,7 @@ public class Theory implements Serializable {
             ", name='" + name + '\'' +
             ", description='" + description + '\'' +
             ", topic=" + topic +
+            ", user=" + user +
             ", date=" + date +
             '}';
     }

@@ -4,6 +4,8 @@ package com.moon.senla.educational_website.service.impl;
 import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Theory;
+import com.moon.senla.educational_website.model.Topic;
+import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.CourseService;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,22 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses = new ArrayList<>();
         for (Course course : allCourses) {
             if(course.getTopic().getId().equals(id)){
+                courses.add(course);
+            }
+        }
+        return courses;
+    }
+
+    @Override
+    public List<Course> findAllCoursesByParam(String name, Topic topic, User user) {
+        List<Course> allCourses = courseRepository.findAll();
+        List<Course> courses = new ArrayList<>();
+        for (Course course : allCourses) {
+            if (course.getName().equals(name)) {
+                courses.add(course);
+            } if (topic != null && course.getTopic().getName().equals(topic.getName())) {
+                courses.add(course);
+            } if (user != null && course.getUser().getUsername().equals(user.getUsername())) {
                 courses.add(course);
             }
         }

@@ -2,6 +2,8 @@ package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Theory;
+import com.moon.senla.educational_website.model.Topic;
+import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.CourseService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -59,5 +62,13 @@ public class CourseController {
     public List<Course> findAllCourseByTopicId(@PathVariable(name = "id") long id) {
         log.info("find course by topic id {}", id);
         return courseService.findAllCourseByTopicId(id);
+    }
+
+    @GetMapping(path = "/find-needed")
+    public List<Course> findAllCoursesByParam(
+        @RequestParam(value = "name", required = false) String name,
+        @RequestParam(value = "topic", required = false) Topic topic,
+        @RequestParam(value = "user", required = false) User user) {
+        return courseService.findAllCoursesByParam(name, topic, user);
     }
 }

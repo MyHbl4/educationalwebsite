@@ -79,6 +79,10 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Feedback> feedbacks = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Theory> theories = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
@@ -116,6 +120,16 @@ public class User implements Serializable {
         feedback.setUser(null);
     }
 
+    public void addTheory(Theory theory) {
+        theories.add(theory);
+        theory.setUser(this);
+    }
+
+    public void removeTheory(Theory theory) {
+        theories.remove(theory);
+        theory.setUser(null);
+    }
+
     public boolean isNew() {
         return id == null;
     }
@@ -129,19 +143,20 @@ public class User implements Serializable {
             return false;
         }
         User user = (User) o;
-        return Objects.equals(getEmail(), user.getEmail()) && Objects.equals(
-            getUsername(), user.getUsername()) && Objects.equals(getFirstName(),
-            user.getFirstName()) && Objects.equals(getLastName(), user.getLastName())
-            && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(
-            getCourses(), user.getCourses()) && Objects.equals(getFeedbacks(),
-            user.getFeedbacks()) && Objects.equals(getRoles(), user.getRoles())
-            && Objects.equals(getGroups(), user.getGroups());
+        return Objects.equals(getId(), user.getId()) && Objects.equals(getEmail(),
+            user.getEmail()) && Objects.equals(getUsername(), user.getUsername())
+            && Objects.equals(getFirstName(), user.getFirstName())
+            && Objects.equals(getLastName(), user.getLastName()) && Objects.equals(
+            getPassword(), user.getPassword()) && Objects.equals(getCourses(),
+            user.getCourses()) && Objects.equals(getFeedbacks(), user.getFeedbacks())
+            && Objects.equals(getTheories(), user.getTheories()) && Objects.equals(
+            getRoles(), user.getRoles()) && Objects.equals(getGroups(), user.getGroups());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEmail(), getUsername(), getFirstName(), getLastName(), getPassword(),
-            getCourses(), getFeedbacks(), getRoles(), getGroups());
+        return Objects.hash(getId(), getEmail(), getUsername(), getFirstName(), getLastName(),
+            getPassword(), getCourses(), getFeedbacks(), getTheories(), getRoles(), getGroups());
     }
 
     @Override
@@ -155,6 +170,7 @@ public class User implements Serializable {
             ", password='" + password + '\'' +
             ", courses=" + courses +
             ", feedbacks=" + feedbacks +
+            ", theories=" + theories +
             ", roles=" + roles +
             ", groups=" + groups +
             '}';
