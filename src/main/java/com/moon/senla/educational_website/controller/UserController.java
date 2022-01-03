@@ -2,6 +2,8 @@ package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.UserDto;
+import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.service.UserService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +34,10 @@ public class UserController {
     }
 
     @GetMapping(path = "/{id}")
-    public User findById(@PathVariable(name = "id") long id) {
+    public UserDto findById(@PathVariable(name = "id") long id) {
         log.info("find user by id {}", id);
-        return userService.findById(id);
+        User user = userService.findById(id);
+        return UserMapper.INSTANCE.userToUserDto(user);
     }
 
     @PostMapping()
