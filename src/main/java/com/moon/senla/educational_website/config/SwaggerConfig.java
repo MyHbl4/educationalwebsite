@@ -6,19 +6,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-//@Configuration
-//@EnableSwagger2
-//@PropertySource("classpath:swagger.properties")
-//@ComponentScan("com.moon.senla")
+@Configuration
+@EnableSwagger2
 public class SwaggerConfig {
 
-    private static final String SWAGGER_API_TITLE = "REST API - TITLE";
-    private static final String SWAGGER_API_DESCRIPTION = "REST API - DESCRIPTION";
+    private static final String SWAGGER_API_TITLE = "REST API - EDUCATIONAL WEBSITE";
+    private static final String SWAGGER_API_DESCRIPTION = "EDUCATIONAL WEBSITE";
     private static final String SWAGGER_API_LICENSE = "License";
     private static final String SWAGGER_API_VERSION = "1.0";
 
@@ -32,7 +31,7 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public Docket classApi(){
+    public Docket api(){
         return new Docket(DocumentationType.SWAGGER_2)
             .apiInfo(apiInfo())
             .pathMapping("/")

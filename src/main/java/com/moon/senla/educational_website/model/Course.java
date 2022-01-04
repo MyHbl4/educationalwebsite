@@ -1,6 +1,7 @@
 package com.moon.senla.educational_website.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.awt.print.Book;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -73,6 +74,20 @@ public class Course implements Serializable {
     public void removeFeedback(Feedback feedback) {
         feedbacks.remove(feedback);
         feedback.setCourse(null);
+    }
+
+    public int getRankings(){
+        float sumRank = 0f;
+        int count = 0;
+        int ranking = 0;
+        if (feedbacks != null) {
+            for (Feedback f : feedbacks) {
+                sumRank += f.getRank();
+                count++;
+            }
+            ranking = Math.round(sumRank/count);
+        }
+        return ranking;
     }
 
     @Override
