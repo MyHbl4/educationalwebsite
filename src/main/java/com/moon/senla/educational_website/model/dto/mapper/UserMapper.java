@@ -1,8 +1,6 @@
 package com.moon.senla.educational_website.model.dto.mapper;
 
-import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.FeedbackDto;
 import com.moon.senla.educational_website.model.dto.UserDto;
 import java.util.List;
 import org.mapstruct.Mapper;

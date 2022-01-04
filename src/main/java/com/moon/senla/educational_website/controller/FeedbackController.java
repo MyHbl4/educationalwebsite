@@ -6,6 +6,9 @@ import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
 import com.moon.senla.educational_website.service.FeedbackService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +30,11 @@ public class FeedbackController {
     }
 
     @GetMapping()
-    public List<FeedbackDto> findAll() {
+    public List<FeedbackDto> findAll(@PageableDefault(sort = {"rank"}, size = 5)
+        Pageable pageable) {
         log.info("find all feedbacks ");
-        List<Feedback> feedback = feedbackService.findAll();
+        Page<Feedback> pageFeedback = feedbackService.findAll(pageable);
+        List<Feedback> feedback = pageFeedback.getContent();
         return FeedbackMapper.INSTANCE.listToDtoList(feedback);
     }
 

@@ -4,6 +4,8 @@ import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.Schedule;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ScheduleService {
 
@@ -11,7 +13,7 @@ public interface ScheduleService {
 
     Schedule findById(long id);
 
-    List<Schedule> findAll();
+    Page<Schedule> findAll(Pageable pageable);
 
     void deleteById(long id);
 }

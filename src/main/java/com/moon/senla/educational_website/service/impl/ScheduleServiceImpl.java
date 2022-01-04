@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,8 +34,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<Schedule> findAll() {
-        return scheduleRepository.findAll();
+    public Page<Schedule> findAll(Pageable pageable) {
+        return scheduleRepository.findAll(pageable);
     }
 
     @Override

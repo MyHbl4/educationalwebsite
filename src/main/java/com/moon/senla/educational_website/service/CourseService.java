@@ -6,6 +6,8 @@ import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CourseService {
 
@@ -13,7 +15,7 @@ public interface CourseService {
 
     Course findById(long id);
 
-    List<Course> findAll();
+    Page<Course> findAll(Pageable pageable);
 
     void deleteById(long id);
 

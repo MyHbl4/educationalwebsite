@@ -8,6 +8,9 @@ import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.service.CourseService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,10 +33,12 @@ public class CourseController {
     }
 
     @GetMapping()
-    public List<CourseDto> findAll() {
+    public List<CourseDto> findAll(@PageableDefault(sort = {"name"}, size = 5)
+        Pageable pageable) {
         log.info("find all courses ");
-        List<Course> Course = courseService.findAll();
-        return CourseMapper.INSTANCE.listToDtoList(Course);
+        Page<Course> pageCourse = courseService.findAll(pageable);
+        List<Course> course = pageCourse.getContent();
+        return CourseMapper.INSTANCE.listToDtoList(course);
     }
 
     @GetMapping(path = "/{id}")

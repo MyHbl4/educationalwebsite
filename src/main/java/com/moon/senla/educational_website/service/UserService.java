@@ -3,6 +3,8 @@ package com.moon.senla.educational_website.service;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
@@ -10,7 +12,7 @@ public interface UserService {
 
     User findById(long id);
 
-    List<User> findAll();
+    Page<User> findAll(Pageable pageable);
 
     void deleteById(long id);
 

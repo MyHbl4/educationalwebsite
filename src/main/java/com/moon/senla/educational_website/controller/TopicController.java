@@ -6,6 +6,9 @@ import com.moon.senla.educational_website.model.dto.mapper.TopicMapper;
 import com.moon.senla.educational_website.service.TopicService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +30,11 @@ public class TopicController {
     }
 
     @GetMapping()
-    public List<TopicDto> findAll() {
+    public List<TopicDto> findAll(@PageableDefault(sort = {"name"}, size = 5)
+        Pageable pageable) {
         log.info("find all topics");
-        List<Topic> topics = topicService.findAll();
+        Page<Topic> pageTopics = topicService.findAll(pageable);
+        List<Topic> topics = pageTopics.getContent();
         return TopicMapper.INSTANCE.listToDtoList(topics);
     }
 

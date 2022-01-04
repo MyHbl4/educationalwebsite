@@ -6,6 +6,9 @@ import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.service.GroupService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +30,11 @@ public class GroupController {
     }
 
     @GetMapping()
-    public List<GroupDto> findAll() {
+    public List<GroupDto> findAll(@PageableDefault(sort = {"name"}, size = 5)
+        Pageable pageable) {
         log.info("find all groups");
-        List<Group> group = groupService.findAll();
+        Page<Group> pageGroup = groupService.findAll(pageable);
+        List<Group> group = pageGroup.getContent();
         return GroupMapper.INSTANCE.listToDtoList(group);
     }
 

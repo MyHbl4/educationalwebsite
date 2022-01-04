@@ -4,6 +4,8 @@ import com.moon.senla.educational_website.model.Theory;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface TheoryService {
 
@@ -11,7 +13,7 @@ public interface TheoryService {
 
     Theory findById(long id);
 
-    List<Theory> findAll();
+    Page<Theory> findAll(Pageable pageable);
 
     void deleteById(long id);
 

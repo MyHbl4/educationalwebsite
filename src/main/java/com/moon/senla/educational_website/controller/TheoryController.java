@@ -8,6 +8,9 @@ import com.moon.senla.educational_website.model.dto.mapper.TheoryMapper;
 import com.moon.senla.educational_website.service.TheoryService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,9 +33,11 @@ public class TheoryController {
     }
 
     @GetMapping()
-    public List<TheoryDto> findAll() {
+    public List<TheoryDto> findAll(@PageableDefault(sort = {"name"}, size = 5)
+        Pageable pageable) {
         log.info("find all theories");
-        List<Theory> theory = theoryService.findAll();
+        Page<Theory> pageTheory = theoryService.findAll(pageable);
+        List<Theory> theory = pageTheory.getContent();
         return TheoryMapper.INSTANCE.listToDtoList(theory);
     }
 

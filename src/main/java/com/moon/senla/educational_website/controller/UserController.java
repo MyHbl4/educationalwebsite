@@ -9,6 +9,9 @@ import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.service.UserService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,9 +33,11 @@ public class UserController {
     }
 
     @GetMapping()
-    public List<UserDto> findAll() {
+    public List<UserDto> findAll(@PageableDefault(sort = {"username"}, size = 5)
+        Pageable pageable) {
         log.info("find all users");
-        List<User> users = userService.findAll();
+        Page<User> pageUsers = userService.findAll(pageable);
+        List<User> users = pageUsers.getContent();
         return UserMapper.INSTANCE.listToDtoList(users);
     }
 

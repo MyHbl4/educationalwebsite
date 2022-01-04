@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,8 +35,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @Override
@@ -45,7 +47,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Course> findAllCoursesByUserId(long id) {
         User user = findById(id);
-        if(user == null){
+        if (user == null) {
             return null;
         }
         return user.getCourses();
