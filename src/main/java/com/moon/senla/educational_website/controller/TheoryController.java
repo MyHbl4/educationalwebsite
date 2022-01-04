@@ -3,6 +3,8 @@ package com.moon.senla.educational_website.controller;
 import com.moon.senla.educational_website.model.Theory;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.TheoryDto;
+import com.moon.senla.educational_website.model.dto.mapper.TheoryMapper;
 import com.moon.senla.educational_website.service.TheoryService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -28,27 +30,31 @@ public class TheoryController {
     }
 
     @GetMapping()
-    public List<Theory> findAll() {
+    public List<TheoryDto> findAll() {
         log.info("find all theories");
-        return theoryService.findAll();
+        List<Theory> theory = theoryService.findAll();
+        return TheoryMapper.INSTANCE.listToDtoList(theory);
     }
 
     @GetMapping(path = "/{id}")
-    public Theory findById(@PathVariable(name = "id") long id) {
+    public TheoryDto findById(@PathVariable(name = "id") long id) {
         log.info("find theory by id {}", id);
-        return theoryService.findById(id);
+        Theory theory = theoryService.findById(id);
+        return TheoryMapper.INSTANCE.theoryToTheoryDto(theory);
     }
 
     @PostMapping()
-    public Theory save(@RequestBody Theory theory) {
+    public TheoryDto save(@RequestBody Theory theory) {
         log.info("save theory {}", theory);
-        return theoryService.save(theory);
+        Theory newTheory = theoryService.save(theory);
+        return TheoryMapper.INSTANCE.theoryToTheoryDto(newTheory);
     }
 
     @PutMapping()
-    public Theory update(@RequestBody Theory theoryToUpdate) {
+    public TheoryDto update(@RequestBody Theory theoryToUpdate) {
         log.info("update theory {}", theoryToUpdate);
-        return theoryService.save(theoryToUpdate);
+        Theory theory = theoryService.save(theoryToUpdate);
+        return TheoryMapper.INSTANCE.theoryToTheoryDto(theory);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -58,16 +64,18 @@ public class TheoryController {
     }
 
     @GetMapping(path = "/topics/{id}")
-    public List<Theory> findAllTheoriesByTopicId(@PathVariable(name = "id") long id) {
+    public List<TheoryDto> findAllTheoriesByTopicId(@PathVariable(name = "id") long id) {
         log.info("find all theories by topic id {}", id);
-        return theoryService.findAllTheoriesByTopicId(id);
+        List<Theory> theory = theoryService.findAllTheoriesByTopicId(id);
+        return TheoryMapper.INSTANCE.listToDtoList(theory);
     }
 
     @GetMapping(path = "/find-needed")
-    public List<Theory> findAllTheoriesByParam(
+    public List<TheoryDto> findAllTheoriesByParam(
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic", required = false) Topic topic,
         @RequestParam(value = "user", required = false) User user) {
-        return theoryService.findAllTheoriesByParam(name, topic, user);
+        List<Theory> theory = theoryService.findAllTheoriesByParam(name, topic, user);
+        return TheoryMapper.INSTANCE.listToDtoList(theory);
     }
 }

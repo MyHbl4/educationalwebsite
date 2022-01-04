@@ -1,6 +1,8 @@
 package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Feedback;
+import com.moon.senla.educational_website.model.dto.FeedbackDto;
+import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
 import com.moon.senla.educational_website.service.FeedbackService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -25,27 +27,31 @@ public class FeedbackController {
     }
 
     @GetMapping()
-    public List<Feedback> findAll() {
+    public List<FeedbackDto> findAll() {
         log.info("find all feedbacks ");
-        return feedbackService.findAll();
+        List<Feedback> feedback = feedbackService.findAll();
+        return FeedbackMapper.INSTANCE.listToDtoList(feedback);
     }
 
     @GetMapping(path = "/{id}")
-    public Feedback findById(@PathVariable(name = "id") long id) {
+    public FeedbackDto findById(@PathVariable(name = "id") long id) {
         log.info("find feedback by id {}", id);
-        return feedbackService.findById(id);
+        Feedback feedback = feedbackService.findById(id);
+        return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(feedback);
     }
 
     @PostMapping()
-    public Feedback save(@RequestBody Feedback feedback) {
+    public FeedbackDto save(@RequestBody Feedback feedback) {
         log.info("save feedback {}", feedback);
-        return feedbackService.save(feedback);
+        Feedback newFeedback = feedbackService.save(feedback);
+        return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(newFeedback);
     }
 
     @PutMapping()
-    public Feedback update(@RequestBody Feedback feedbackToUpdate) {
+    public FeedbackDto update(@RequestBody Feedback feedbackToUpdate) {
         log.info("update feedback {}", feedbackToUpdate);
-        return feedbackService.save(feedbackToUpdate);
+        Feedback feedback = feedbackService.save(feedbackToUpdate);
+        return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(feedback);
     }
 
     @DeleteMapping(path = "/{id}")

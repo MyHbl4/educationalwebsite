@@ -3,18 +3,10 @@ package com.moon.senla.educational_website;
 import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.TheoryRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
-import com.moon.senla.educational_website.model.Role;
-import com.moon.senla.educational_website.model.Theory;
-import com.moon.senla.educational_website.model.Topic;
-import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.TheoryService;
 import com.moon.senla.educational_website.service.TopicService;
 import com.moon.senla.educational_website.service.UserService;
-import java.time.LocalDate;
-import java.util.Arrays;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -27,7 +19,6 @@ public class EducationalWebsiteApplication {
     private final TheoryRepository theoryRepository;
     private final TheoryService theoryService;
     private final UserService userService;
-
 
 
     public static void main(String[] args) {

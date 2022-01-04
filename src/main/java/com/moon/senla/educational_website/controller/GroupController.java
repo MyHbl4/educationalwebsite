@@ -1,6 +1,8 @@
 package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Group;
+import com.moon.senla.educational_website.model.dto.GroupDto;
+import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.service.GroupService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -25,27 +27,31 @@ public class GroupController {
     }
 
     @GetMapping()
-    public List<Group> findAll() {
+    public List<GroupDto> findAll() {
         log.info("find all groups");
-        return groupService.findAll();
+        List<Group> group = groupService.findAll();
+        return GroupMapper.INSTANCE.listToDtoList(group);
     }
 
     @GetMapping(path = "/{id}")
-    public Group findById(@PathVariable(name = "id") long id) {
+    public GroupDto findById(@PathVariable(name = "id") long id) {
         log.info("find group by id {}", id);
-        return groupService.findById(id);
+        Group group = groupService.findById(id);
+        return GroupMapper.INSTANCE.groupToGroupDto(group);
     }
 
     @PostMapping()
-    public Group save(@RequestBody Group group) {
+    public GroupDto save(@RequestBody Group group) {
         log.info("save group {}", group);
-        return groupService.save(group);
+        Group newGroup = groupService.save(group);
+        return GroupMapper.INSTANCE.groupToGroupDto(newGroup);
     }
 
     @PutMapping()
-    public Group update(@RequestBody Group groupToUpdate) {
+    public GroupDto update(@RequestBody Group groupToUpdate) {
         log.info("update group {}", groupToUpdate);
-        return groupService.save(groupToUpdate);
+        Group group = groupService.save(groupToUpdate);
+        return GroupMapper.INSTANCE.groupToGroupDto(group);
     }
 
     @DeleteMapping(path = "/{id}")

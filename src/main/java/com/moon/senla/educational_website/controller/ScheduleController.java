@@ -1,6 +1,8 @@
 package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Schedule;
+import com.moon.senla.educational_website.model.dto.ScheduleDto;
+import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
 import com.moon.senla.educational_website.service.ScheduleService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -25,27 +27,31 @@ public class ScheduleController {
     }
 
     @GetMapping()
-    public List<Schedule> findAll() {
+    public List<ScheduleDto> findAll() {
         log.info("find all schedules");
-        return scheduleService.findAll();
+        List<Schedule> schedule = scheduleService.findAll();
+        return ScheduleMapper.INSTANCE.listToDtoList(schedule);
     }
 
     @GetMapping(path = "/{id}")
-    public Schedule findById(@PathVariable(name = "id") long id) {
+    public ScheduleDto findById(@PathVariable(name = "id") long id) {
         log.info("find schedule by id {}", id);
-        return scheduleService.findById(id);
+        Schedule schedule = scheduleService.findById(id);
+        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(schedule);
     }
 
     @PostMapping()
-    public Schedule save(@RequestBody Schedule schedule) {
+    public ScheduleDto save(@RequestBody Schedule schedule) {
         log.info("save schedule {}", schedule);
-        return scheduleService.save(schedule);
+        Schedule newSchedule = scheduleService.save(schedule);
+        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(newSchedule);
     }
 
     @PutMapping()
-    public Schedule update(@RequestBody Schedule scheduleToUpdate) {
+    public ScheduleDto update(@RequestBody Schedule scheduleToUpdate) {
         log.info("update schedule {}", scheduleToUpdate);
-        return scheduleService.save(scheduleToUpdate);
+        Schedule schedule = scheduleService.save(scheduleToUpdate);
+        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(schedule);
     }
 
     @DeleteMapping(path = "/{id}")

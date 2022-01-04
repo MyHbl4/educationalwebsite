@@ -2,7 +2,9 @@ package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.CourseDto;
 import com.moon.senla.educational_website.model.dto.UserDto;
+import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.service.UserService;
 import java.util.List;
@@ -28,9 +30,10 @@ public class UserController {
     }
 
     @GetMapping()
-    public List<User> findAll() {
+    public List<UserDto> findAll() {
         log.info("find all users");
-        return userService.findAll();
+        List<User> users = userService.findAll();
+        return UserMapper.INSTANCE.listToDtoList(users);
     }
 
     @GetMapping(path = "/{id}")
@@ -41,15 +44,18 @@ public class UserController {
     }
 
     @PostMapping()
-    public User save(@RequestBody User user) {
+    public UserDto save(@RequestBody User user) {
         log.info("save user {}", user);
-        return userService.save(user);
+        User newUser = userService.save(user);
+        return UserMapper.INSTANCE.userToUserDto(newUser);
+
     }
 
     @PutMapping()
-    public User update(@RequestBody User userToUpdate) {
+    public UserDto update(@RequestBody User userToUpdate) {
         log.info("update user {}", userToUpdate);
-        return userService.save(userToUpdate);
+        User user = userService.save(userToUpdate);
+        return UserMapper.INSTANCE.userToUserDto(user);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -59,7 +65,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}/courses")
-    public List<Course> findAllCoursesByUserId(@PathVariable(name = "id") long id) {
+    public List<CourseDto> findAllCoursesByUserId(@PathVariable(name = "id") long id) {
         log.info("find all courses by user id {}", id);
-        return userService.findAllCoursesByUserId(id);}
+        List<Course> list = userService.findAllCoursesByUserId(id);
+        return CourseMapper.INSTANCE.listToDtoList(list);
+    }
 }

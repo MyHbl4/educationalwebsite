@@ -1,6 +1,5 @@
 package com.moon.senla.educational_website.controller;
 
-import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.model.AuthUser;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.AccountService;

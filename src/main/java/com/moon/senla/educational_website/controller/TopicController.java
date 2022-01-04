@@ -1,6 +1,8 @@
 package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Topic;
+import com.moon.senla.educational_website.model.dto.TopicDto;
+import com.moon.senla.educational_website.model.dto.mapper.TopicMapper;
 import com.moon.senla.educational_website.service.TopicService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -25,27 +27,31 @@ public class TopicController {
     }
 
     @GetMapping()
-    public List<Topic> findAll() {
+    public List<TopicDto> findAll() {
         log.info("find all topics");
-        return topicService.findAll();
+        List<Topic> topics = topicService.findAll();
+        return TopicMapper.INSTANCE.listToDtoList(topics);
     }
 
     @GetMapping(path = "/{id}")
-    public Topic findById(@PathVariable(name = "id") long id) {
+    public TopicDto findById(@PathVariable(name = "id") long id) {
         log.info("find topic by id {}", id);
-        return topicService.findById(id);
+        Topic topic = topicService.findById(id);
+        return TopicMapper.INSTANCE.topicToTopicDto(topic);
     }
 
     @PostMapping()
-    public Topic save(@RequestBody Topic topic) {
+    public TopicDto save(@RequestBody Topic topic) {
         log.info("save topic {}", topic);
-        return topicService.save(topic);
+        Topic newTopic = topicService.save(topic);
+        return TopicMapper.INSTANCE.topicToTopicDto(newTopic);
     }
 
     @PutMapping()
-    public Topic update(@RequestBody Topic topicToUpdate) {
+    public TopicDto update(@RequestBody Topic topicToUpdate) {
         log.info("update topic {}", topicToUpdate);
-        return topicService.save(topicToUpdate);
+        Topic topic = topicService.save(topicToUpdate);
+        return TopicMapper.INSTANCE.topicToTopicDto(topic);
     }
 
     @DeleteMapping(path = "/{id}")

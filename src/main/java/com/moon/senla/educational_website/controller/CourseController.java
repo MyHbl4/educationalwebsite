@@ -1,9 +1,10 @@
 package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Course;
-import com.moon.senla.educational_website.model.Theory;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.CourseDto;
+import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.service.CourseService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -29,27 +30,31 @@ public class CourseController {
     }
 
     @GetMapping()
-    public List<Course> findAll() {
+    public List<CourseDto> findAll() {
         log.info("find all courses ");
-        return courseService.findAll();
+        List<Course> Course = courseService.findAll();
+        return CourseMapper.INSTANCE.listToDtoList(Course);
     }
 
     @GetMapping(path = "/{id}")
-    public Course findById(@PathVariable(name = "id") long id) {
+    public CourseDto findById(@PathVariable(name = "id") long id) {
         log.info("find course by id {}", id);
-        return courseService.findById(id);
+        Course course = courseService.findById(id);
+        return CourseMapper.INSTANCE.courseToCourseDto(course);
     }
 
     @PostMapping()
-    public Course save(@RequestBody Course course) {
+    public CourseDto save(@RequestBody Course course) {
         log.info("save course {}", course);
-        return courseService.save(course);
+        Course newCourse = courseService.save(course);
+        return CourseMapper.INSTANCE.courseToCourseDto(newCourse);
     }
 
     @PutMapping()
-    public Course update(@RequestBody Course courseToUpdate) {
+    public CourseDto update(@RequestBody Course courseToUpdate) {
         log.info("update course {}", courseToUpdate);
-        return courseService.save(courseToUpdate);
+        Course course = courseService.save(courseToUpdate);
+        return CourseMapper.INSTANCE.courseToCourseDto(course);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -59,16 +64,18 @@ public class CourseController {
     }
 
     @GetMapping(path = "/topics/{id}")
-    public List<Course> findAllCourseByTopicId(@PathVariable(name = "id") long id) {
+    public List<CourseDto> findAllCourseByTopicId(@PathVariable(name = "id") long id) {
         log.info("find course by topic id {}", id);
-        return courseService.findAllCourseByTopicId(id);
+        List<Course> course = courseService.findAllCourseByTopicId(id);
+        return CourseMapper.INSTANCE.listToDtoList(course);
     }
 
     @GetMapping(path = "/find-needed")
-    public List<Course> findAllCoursesByParam(
+    public List<CourseDto> findAllCoursesByParam(
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic", required = false) Topic topic,
         @RequestParam(value = "user", required = false) User user) {
-        return courseService.findAllCoursesByParam(name, topic, user);
+        List<Course> course = courseService.findAllCoursesByParam(name, topic, user);
+        return CourseMapper.INSTANCE.listToDtoList(course);
     }
 }
