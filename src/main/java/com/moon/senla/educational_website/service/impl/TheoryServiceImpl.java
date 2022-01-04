@@ -2,10 +2,10 @@ package com.moon.senla.educational_website.service.impl;
 
 
 import com.moon.senla.educational_website.dao.TheoryRepository;
-import com.moon.senla.educational_website.dao.TopicRepository;
 import com.moon.senla.educational_website.model.Theory;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.theory.TheoryPageDto;
 import com.moon.senla.educational_website.service.TheoryService;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,6 @@ public class TheoryServiceImpl implements TheoryService {
 
     @Autowired
     private final TheoryRepository theoryRepository;
-    @Autowired
-    private final TopicRepository topicRepository;
 
     @Override
     public Theory save(Theory theory) {
@@ -46,6 +44,13 @@ public class TheoryServiceImpl implements TheoryService {
     }
 
     @Override
+    public TheoryPageDto findAllPageable(Pageable pageable) {
+        Page<Theory> page = theoryRepository.findAll(pageable);
+        return new TheoryPageDto(page.getContent(), pageable.getPageNumber(), page.getTotalPages());
+
+    }
+
+    @Override
     public void deleteById(long id) {
         theoryRepository.deleteById(id);
     }
@@ -63,18 +68,22 @@ public class TheoryServiceImpl implements TheoryService {
     }
 
     @Override
-    public List<Theory> findAllTheoriesByParam(String name, Topic topic, User user) {
-        List<Theory> allTheories = theoryRepository.findAll();
+    public TheoryPageDto findAllTheoriesByParam(Pageable pageable, String name, Topic topic,
+        User user) {
+        Page<Theory> page = theoryRepository.findAll(pageable);
+        List<Theory> allContent = page.getContent();
         List<Theory> theories = new ArrayList<>();
-        for (Theory theory : allTheories) {
+        for (Theory theory : allContent) {
             if (theory.getName().equals(name)) {
                 theories.add(theory);
-            } if (topic != null && theory.getTopic().getName().equals(topic.getName())) {
+            }
+            if (topic != null && theory.getTopic().getName().equals(topic.getName())) {
                 theories.add(theory);
-            } if (user != null && theory.getUser().getUsername().equals(user.getUsername())) {
+            }
+            if (user != null && theory.getUser().getUsername().equals(user.getUsername())) {
                 theories.add(theory);
             }
         }
-        return theories;
+        return new TheoryPageDto(theories, pageable.getPageNumber(), page.getTotalPages());
     }
 }

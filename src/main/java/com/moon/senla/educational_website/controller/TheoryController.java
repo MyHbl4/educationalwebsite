@@ -3,12 +3,12 @@ package com.moon.senla.educational_website.controller;
 import com.moon.senla.educational_website.model.Theory;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.TheoryDto;
 import com.moon.senla.educational_website.model.dto.mapper.TheoryMapper;
+import com.moon.senla.educational_website.model.dto.theory.TheoryDto;
+import com.moon.senla.educational_website.model.dto.theory.TheoryPageDto;
 import com.moon.senla.educational_website.service.TheoryService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,12 +33,10 @@ public class TheoryController {
     }
 
     @GetMapping()
-    public List<TheoryDto> findAll(@PageableDefault(sort = {"name"}, size = 5)
+    public TheoryPageDto findAllPageable(@PageableDefault(sort = {"id"}, size = 3)
         Pageable pageable) {
         log.info("find all theories");
-        Page<Theory> pageTheory = theoryService.findAll(pageable);
-        List<Theory> theory = pageTheory.getContent();
-        return TheoryMapper.INSTANCE.listToDtoList(theory);
+        return theoryService.findAllPageable(pageable);
     }
 
     @GetMapping(path = "/{id}")
@@ -76,11 +74,11 @@ public class TheoryController {
     }
 
     @GetMapping(path = "/find-needed")
-    public List<TheoryDto> findAllTheoriesByParam(
+    public TheoryPageDto findAllTheoriesByParam(
+        @PageableDefault(sort = {"id"}, size = 3) Pageable pageable,
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic", required = false) Topic topic,
         @RequestParam(value = "user", required = false) User user) {
-        List<Theory> theory = theoryService.findAllTheoriesByParam(name, topic, user);
-        return TheoryMapper.INSTANCE.listToDtoList(theory);
+        return theoryService.findAllTheoriesByParam(pageable, name, topic, user);
     }
 }

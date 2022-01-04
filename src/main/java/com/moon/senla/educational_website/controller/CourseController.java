@@ -3,12 +3,12 @@ package com.moon.senla.educational_website.controller;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.CourseDto;
+import com.moon.senla.educational_website.model.dto.course.CourseDto;
+import com.moon.senla.educational_website.model.dto.course.CoursePageDto;
 import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.service.CourseService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,12 +33,10 @@ public class CourseController {
     }
 
     @GetMapping()
-    public List<CourseDto> findAll(@PageableDefault(sort = {"name"}, size = 5)
+    public CoursePageDto findAllPageable(@PageableDefault(sort = {"id"}, size = 3)
         Pageable pageable) {
-        log.info("find all courses ");
-        Page<Course> pageCourse = courseService.findAll(pageable);
-        List<Course> course = pageCourse.getContent();
-        return CourseMapper.INSTANCE.listToDtoList(course);
+        log.info("find all courses");
+        return courseService.findAllPageable(pageable);
     }
 
     @GetMapping(path = "/{id}")
@@ -76,11 +74,11 @@ public class CourseController {
     }
 
     @GetMapping(path = "/find-needed")
-    public List<CourseDto> findAllCoursesByParam(
+    public CoursePageDto findAllCoursesByParam(
+        @PageableDefault(sort = {"id"}, size = 3) Pageable pageable,
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic", required = false) Topic topic,
         @RequestParam(value = "user", required = false) User user) {
-        List<Course> course = courseService.findAllCoursesByParam(name, topic, user);
-        return CourseMapper.INSTANCE.listToDtoList(course);
+        return courseService.findAllCoursesByParam(pageable, name, topic, user);
     }
 }

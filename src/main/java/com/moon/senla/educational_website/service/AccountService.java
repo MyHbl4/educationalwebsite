@@ -1,9 +1,7 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.AuthUser;
-import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
-import java.util.List;
 
 public interface AccountService {
 

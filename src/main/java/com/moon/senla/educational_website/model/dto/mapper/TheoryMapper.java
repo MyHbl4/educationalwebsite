@@ -1,9 +1,7 @@
 package com.moon.senla.educational_website.model.dto.mapper;
 
-import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.Theory;
-import com.moon.senla.educational_website.model.dto.FeedbackDto;
-import com.moon.senla.educational_website.model.dto.TheoryDto;
+import com.moon.senla.educational_website.model.dto.theory.TheoryDto;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

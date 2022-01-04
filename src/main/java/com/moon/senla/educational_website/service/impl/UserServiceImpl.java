@@ -3,6 +3,7 @@ package com.moon.senla.educational_website.service.impl;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.user.UserPageDto;
 import com.moon.senla.educational_website.service.UserService;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +38,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> findAll(Pageable pageable) {
         return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public UserPageDto findAllPageable(Pageable pageable) {
+        Page<User> page = userRepository.findAll(pageable);
+        return new UserPageDto(page.getContent(), pageable.getPageNumber(), page.getTotalPages());
     }
 
     @Override

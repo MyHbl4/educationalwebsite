@@ -3,8 +3,8 @@ package com.moon.senla.educational_website.service.impl;
 
 import com.moon.senla.educational_website.dao.TopicRepository;
 import com.moon.senla.educational_website.model.Topic;
+import com.moon.senla.educational_website.model.dto.topic.TopicPageDto;
 import com.moon.senla.educational_website.service.TopicService;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +37,13 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public Page<Topic> findAll(Pageable pageable) {
         return topicRepository.findAll(pageable);
+    }
+
+    @Override
+    public TopicPageDto findAllPageable(Pageable pageable) {
+        Page<Topic> page = topicRepository.findAll(pageable);
+        return new TopicPageDto(page.getContent(), pageable.getPageNumber(), page.getTotalPages());
+
     }
 
     @Override

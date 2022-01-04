@@ -1,11 +1,11 @@
-package com.moon.senla.educational_website.model.dto;
+package com.moon.senla.educational_website.model.dto.group;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TopicDto {
+public class GroupDto {
     private Long id;
     private String name;
 }

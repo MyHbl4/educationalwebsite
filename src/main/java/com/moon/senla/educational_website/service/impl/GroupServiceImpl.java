@@ -3,8 +3,8 @@ package com.moon.senla.educational_website.service.impl;
 
 import com.moon.senla.educational_website.dao.GroupRepository;
 import com.moon.senla.educational_website.model.Group;
+import com.moon.senla.educational_website.model.dto.group.GroupPageDto;
 import com.moon.senla.educational_website.service.GroupService;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +37,13 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Page<Group> findAll(Pageable pageable) {
         return groupRepository.findAll(pageable);
+    }
+
+    @Override
+    public GroupPageDto findAllPageable(Pageable pageable) {
+        Page<Group> page = groupRepository.findAll(pageable);
+        return new GroupPageDto(page.getContent(), pageable.getPageNumber(), page.getTotalPages());
+
     }
 
     @Override

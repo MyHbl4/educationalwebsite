@@ -1,11 +1,5 @@
 package com.moon.senla.educational_website;
 
-import com.moon.senla.educational_website.dao.CourseRepository;
-import com.moon.senla.educational_website.dao.TheoryRepository;
-import com.moon.senla.educational_website.dao.UserRepository;
-import com.moon.senla.educational_website.service.TheoryService;
-import com.moon.senla.educational_website.service.TopicService;
-import com.moon.senla.educational_website.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,13 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @AllArgsConstructor
 public class EducationalWebsiteApplication {
-    private final UserRepository userRepository;
-    private final CourseRepository courseRepository;
-    private final TopicService topicService;
-    private final TheoryRepository theoryRepository;
-    private final TheoryService theoryService;
-    private final UserService userService;
-
 
     public static void main(String[] args) {
         SpringApplication.run(EducationalWebsiteApplication.class, args);

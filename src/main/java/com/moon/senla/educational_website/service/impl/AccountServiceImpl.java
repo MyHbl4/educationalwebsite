@@ -2,14 +2,11 @@ package com.moon.senla.educational_website.service.impl;
 
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.model.AuthUser;
-import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.AccountService;
 import com.moon.senla.educational_website.util.ValidationUtil;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

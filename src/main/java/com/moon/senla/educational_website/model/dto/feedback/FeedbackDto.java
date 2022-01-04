@@ -1,4 +1,4 @@
-package com.moon.senla.educational_website.model.dto;
+package com.moon.senla.educational_website.model.dto.feedback;
 
 import java.time.LocalDate;
 import lombok.Getter;

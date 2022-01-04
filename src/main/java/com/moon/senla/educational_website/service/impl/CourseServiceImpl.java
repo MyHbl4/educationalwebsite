@@ -5,6 +5,7 @@ import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.course.CoursePageDto;
 import com.moon.senla.educational_website.service.CourseService;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public CoursePageDto findAllPageable(Pageable pageable) {
+        Page<Course> page = courseRepository.findAll(pageable);
+        return new CoursePageDto(page.getContent(), pageable.getPageNumber(), page.getTotalPages());
+    }
+
+    @Override
     public void deleteById(long id) {
         courseRepository.deleteById(id);
     }
@@ -60,10 +67,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> findAllCoursesByParam(String name, Topic topic, User user) {
-        List<Course> allCourses = courseRepository.findAll();
+    public CoursePageDto findAllCoursesByParam(Pageable pageable, String name, Topic topic,
+        User user) {
+        Page<Course> page = courseRepository.findAll(pageable);
+        List<Course> allContent = page.getContent();
         List<Course> courses = new ArrayList<>();
-        for (Course course : allCourses) {
+        for (Course course : allContent) {
             if (course.getName().equals(name)) {
                 courses.add(course);
             }
@@ -74,6 +83,6 @@ public class CourseServiceImpl implements CourseService {
                 courses.add(course);
             }
         }
-        return courses;
+        return new CoursePageDto(courses, pageable.getPageNumber(), page.getTotalPages());
     }
 }
