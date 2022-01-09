@@ -3,9 +3,9 @@ package com.moon.senla.educational_website.controller;
 import com.moon.senla.educational_website.model.Schedule;
 import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
-import com.moon.senla.educational_website.model.dto.schedule.SchedulePageDto;
 import com.moon.senla.educational_website.service.ScheduleService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,10 +29,11 @@ public class ScheduleController {
     }
 
     @GetMapping()
-    public SchedulePageDto findAllPageable(@PageableDefault(sort = {"id"}, size = 3)
+    public Page<ScheduleDto> findAll(@PageableDefault(sort = {"id"})
         Pageable pageable) {
         log.info("find all schedules");
-        return scheduleService.findAllPageable(pageable);
+        return scheduleService.findAll(pageable)
+            .map(ScheduleMapper.INSTANCE::scheduleToScheduleDto);
     }
 
     @GetMapping(path = "/{id}")

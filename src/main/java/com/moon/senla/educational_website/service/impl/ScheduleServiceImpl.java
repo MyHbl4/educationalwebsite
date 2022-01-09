@@ -2,7 +2,6 @@ package com.moon.senla.educational_website.service.impl;
 
 import com.moon.senla.educational_website.dao.ScheduleRepository;
 import com.moon.senla.educational_website.model.Schedule;
-import com.moon.senla.educational_website.model.dto.schedule.SchedulePageDto;
 import com.moon.senla.educational_website.service.ScheduleService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -36,14 +35,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public Page<Schedule> findAll(Pageable pageable) {
         return scheduleRepository.findAll(pageable);
-    }
-
-    @Override
-    public SchedulePageDto findAllPageable(Pageable pageable) {
-        Page<Schedule> page = scheduleRepository.findAll(pageable);
-        return new SchedulePageDto(page.getContent(), pageable.getPageNumber(),
-            page.getTotalPages());
-
     }
 
     @Override

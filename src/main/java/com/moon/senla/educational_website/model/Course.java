@@ -1,8 +1,8 @@
 package com.moon.senla.educational_website.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.awt.print.Book;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -44,14 +44,14 @@ public class Course implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Group> groups;
+    private List<Group> groups = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Feedback> feedbacks;
+    private List<Feedback> feedbacks = new ArrayList<>();
 
-    @Column(name = "ranking")
-    private int rankings = 0;
+    @Column(name = "rating")
+    private int rating = 0;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Topic topic;
@@ -76,7 +76,14 @@ public class Course implements Serializable {
         feedback.setCourse(null);
     }
 
-    public int getRankings(){
+    public void setGroups(List<Group> newGroups) {
+        this.groups.clear();
+        if (newGroups != null) {
+            this.groups.addAll(newGroups);
+        }
+    }
+
+    public int getRating() {
         float sumRank = 0f;
         int count = 0;
         int ranking = 0;
@@ -85,7 +92,7 @@ public class Course implements Serializable {
                 sumRank += f.getRank();
                 count++;
             }
-            ranking = Math.round(sumRank/count);
+            ranking = Math.round(sumRank / count);
         }
         return ranking;
     }
@@ -99,7 +106,7 @@ public class Course implements Serializable {
             return false;
         }
         Course course = (Course) o;
-        return getPrice() == course.getPrice() && getRankings() == course.getRankings()
+        return getPrice() == course.getPrice() && getRating() == course.getRating()
             && Objects.equals(getName(), course.getName()) && Objects.equals(
             getUser(), course.getUser()) && Objects.equals(getGroups(), course.getGroups())
             && Objects.equals(getFeedbacks(), course.getFeedbacks())
@@ -109,7 +116,7 @@ public class Course implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getPrice(), getUser(), getGroups(), getFeedbacks(),
-            getRankings(), getTopic());
+            getRating(), getTopic());
     }
 
     @Override
@@ -121,7 +128,7 @@ public class Course implements Serializable {
             ", user=" + user +
             ", groups=" + groups +
             ", feedbacks=" + feedbacks +
-            ", rankings=" + rankings +
+            ", rating=" + rating +
             ", topic=" + topic +
             '}';
     }

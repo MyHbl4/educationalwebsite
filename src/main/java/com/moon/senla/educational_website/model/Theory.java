@@ -1,5 +1,10 @@
 package com.moon.senla.educational_website.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -17,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "theories")
@@ -35,8 +41,9 @@ public class Theory implements Serializable {
     @Size(max = 128)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -45,6 +52,9 @@ public class Theory implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     @Column(name = "date")
     private LocalDate date = LocalDate.now();
 

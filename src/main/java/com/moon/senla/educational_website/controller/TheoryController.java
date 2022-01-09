@@ -1,14 +1,11 @@
 package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Theory;
-import com.moon.senla.educational_website.model.Topic;
-import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.model.dto.mapper.TheoryMapper;
 import com.moon.senla.educational_website.model.dto.theory.TheoryDto;
-import com.moon.senla.educational_website.model.dto.theory.TheoryPageDto;
 import com.moon.senla.educational_website.service.TheoryService;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,10 +30,11 @@ public class TheoryController {
     }
 
     @GetMapping()
-    public TheoryPageDto findAllPageable(@PageableDefault(sort = {"id"}, size = 3)
+    public Page<TheoryDto> findAll(@PageableDefault(sort = {"id"})
         Pageable pageable) {
         log.info("find all theories");
-        return theoryService.findAllPageable(pageable);
+        return theoryService.findAll(pageable)
+            .map(TheoryMapper.INSTANCE::theoryToTheoryDto);
     }
 
     @GetMapping(path = "/{id}")
@@ -67,18 +65,21 @@ public class TheoryController {
     }
 
     @GetMapping(path = "/topics/{id}")
-    public List<TheoryDto> findAllTheoriesByTopicId(@PathVariable(name = "id") long id) {
+    public Page<TheoryDto> findAllTheoriesByTopicId(@PathVariable(name = "id") long id,
+        @PageableDefault(sort = {"id"})
+            Pageable pageable) {
         log.info("find all theories by topic id {}", id);
-        List<Theory> theory = theoryService.findAllTheoriesByTopicId(id);
-        return TheoryMapper.INSTANCE.listToDtoList(theory);
+        return theoryService.findAllTheoriesByTopicId(id, pageable)
+            .map(TheoryMapper.INSTANCE::theoryToTheoryDto);
     }
 
     @GetMapping(path = "/find-needed")
-    public TheoryPageDto findAllTheoriesByParam(
-        @PageableDefault(sort = {"id"}, size = 3) Pageable pageable,
+    public Page<TheoryDto> findAllTheoriesByParam(
+        @PageableDefault(sort = {"id"}) Pageable pageable,
         @RequestParam(value = "name", required = false) String name,
-        @RequestParam(value = "topic", required = false) Topic topic,
-        @RequestParam(value = "user", required = false) User user) {
-        return theoryService.findAllTheoriesByParam(pageable, name, topic, user);
+        @RequestParam(value = "topic_name", required = false) String topicName,
+        @RequestParam(value = "user_name", required = false) String userName) {
+        return theoryService.findAllTheoriesByParam(pageable, name, topicName, userName)
+            .map(TheoryMapper.INSTANCE::theoryToTheoryDto);
     }
 }

@@ -1,11 +1,8 @@
 package com.moon.senla.educational_website.service.impl;
 
 import com.moon.senla.educational_website.dao.UserRepository;
-import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.user.UserPageDto;
 import com.moon.senla.educational_website.service.UserService;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,22 +38,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserPageDto findAllPageable(Pageable pageable) {
-        Page<User> page = userRepository.findAll(pageable);
-        return new UserPageDto(page.getContent(), pageable.getPageNumber(), page.getTotalPages());
-    }
-
-    @Override
     public void deleteById(long id) {
         userRepository.deleteById(id);
     }
 
-    @Override
-    public List<Course> findAllCoursesByUserId(long id) {
-        User user = findById(id);
-        if (user == null) {
-            return null;
-        }
-        return user.getCourses();
-    }
 }

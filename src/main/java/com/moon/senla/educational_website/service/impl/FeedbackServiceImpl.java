@@ -3,7 +3,6 @@ package com.moon.senla.educational_website.service.impl;
 
 import com.moon.senla.educational_website.dao.FeedbackRepository;
 import com.moon.senla.educational_website.model.Feedback;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackPageDto;
 import com.moon.senla.educational_website.service.FeedbackService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +36,6 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public Page<Feedback> findAll(Pageable pageable) {
         return feedbackRepository.findAll(pageable);
-    }
-
-    @Override
-    public FeedbackPageDto findAllPageable(Pageable pageable) {
-        Page<Feedback> page = feedbackRepository.findAll(pageable);
-        return new FeedbackPageDto(page.getContent(), pageable.getPageNumber(),
-            page.getTotalPages());
-
     }
 
     @Override

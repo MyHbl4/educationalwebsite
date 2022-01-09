@@ -1,10 +1,7 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Course;
-import com.moon.senla.educational_website.model.Topic;
-import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.course.CoursePageDto;
-import java.util.List;
+import com.moon.senla.educational_website.model.Theory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,13 +13,11 @@ public interface CourseService {
 
     Page<Course> findAll(Pageable pageable);
 
-    CoursePageDto findAllPageable(Pageable pageable);
-
     void deleteById(long id);
 
-    List<Course> findAllCourseByTopicId(long id);
+    Page<Course> findAllCourseByTopicId(long id, Pageable pageable);
 
-    CoursePageDto findAllCoursesByParam(Pageable pageable, String name, Topic topic, User user);
-
+    Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
+        String userName);
 }
 

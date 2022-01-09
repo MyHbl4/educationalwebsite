@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="1641419355076-1" author="gmoon (generated)">
+    <createTable tableName="courses">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_courses"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="price" type="INT"/>
+      <column name="user_id" type="BIGINT"/>
+      <column name="rating" type="INT"/>
+      <column name="topic_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1641419355076-2" author="gmoon (generated)">
+    <createTable tableName="feedbacks">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_feedbacks"/>
+      </column>
+      <column name="course_id" type="BIGINT"/>
+      <column name="user_id" type="BIGINT"/>
+      <column name="detention" type="CLOB">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rank" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="date" type="DATE"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1641419355076-3" author="gmoon (generated)">
+    <createTable tableName="groups">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_groups"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="course_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1641419355076-4" author="gmoon (generated)">
+    <createTable tableName="schedules">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_schedules"/>
+      </column>
+      <column name="date" type="DATETIME"/>
+      <column name="group_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1641419355076-5" author="gmoon (generated)">
+    <createTable tableName="theories">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_theories"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="CLOB">
+        <constraints nullable="false"/>
+      </column>
+      <column name="topic_id" type="BIGINT"/>
+      <column name="user_id" type="BIGINT"/>
+      <column name="date" type="DATE"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1641419355076-6" author="gmoon (generated)">
+    <createTable tableName="topics">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_topics"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1641419355076-7" author="gmoon (generated)">
+    <createTable tableName="user_group">
+      <column name="group_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_group"/>
+      </column>
+      <column name="user_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_group"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1641419355076-8" author="gmoon (generated)">
+    <createTable tableName="user_role">
+      <column name="user_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="role" type="VARCHAR"/>
+    </createTable>
+  </changeSet>
+  <changeSet id="1641419355076-9" author="gmoon (generated)">
+    <createTable tableName="users">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+      </column>
+      <column name="email" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="username" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="first_name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="password" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="1641419355076-10" author="gmoon (generated)">
+    <addUniqueConstraint columnNames="name" constraintName="uc_groups_name" tableName="groups"/>
+  </changeSet>
+  <changeSet id="1641419355076-11" author="gmoon (generated)">
+    <addUniqueConstraint columnNames="name" constraintName="uc_theories_name" tableName="theories"/>
+  </changeSet>
+  <changeSet id="1641419355076-12" author="gmoon (generated)">
+    <addUniqueConstraint columnNames="name" constraintName="uc_topics_name" tableName="topics"/>
+  </changeSet>
+  <changeSet id="1641419355076-13" author="gmoon (generated)">
+    <addUniqueConstraint columnNames="email" constraintName="uc_users_email" tableName="users"/>
+  </changeSet>
+  <changeSet id="1641419355076-14" author="gmoon (generated)">
+    <addUniqueConstraint columnNames="username" constraintName="uc_users_username"
+      tableName="users"/>
+  </changeSet>
+  <changeSet id="1641419355076-15" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="topic_id" baseTableName="courses"
+      constraintName="FK_COURSES_ON_TOPIC" referencedColumnNames="id" referencedTableName="topics"/>
+  </changeSet>
+  <changeSet id="1641419355076-16" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="courses"
+      constraintName="FK_COURSES_ON_USER" referencedColumnNames="id" referencedTableName="users"/>
+  </changeSet>
+  <changeSet id="1641419355076-17" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="feedbacks"
+      constraintName="FK_FEEDBACKS_ON_COURSE" referencedColumnNames="id"
+      referencedTableName="courses"/>
+  </changeSet>
+  <changeSet id="1641419355076-18" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="feedbacks"
+      constraintName="FK_FEEDBACKS_ON_USER" referencedColumnNames="id" referencedTableName="users"/>
+  </changeSet>
+  <changeSet id="1641419355076-19" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="groups"
+      constraintName="FK_GROUPS_ON_COURSE" referencedColumnNames="id"
+      referencedTableName="courses"/>
+  </changeSet>
+  <changeSet id="1641419355076-20" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="schedules"
+      constraintName="FK_SCHEDULES_ON_GROUP" referencedColumnNames="id"
+      referencedTableName="groups"/>
+  </changeSet>
+  <changeSet id="1641419355076-21" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="topic_id" baseTableName="theories"
+      constraintName="FK_THEORIES_ON_TOPIC" referencedColumnNames="id"
+      referencedTableName="topics"/>
+  </changeSet>
+  <changeSet id="1641419355076-22" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="theories"
+      constraintName="FK_THEORIES_ON_USER" referencedColumnNames="id" referencedTableName="users"/>
+  </changeSet>
+  <changeSet id="1641419355076-23" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="user_group"
+      constraintName="fk_usegro_on_group" referencedColumnNames="id" referencedTableName="groups"/>
+  </changeSet>
+  <changeSet id="1641419355076-24" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_group"
+      constraintName="fk_usegro_on_user" referencedColumnNames="id" referencedTableName="users"/>
+  </changeSet>
+  <changeSet id="1641419355076-25" author="gmoon (generated)">
+    <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_role"
+      constraintName="fk_user_role_on_user" referencedColumnNames="id" referencedTableName="users"/>
+  </changeSet>
+
+  <changeSet id="1641419355076-26" author="gmoon (generated)">
+    <sql>
+      insert into topics(name) values ('Java');
+      insert into topics(name) values ('Python');
+      insert into topics(name) values ('C');
+    </sql>
+  </changeSet>
+
+  <changeSet id="1641419355076-27" author="gmoon (generated)">
+    <sql>
+      insert into users(email, username, first_name, last_name, password) values ('admin@gmail.com', 'admin', 'admin','admin','{bcrypt}$2a$12$YmW0eg2h2y74OtXm.7VukevsJsE1mPtBfuksj9UFIrh15qRWjODru');
+      insert into users(email, username, first_name, last_name, password) values ('user@gmail.com', 'user', 'user', 'user', '{bcrypt}$2a$12$MQMlMECTRojxzv.duTmb.ed4PJxBrTffRBh5izhzDpcglfb.ltb0a');
+      insert into users(email, username, first_name, last_name, password) values ('irina@gmail.com', 'irina', 'irina','irina','{bcrypt}$2a$12$ijU.Va/oZ9lBFuQoM5rTXubbV.xe4rKzgly4NRlfxgM0zLYlZO4/m');
+      insert into users(email, username, first_name, last_name, password) values ('mark@gmail.com', 'mark', 'mark','mark','{bcrypt}$2a$12$RAzJEanGBS5y7xVsTp24OuRpzxkD5kHQ2JX5aCI.vAgLkpWw46aVe');
+      insert into users(email, username, first_name, last_name, password) values ('lydia@gmail.com', 'lydia', 'lydia','lydia','{bcrypt}$2a$12$lJo7YtSoUGGK3tq7UQPqVexsiZnlsbjWyZwOy/z7APvhhjZvFrnwy');
+      insert into users(email, username, first_name, last_name, password) values ('alex@gmail.com', 'alex', 'alex','alex','{bcrypt}$2a$12$9gdWSWLsO0yrnmlfQfz7/.wuAeoBJW6Z7/arHmSNh9zpMH8j1HLWm');
+
+      insert into user_role(user_id, role) values (1, 'ADMIN');
+      insert into user_role(user_id, role) values (1, 'USER');
+      insert into user_role(user_id, role) values (2, 'USER');
+      insert into user_role(user_id, role) values (3, 'USER');
+      insert into user_role(user_id, role) values (4, 'USER');
+      insert into user_role(user_id, role) values (5, 'USER');
+      insert into user_role(user_id, role) values (6, 'USER');
+    </sql>
+  </changeSet>
+
+  <changeSet id="1641419355076-28" author="gmoon (generated)">
+    <sql>
+      insert into courses(name, price, rating, user_id, topic_id) values ('java pro', '100', 0, '1', '1');
+      insert into courses(name, price, rating, user_id, topic_id) values ('java beginner', '0', 0, '2', '1');
+      insert into courses(name, price, rating, user_id, topic_id) values ('python pro', '80', 0, '3', '1');
+      insert into courses(name, price, rating, user_id, topic_id) values ('python beginner', '0', 0, '2', '2');
+      insert into courses(name, price, rating, user_id, topic_id) values ('c pro', '90', 0, '1', '3');
+      insert into courses(name, price, rating, user_id, topic_id) values ('c beginner', '0', 0, '2', '3');
+    </sql>
+  </changeSet>
+
+  <changeSet id="1641419355076-29" author="gmoon (generated)">
+    <sql>
+      insert into groups(name, course_id) values ('1_group', '1');
+      insert into groups(name, course_id) values ('2_group', '2');
+      insert into groups(name, course_id) values ('3_group', '2');
+      insert into groups(name, course_id) values ('4_group', '3');
+      insert into groups(name, course_id) values ('5_group', '4');
+      insert into groups(name, course_id) values ('6_group', '4');
+      insert into groups(name, course_id) values ('7_group', '5');
+      insert into groups(name, course_id) values ('8_group', '6');
+    </sql>
+  </changeSet>
+
+  <changeSet id="1641419355076-30" author="gmoon (generated)">
+    <sql>
+      insert into schedules(date, group_id) values ('21-01-2022, 11:00', '1');
+      insert into schedules(date, group_id) values ('24-01-2022, 14:00', '2');
+      insert into schedules(date, group_id) values ('21-01-2022, 15:00', '3');
+      insert into schedules(date, group_id) values ('26-01-2022, 16:00', '3');
+      insert into schedules(date, group_id) values ('21-01-2022, 17:00', '4');
+      insert into schedules(date, group_id) values ('25-01-2022, 18:00', '4');
+      insert into schedules(date, group_id) values ('21-01-2022, 19:00', '5');
+      insert into schedules(date, group_id) values ('21-01-2022, 10:00', '6');
+      insert into schedules(date, group_id) values ('21-01-2022, 11:00', '7');
+      insert into schedules(date, group_id) values ('21-01-2022, 12:00', '8');
+      insert into schedules(date, group_id) values ('24-01-2022, 13:00', '8');
+    </sql>
+  </changeSet>
+
+  <changeSet id="1641419355076-31" author="gmoon (generated)">
+    <sql>
+      insert into feedbacks(course_id, user_id, detention, rank, date) values ('1', '2', 'some feedback', '5', '2022-01-01');
+      insert into feedbacks(course_id, user_id, detention, rank, date) values ('1', '3', 'some feedback', '3', '2022-01-06');
+      insert into feedbacks(course_id, user_id, detention, rank, date) values ('2', '5', 'some feedback', '5', '2022-01-05');
+      insert into feedbacks(course_id, user_id, detention, rank, date) values ('3', '4', 'some feedback', '3', '2022-01-04');
+      insert into feedbacks(course_id, user_id, detention, rank, date) values ('4', '2', 'some feedback', '5', '2022-01-04');
+      insert into feedbacks(course_id, user_id, detention, rank, date) values ('5', '3', 'some feedback', '2', '2022-01-03');
+      insert into feedbacks(course_id, user_id, detention, rank, date) values ('6', '1', 'some feedback', '5', '2022-01-02');
+    </sql>
+  </changeSet>
+
+  <changeSet id="1641419355076-32" author="gmoon (generated)">
+    <sql>
+      insert into user_group(group_id, user_id) values (1, 2);
+      insert into user_group(group_id, user_id) values (1, 3);
+      insert into user_group(group_id, user_id) values (1, 4);
+      insert into user_group(group_id, user_id) values (1, 5);
+      insert into user_group(group_id, user_id) values (1, 6);
+      insert into user_group(group_id, user_id) values (1, 1);
+      insert into user_group(group_id, user_id) values (2, 3);
+      insert into user_group(group_id, user_id) values (2, 1);
+      insert into user_group(group_id, user_id) values (2, 4);
+      insert into user_group(group_id, user_id) values (2, 2);
+      insert into user_group(group_id, user_id) values (2, 6);
+      insert into user_group(group_id, user_id) values (3, 1);
+      insert into user_group(group_id, user_id) values (3, 2);
+      insert into user_group(group_id, user_id) values (4, 3);
+      insert into user_group(group_id, user_id) values (4, 4);
+      insert into user_group(group_id, user_id) values (4, 5);
+      insert into user_group(group_id, user_id) values (4, 2);
+      insert into user_group(group_id, user_id) values (5, 2);
+      insert into user_group(group_id, user_id) values (5, 3);
+      insert into user_group(group_id, user_id) values (6, 2);
+    </sql>
+  </changeSet>
+
+  <changeSet id="1641419355076-33" author="gmoon (generated)">
+    <sql>
+      insert into theories(name, description, topic_id, user_id, date) values ('funny java', 'some about java', '1', '1', '2022-01-03');
+      insert into theories(name, description, topic_id, user_id, date) values ('pro java', 'some about pro java', '1', '2', '2022-01-02');
+      insert into theories(name, description, topic_id, user_id, date) values ('funny python', 'some about python', '2', '3', '2022-01-05');
+      insert into theories(name, description, topic_id, user_id, date) values ('funny c', 'some about c', '3', '1', '2022-01-04');
+    </sql>
+  </changeSet>
+
+
+</databaseChangeLog>

@@ -3,9 +3,6 @@ package com.moon.senla.educational_website.service.impl;
 
 import com.moon.senla.educational_website.dao.TheoryRepository;
 import com.moon.senla.educational_website.model.Theory;
-import com.moon.senla.educational_website.model.Topic;
-import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.theory.TheoryPageDto;
 import com.moon.senla.educational_website.service.TheoryService;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +10,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -44,46 +42,37 @@ public class TheoryServiceImpl implements TheoryService {
     }
 
     @Override
-    public TheoryPageDto findAllPageable(Pageable pageable) {
-        Page<Theory> page = theoryRepository.findAll(pageable);
-        return new TheoryPageDto(page.getContent(), pageable.getPageNumber(), page.getTotalPages());
-
-    }
-
-    @Override
     public void deleteById(long id) {
         theoryRepository.deleteById(id);
     }
 
     @Override
-    public List<Theory> findAllTheoriesByTopicId(long id) {
-        List<Theory> allTheories = theoryRepository.findAll();
+    public Page<Theory> findAllTheoriesByTopicId(long id, Pageable pageable) {
+        List<Theory> list = theoryRepository.findAll();
         List<Theory> theories = new ArrayList<>();
-        for (Theory theory : allTheories) {
+        for (Theory theory : list) {
             if (theory.getTopic().getId().equals(id)) {
                 theories.add(theory);
             }
         }
-        return theories;
+        return new PageImpl<>(theories, pageable, theories.size());
     }
 
     @Override
-    public TheoryPageDto findAllTheoriesByParam(Pageable pageable, String name, Topic topic,
-        User user) {
+    public Page<Theory> findAllTheoriesByParam(Pageable pageable, String name, String topicName,
+        String userName) {
         Page<Theory> page = theoryRepository.findAll(pageable);
         List<Theory> allContent = page.getContent();
         List<Theory> theories = new ArrayList<>();
         for (Theory theory : allContent) {
             if (theory.getName().equals(name)) {
                 theories.add(theory);
-            }
-            if (topic != null && theory.getTopic().getName().equals(topic.getName())) {
+            }else if (topicName != null && theory.getTopic().getName().equals(topicName)) {
                 theories.add(theory);
-            }
-            if (user != null && theory.getUser().getUsername().equals(user.getUsername())) {
+            }else if (userName != null && theory.getUser().getUsername().equals(userName)) {
                 theories.add(theory);
             }
         }
-        return new TheoryPageDto(theories, pageable.getPageNumber(), page.getTotalPages());
+        return new PageImpl<>(theories, pageable, theories.size());
     }
 }

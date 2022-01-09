@@ -3,9 +3,9 @@ package com.moon.senla.educational_website.controller;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.dto.mapper.TopicMapper;
 import com.moon.senla.educational_website.model.dto.topic.TopicDto;
-import com.moon.senla.educational_website.model.dto.topic.TopicPageDto;
 import com.moon.senla.educational_website.service.TopicService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,10 +29,10 @@ public class TopicController {
     }
 
     @GetMapping()
-    public TopicPageDto findAllPageable(@PageableDefault(sort = {"id"}, size = 3)
-        Pageable pageable) {
+    public Page<TopicDto> findAll(@PageableDefault(sort = {"id"}) Pageable pageable) {
         log.info("find all topics");
-        return topicService.findAllPageable(pageable);
+        return topicService.findAll(pageable)
+            .map(TopicMapper.INSTANCE::topicToTopicDto);
     }
 
     @GetMapping(path = "/{id}")

@@ -1,15 +1,11 @@
 package com.moon.senla.educational_website.controller;
 
-import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.course.CourseDto;
-import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.user.UserDto;
-import com.moon.senla.educational_website.model.dto.user.UserPageDto;
 import com.moon.senla.educational_website.service.UserService;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,10 +29,11 @@ public class UserController {
     }
 
     @GetMapping()
-    public UserPageDto findAllPageable(@PageableDefault(sort = {"id"}, size = 3)
-        Pageable pageable) {
+    public Page<UserDto> findAll(
+        @PageableDefault(sort = {"id"}) Pageable pageable) {
         log.info("find all users");
-        return userService.findAllPageable(pageable);
+        return userService.findAll(pageable)
+            .map(UserMapper.INSTANCE::userToUserDto);
     }
 
     @GetMapping(path = "/{id}")
@@ -67,10 +64,4 @@ public class UserController {
         userService.deleteById(id);
     }
 
-    @GetMapping("/{id}/courses")
-    public List<CourseDto> findAllCoursesByUserId(@PathVariable(name = "id") long id) {
-        log.info("find all courses by user id {}", id);
-        List<Course> list = userService.findAllCoursesByUserId(id);
-        return CourseMapper.INSTANCE.listToDtoList(list);
-    }
 }

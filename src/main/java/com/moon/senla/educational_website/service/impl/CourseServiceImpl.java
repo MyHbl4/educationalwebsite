@@ -3,9 +3,6 @@ package com.moon.senla.educational_website.service.impl;
 
 import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.model.Course;
-import com.moon.senla.educational_website.model.Topic;
-import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.course.CoursePageDto;
 import com.moon.senla.educational_website.service.CourseService;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +10,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -44,18 +42,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CoursePageDto findAllPageable(Pageable pageable) {
-        Page<Course> page = courseRepository.findAll(pageable);
-        return new CoursePageDto(page.getContent(), pageable.getPageNumber(), page.getTotalPages());
-    }
-
-    @Override
     public void deleteById(long id) {
         courseRepository.deleteById(id);
     }
 
     @Override
-    public List<Course> findAllCourseByTopicId(long id) {
+    public Page<Course> findAllCourseByTopicId(long id, Pageable pageable) {
         List<Course> allCourses = courseRepository.findAll();
         List<Course> courses = new ArrayList<>();
         for (Course course : allCourses) {
@@ -63,26 +55,24 @@ public class CourseServiceImpl implements CourseService {
                 courses.add(course);
             }
         }
-        return courses;
+        return new PageImpl<>(courses, pageable, courses.size());
     }
 
     @Override
-    public CoursePageDto findAllCoursesByParam(Pageable pageable, String name, Topic topic,
-        User user) {
+    public Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
+        String userName) {
         Page<Course> page = courseRepository.findAll(pageable);
         List<Course> allContent = page.getContent();
         List<Course> courses = new ArrayList<>();
         for (Course course : allContent) {
             if (course.getName().equals(name)) {
                 courses.add(course);
-            }
-            if (topic != null && course.getTopic().getName().equals(topic.getName())) {
+            }else if (topicName != null && course.getTopic().getName().equals(topicName)) {
                 courses.add(course);
-            }
-            if (user != null && course.getUser().getUsername().equals(user.getUsername())) {
+            }else if (userName != null && course.getUser().getUsername().equals(userName)) {
                 courses.add(course);
             }
         }
-        return new CoursePageDto(courses, pageable.getPageNumber(), page.getTotalPages());
+        return new PageImpl<>(courses, pageable, courses.size());
     }
 }
