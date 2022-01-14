@@ -130,6 +130,16 @@ public class User implements Serializable {
         theory.setUser(null);
     }
 
+    public void addGroup(Group group) {
+        groups.add(group);
+        group.addUser(this);
+    }
+
+    public void removeGroup(Group group) {
+        groups.remove(group);
+        group.removeUser(this);
+    }
+
     public boolean isNew() {
         return id == null;
     }

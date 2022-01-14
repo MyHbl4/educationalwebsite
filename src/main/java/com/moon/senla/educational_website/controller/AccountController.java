@@ -31,7 +31,7 @@ public class AccountController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(@AuthenticationPrincipal AuthUser authUser) {
-        log.info("get {}", authUser);
+        log.info("get {}", authUser.getUsername());
         return accountService.get(authUser);
     }
 
@@ -39,14 +39,14 @@ public class AccountController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
-        log.info("delete {}", authUser);
+        log.info("delete {}", authUser.getUsername());
         accountService.delete(authUser);
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<User> register(@Valid @RequestBody User user) {
-        log.info("register {}", user);
+        log.info("register {}", user.getUsername());
         user = accountService.register(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
             .path("/api/account")
@@ -57,7 +57,7 @@ public class AccountController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody User user, @AuthenticationPrincipal AuthUser authUser) {
-        log.info("update {} to {}", authUser, user);
+        log.info("update {} to {}", authUser.getUsername(), user);
         accountService.update(user, authUser);
     }
 }

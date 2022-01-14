@@ -55,6 +55,16 @@ public class Group implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users = new ArrayList<>();
 
+    public void addUser(User user) {
+        users.add(user);
+        user.addGroup(this);
+    }
+
+    public void removeUser(User user) {
+        users.remove(user);
+        user.removeGroup(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
