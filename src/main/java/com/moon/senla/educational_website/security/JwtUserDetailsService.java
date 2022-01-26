@@ -1,6 +1,9 @@
 package com.moon.senla.educational_website.security;
 
+
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.security.jwt.JwtUser;
+import com.moon.senla.educational_website.security.jwt.JwtUserFactory;
 import com.moon.senla.educational_website.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +27,13 @@ public class JwtUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.findByUsername(username);
 
-        if(user == null) {
+        if (user == null) {
             throw new UsernameNotFoundException("User with username: " + username + " not found");
         }
-        return null;
+
+        JwtUser jwtUser = JwtUserFactory.create(user);
+        log.info("IN loadUserByUsername - user with username: {} successfully loaded", username);
+        return jwtUser;
     }
 }
+

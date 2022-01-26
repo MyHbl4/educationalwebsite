@@ -1,54 +1,93 @@
 package com.moon.senla.educational_website.security.jwt;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class JwtUser implements UserDetails {
-//
-//    private final Long id;
-//    private final String username;
-//    private final String firstName;
-//    private final String lastName;
-//    private final String email;
-//    private final String password;
-//    private final boolean enabled;
-//    private final Collection<? extends GrantedAuthority> authorities;
 
+    private final Long id;
+    private final String username;
+    private final String firstName;
+    private final String lastName;
+    private final String password;
+    private final String email;
+    private final boolean enabled;
+    private final Collection<? extends GrantedAuthority> authorities;
 
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    public JwtUser(
+        Long id,
+        String username,
+        String firstName,
+        String lastName,
+        String email,
+        String password, Collection<? extends GrantedAuthority> authorities,
+        boolean enabled
+    ) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.authorities = authorities;
+        this.enabled = enabled;
     }
 
-    @Override
-    public String getPassword() {
-        return null;
+    @JsonIgnore
+    public Long getId() {
+        return id;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    public String getFirstname() {
+        return firstName;
+    }
+
+    public String getLastname() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    @JsonIgnore
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return enabled;
     }
 }
