@@ -21,8 +21,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,10 +30,11 @@ import org.springframework.util.ObjectUtils;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
+@Data
 public class User extends BaseEntity implements Serializable {
 
     @Id
@@ -162,20 +163,4 @@ public class User extends BaseEntity implements Serializable {
             getPassword(), getCourses(), getFeedbacks(), getTheories(), getRoles(), getGroups());
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-            "id=" + id +
-            ", email='" + email + '\'' +
-            ", username='" + username + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", password='" + password + '\'' +
-            ", courses=" + courses +
-            ", feedbacks=" + feedbacks +
-            ", theories=" + theories +
-            ", roles=" + roles +
-            ", groups=" + groups +
-            '}';
-    }
 }

@@ -511,6 +511,9 @@
       <column name="password" type="VARCHAR(255)">
         <constraints nullable="false"/>
       </column>
+      <column name="status" type="VARCHAR(25)" defaultValue="ACTIVE">
+        <constraints nullable="false"/>
+      </column>
     </createTable>
   </changeSet>
   <changeSet id="1643151752938-11" author="gmoon (generated)">
