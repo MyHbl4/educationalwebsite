@@ -6,6 +6,7 @@ import com.moon.senla.educational_website.model.dto.user.AuthenticationRequestDt
 import com.moon.senla.educational_website.model.dto.user.UserDto;
 import com.moon.senla.educational_website.security.jwt.JwtTokenProvider;
 import com.moon.senla.educational_website.service.UserService;
+import io.swagger.annotations.Api;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/auth")
 @Slf4j
+@Api(tags = "Authentication")
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;

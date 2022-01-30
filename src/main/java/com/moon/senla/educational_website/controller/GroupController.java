@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.service.GroupService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/groups")
 @Slf4j
+@Api(tags = "Groups")
 public class GroupController {
 
     private final GroupService groupService;

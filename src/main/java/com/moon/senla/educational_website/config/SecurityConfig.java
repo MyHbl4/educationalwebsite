@@ -5,12 +5,15 @@ import com.moon.senla.educational_website.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
+@EnableGlobalMethodSecurity(securedEnabled=true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -34,11 +37,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/api/auth/register").anonymous()
-            .antMatchers("/api/auth/login").anonymous()
-            .antMatchers("/api/**").hasRole("USER")
-            .antMatchers("/api/**").hasRole("ADMIN")
-            .and()
-            .apply(new JwtConfigurer(jwtTokenProvider));
+                .antMatchers("/api/auth/register").anonymous()
+                .antMatchers("/api/auth/login").anonymous()
+                .antMatchers("/api/courses/**").hasRole("USER")
+                .antMatchers("/api/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE).hasRole("ADMIN")
+                .and()
+                .apply(new JwtConfigurer(jwtTokenProvider));
     }
 }

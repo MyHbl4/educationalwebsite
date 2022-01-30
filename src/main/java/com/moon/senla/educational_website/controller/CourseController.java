@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.dto.course.CourseDto;
 import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.service.CourseService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/courses")
 @Slf4j
+@Api(tags = "Courses")
 public class CourseController {
 
     private final CourseService courseService;

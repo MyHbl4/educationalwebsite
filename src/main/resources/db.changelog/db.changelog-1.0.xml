@@ -607,22 +607,22 @@
 
         insert into users(email, username, first_name, last_name, password)
         values ('admin@gmail.com', 'admin', 'admin', 'admin',
-                '{bcrypt}$2a$12$YmW0eg2h2y74OtXm.7VukevsJsE1mPtBfuksj9UFIrh15qRWjODru');
+                '$2a$12$YmW0eg2h2y74OtXm.7VukevsJsE1mPtBfuksj9UFIrh15qRWjODru');
         insert into users(email, username, first_name, last_name, password)
         values ('user@gmail.com', 'user', 'user', 'user',
-                '{bcrypt}$2a$12$MQMlMECTRojxzv.duTmb.ed4PJxBrTffRBh5izhzDpcglfb.ltb0a');
+                '$2a$12$MQMlMECTRojxzv.duTmb.ed4PJxBrTffRBh5izhzDpcglfb.ltb0a');
         insert into users(email, username, first_name, last_name, password)
         values ('irina@gmail.com', 'irina', 'irina', 'irina',
-                '{bcrypt}$2a$12$ijU.Va/oZ9lBFuQoM5rTXubbV.xe4rKzgly4NRlfxgM0zLYlZO4/m');
+                '$2a$12$ijU.Va/oZ9lBFuQoM5rTXubbV.xe4rKzgly4NRlfxgM0zLYlZO4/m');
         insert into users(email, username, first_name, last_name, password)
         values ('mark@gmail.com', 'mark', 'mark', 'mark',
-                '{bcrypt}$2a$12$RAzJEanGBS5y7xVsTp24OuRpzxkD5kHQ2JX5aCI.vAgLkpWw46aVe');
+                '$2a$12$RAzJEanGBS5y7xVsTp24OuRpzxkD5kHQ2JX5aCI.vAgLkpWw46aVe');
         insert into users(email, username, first_name, last_name, password)
         values ('lydia@gmail.com', 'lydia', 'lydia', 'lydia',
-                '{bcrypt}$2a$12$lJo7YtSoUGGK3tq7UQPqVexsiZnlsbjWyZwOy/z7APvhhjZvFrnwy');
+                '$2a$12$lJo7YtSoUGGK3tq7UQPqVexsiZnlsbjWyZwOy/z7APvhhjZvFrnwy');
         insert into users(email, username, first_name, last_name, password)
         values ('alex@gmail.com', 'alex', 'alex', 'alex',
-                '{bcrypt}$2a$12$9gdWSWLsO0yrnmlfQfz7/.wuAeoBJW6Z7/arHmSNh9zpMH8j1HLWm');
+                '$2a$12$9gdWSWLsO0yrnmlfQfz7/.wuAeoBJW6Z7/arHmSNh9zpMH8j1HLWm');
 
         insert into user_roles(user_id, role_id)
         values (1, 1);

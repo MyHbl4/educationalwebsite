@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.dto.mapper.TopicMapper;
 import com.moon.senla.educational_website.model.dto.topic.TopicDto;
 import com.moon.senla.educational_website.service.TopicService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/topics")
 @Slf4j
+@Api(tags = "Topics")
 public class TopicController {
 
     private final TopicService topicService;

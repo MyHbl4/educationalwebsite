@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.user.UserDto;
 import com.moon.senla.educational_website.service.UserService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/users")
 @Slf4j
+@Api(tags = "Users")
 public class UserController {
 
     private final UserService userService;

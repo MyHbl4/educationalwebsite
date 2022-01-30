@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Schedule;
 import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
 import com.moon.senla.educational_website.service.ScheduleService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/schedules")
 @Slf4j
+@Api(tags = "Schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;

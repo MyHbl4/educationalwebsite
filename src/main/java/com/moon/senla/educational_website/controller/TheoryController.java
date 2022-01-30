@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Theory;
 import com.moon.senla.educational_website.model.dto.mapper.TheoryMapper;
 import com.moon.senla.educational_website.model.dto.theory.TheoryDto;
 import com.moon.senla.educational_website.service.TheoryService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/theories")
 @Slf4j
+@Api(tags = "Theories")
 public class TheoryController {
 
     private final TheoryService theoryService;
