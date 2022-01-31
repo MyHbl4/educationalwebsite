@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +48,7 @@ public class UserController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public UserDto save(@RequestBody User user) {
         log.info("save user {}", user);
         User newUser = userService.save(user);
@@ -54,6 +57,7 @@ public class UserController {
     }
 
     @PutMapping()
+    @PreAuthorize("#userToUpdate.username == authentication.name")
     public UserDto update(@RequestBody User userToUpdate) {
         log.info("update user {}", userToUpdate);
         User user = userService.save(userToUpdate);
@@ -61,6 +65,7 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(@PathVariable(name = "id") long id) {
         log.info("delete user by id {}", id);
         userService.deleteById(id);

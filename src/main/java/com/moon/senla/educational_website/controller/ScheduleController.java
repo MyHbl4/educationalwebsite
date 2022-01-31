@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +54,7 @@ public class ScheduleController {
     }
 
     @PutMapping()
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ScheduleDto update(@RequestBody Schedule scheduleToUpdate) {
         log.info("update schedule {}", scheduleToUpdate);
         Schedule schedule = scheduleService.save(scheduleToUpdate);
@@ -60,6 +62,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(@PathVariable(name = "id") long id) {
         log.info("delete schedule by id {}", id);
         scheduleService.deleteById(id);

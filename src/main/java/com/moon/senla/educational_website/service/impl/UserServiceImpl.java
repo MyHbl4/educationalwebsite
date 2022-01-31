@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
             log.warn("IN findByUsername - no user found by username: {}", username);
             return null;
         }
-        log.info("IN findByUsername - user: {} found by username: {}", result, username);
+        log.info("IN findByUsername - user: {} found by username: {}", result.getEmail(), username);
         return result;
     }
 

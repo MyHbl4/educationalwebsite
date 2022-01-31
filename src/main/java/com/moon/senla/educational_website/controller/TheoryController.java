@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +55,7 @@ public class TheoryController {
     }
 
     @PutMapping()
+    @PreAuthorize("#theoryToUpdate.user.username == authentication.name")
     public TheoryDto update(@RequestBody Theory theoryToUpdate) {
         log.info("update theory {}", theoryToUpdate);
         Theory theory = theoryService.save(theoryToUpdate);
@@ -61,6 +63,7 @@ public class TheoryController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(@PathVariable(name = "id") long id) {
         log.info("delete theory by id {}", id);
         theoryService.deleteById(id);

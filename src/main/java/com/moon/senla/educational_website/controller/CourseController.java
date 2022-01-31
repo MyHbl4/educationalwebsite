@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +54,7 @@ public class CourseController {
     }
 
     @PutMapping()
+    @PreAuthorize("#courseToUpdate.user.username == authentication.name")
     public CourseDto update(@RequestBody Course courseToUpdate) {
         log.info("update course {}", courseToUpdate);
         Course course = courseService.save(courseToUpdate);
@@ -60,6 +62,7 @@ public class CourseController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(@PathVariable(name = "id") long id) {
         log.info("delete course by id {}", id);
         courseService.deleteById(id);
