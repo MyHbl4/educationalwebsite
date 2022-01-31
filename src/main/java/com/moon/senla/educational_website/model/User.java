@@ -2,19 +2,13 @@ package com.moon.senla.educational_website.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.moon.senla.educational_website.util.JsonDeserializers;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,8 +21,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,11 +30,12 @@ import org.springframework.util.ObjectUtils;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+@Data
+public class User extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,7 +63,6 @@ public class User implements Serializable {
     @Column(name = "password", nullable = false)
     @Size(max = 256)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JsonDeserialize(using = JsonDeserializers.PasswordDeserializer.class)
     private String password;
 
     @JsonIgnore
@@ -83,10 +77,10 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Theory> theories = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role")
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles;
 
     @JsonIgnore
@@ -169,20 +163,4 @@ public class User implements Serializable {
             getPassword(), getCourses(), getFeedbacks(), getTheories(), getRoles(), getGroups());
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-            "id=" + id +
-            ", email='" + email + '\'' +
-            ", username='" + username + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", password='" + password + '\'' +
-            ", courses=" + courses +
-            ", feedbacks=" + feedbacks +
-            ", theories=" + theories +
-            ", roles=" + roles +
-            ", groups=" + groups +
-            '}';
-    }
 }

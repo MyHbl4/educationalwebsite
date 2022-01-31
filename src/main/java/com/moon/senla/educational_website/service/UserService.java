@@ -8,9 +8,13 @@ public interface UserService {
 
     User save(User user);
 
+    User findByUsername(String username);
+
     User findById(long id);
 
     Page<User> findAll(Pageable pageable);
 
     void deleteById(long id);
+
+    User register(User user);
 }
