@@ -47,6 +47,7 @@ public class GroupController {
     }
 
     @PostMapping()
+    @PreAuthorize("#group.course.user.username == authentication.name")
     public GroupDto save(@RequestBody Group group) {
         log.info("save group {}", group);
         Group newGroup = groupService.save(group);

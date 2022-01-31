@@ -67,9 +67,9 @@ public class TheoryServiceImpl implements TheoryService {
         for (Theory theory : allContent) {
             if (theory.getName().equals(name)) {
                 theories.add(theory);
-            }else if (topicName != null && theory.getTopic().getName().equals(topicName)) {
+            } else if (topicName != null && theory.getTopic().getName().equals(topicName)) {
                 theories.add(theory);
-            }else if (userName != null && theory.getUser().getUsername().equals(userName)) {
+            } else if (userName != null && theory.getUser().getUsername().equals(userName)) {
                 theories.add(theory);
             }
         }

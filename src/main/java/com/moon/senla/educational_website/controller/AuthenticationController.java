@@ -12,14 +12,12 @@ import java.util.Map;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +36,8 @@ public class AuthenticationController {
     private final UserService userService;
 
     @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService) {
+    public AuthenticationController(AuthenticationManager authenticationManager,
+        JwtTokenProvider jwtTokenProvider, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
@@ -48,11 +47,13 @@ public class AuthenticationController {
     public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
             String username = requestDto.getUsername();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
             User user = userService.findByUsername(username);
 
             if (user == null) {
-                throw new UsernameNotFoundException("User with username: " + username + " not found");
+                throw new UsernameNotFoundException(
+                    "User with username: " + username + " not found");
             }
 
             String token = jwtTokenProvider.createToken(username, user.getRoles());
@@ -68,7 +69,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public UserDto registerUser(@RequestBody @Valid User user){
+    public UserDto registerUser(@RequestBody @Valid User user) {
         User newUser = userService.register(user);
         return UserMapper.INSTANCE.userToUserDto(newUser);
     }

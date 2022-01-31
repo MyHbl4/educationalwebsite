@@ -47,6 +47,7 @@ public class ScheduleController {
     }
 
     @PostMapping()
+    @PreAuthorize("#schedule.group.course.user.username == authentication.name")
     public ScheduleDto save(@RequestBody Schedule schedule) {
         log.info("save schedule {}", schedule);
         Schedule newSchedule = scheduleService.save(schedule);

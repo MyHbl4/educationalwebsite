@@ -1,7 +1,6 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Course;
-import com.moon.senla.educational_website.model.Theory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
