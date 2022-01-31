@@ -83,20 +83,6 @@ public class Course implements Serializable {
         }
     }
 
-    public int getRating() {
-        float sumRank = 0f;
-        int count = 0;
-        int ranking = 0;
-        if (feedbacks != null) {
-            for (Feedback f : feedbacks) {
-                sumRank += f.getRank();
-                count++;
-            }
-            ranking = Math.round(sumRank / count);
-        }
-        return ranking;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

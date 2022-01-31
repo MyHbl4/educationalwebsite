@@ -259,17 +259,17 @@
     <changeSet id="1641419355076-30" author="gmoon (generated)">
       <sql>
         insert into courses(name, price, rating, user_id, topic_id)
-        values ('java pro', '100', 0, '1', '1');
+        values ('java pro', '100', 4, '1', '1');
         insert into courses(name, price, rating, user_id, topic_id)
-        values ('java beginner', '0', 0, '2', '1');
+        values ('java beginner', '0', 5, '2', '1');
         insert into courses(name, price, rating, user_id, topic_id)
-        values ('python pro', '80', 0, '3', '1');
+        values ('python pro', '80', 3, '3', '1');
         insert into courses(name, price, rating, user_id, topic_id)
-        values ('python beginner', '0', 0, '2', '2');
+        values ('python beginner', '0', 5, '2', '2');
         insert into courses(name, price, rating, user_id, topic_id)
-        values ('c pro', '90', 0, '1', '3');
+        values ('c pro', '90', 2, '1', '3');
         insert into courses(name, price, rating, user_id, topic_id)
-        values ('c beginner', '0', 0, '2', '3');
+        values ('c beginner', '0', 5, '2', '3');
       </sql>
     </changeSet>
 

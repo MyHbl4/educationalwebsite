@@ -4,6 +4,7 @@ package com.moon.senla.educational_website.service.impl;
 import com.moon.senla.educational_website.dao.FeedbackRepository;
 import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.service.FeedbackService;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,26 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public void deleteById(long id) {
         feedbackRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Feedback> findFeedbacksByCourse_Id(long id) {
+        return feedbackRepository.findFeedbacksByCourse_Id(id);
+    }
+
+    @Override
+    public int getRankCourse(long id){
+        float sumRank = 0f;
+        int count = 0;
+        int ranking = 0;
+        List<Feedback> feedbacks = findFeedbacksByCourse_Id(id);
+        if (feedbacks != null) {
+            for (Feedback f : feedbacks) {
+                sumRank += f.getRank();
+                count++;
+            }
+            ranking = Math.round(sumRank / count);
+        }
+        return ranking;
     }
 }

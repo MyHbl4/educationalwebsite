@@ -1,8 +1,10 @@
 package com.moon.senla.educational_website.controller;
 
+import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.dto.feedback.FeedbackDto;
 import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
+import com.moon.senla.educational_website.service.CourseService;
 import com.moon.senla.educational_website.service.FeedbackService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
+    private final CourseService courseService;
 
-    public FeedbackController(FeedbackService feedbackService) {
+    public FeedbackController(
+        FeedbackService feedbackService,
+        CourseService courseService) {
         this.feedbackService = feedbackService;
+        this.courseService = courseService;
     }
 
     @GetMapping()
@@ -50,6 +56,11 @@ public class FeedbackController {
     public FeedbackDto save(@RequestBody Feedback feedback) {
         log.info("save feedback {}", feedback);
         Feedback newFeedback = feedbackService.save(feedback);
+
+        long courseId = feedback.getCourse().getId();
+        Course course = courseService.findById(courseId);
+        course.setRating(feedbackService.getRankCourse(courseId));
+        courseService.save(course);
         return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(newFeedback);
     }
 

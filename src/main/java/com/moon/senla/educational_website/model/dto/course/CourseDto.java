@@ -12,7 +12,7 @@ public class CourseDto {
     private Long id;
     private String name;
     private int price;
-    private int ranking;
+    private int rating;
     @JsonProperty("topic")
     private TopicDto topic;
     @JsonProperty("user")
