@@ -4,18 +4,21 @@ import com.moon.senla.educational_website.dao.ScheduleRepository;
 import com.moon.senla.educational_website.model.Schedule;
 import com.moon.senla.educational_website.service.ScheduleService;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
 
-    @Autowired
     private final ScheduleRepository scheduleRepository;
+
+    @Autowired
+    public ScheduleServiceImpl(
+        ScheduleRepository scheduleRepository) {
+        this.scheduleRepository = scheduleRepository;
+    }
 
     @Override
     public Schedule save(Schedule schedule) {

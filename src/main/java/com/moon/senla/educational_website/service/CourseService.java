@@ -14,8 +14,6 @@ public interface CourseService {
 
     void deleteById(long id);
 
-    Page<Course> findAllCourseByTopicId(long id, Pageable pageable);
-
     Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
         String userName);
 }

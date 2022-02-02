@@ -12,5 +12,5 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     Page<Feedback> findAll(Pageable pageable);
 
-    List<Feedback> findFeedbacksByCourse_Id(long id);
+    int findAverageRankByCourseId(long courseId);
 }

@@ -32,6 +32,7 @@ public class UserController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<UserDto> findAll(
         @PageableDefault(sort = {"id"}) Pageable pageable) {
         log.info("find all users");

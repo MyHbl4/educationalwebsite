@@ -68,14 +68,6 @@ public class CourseController {
         courseService.deleteById(id);
     }
 
-    @GetMapping(path = "/topics/{id}")
-    public Page<CourseDto> findAllCourseByTopicId(@PathVariable(name = "id") long id,
-        @PageableDefault(sort = {"id"}) Pageable pageable) {
-        log.info("find course by topic id {}", id);
-        return courseService.findAllCourseByTopicId(id, pageable)
-            .map(CourseMapper.INSTANCE::courseToCourseDto);
-    }
-
     @GetMapping(path = "/find-needed")
     public Page<CourseDto> findAllCoursesByParam(
         @PageableDefault(sort = {"id"}) Pageable pageable,

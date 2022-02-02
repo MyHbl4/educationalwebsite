@@ -12,11 +12,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class TopicServiceImpl implements TopicService {
 
-    @Autowired
     private final TopicRepository topicRepository;
+
+    @Autowired
+    public TopicServiceImpl(TopicRepository topicRepository) {
+        this.topicRepository = topicRepository;
+    }
 
     @Override
     public Topic save(Topic topic) {

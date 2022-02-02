@@ -16,5 +16,4 @@ public interface UserService {
 
     void deleteById(long id);
 
-    User register(User user);
 }

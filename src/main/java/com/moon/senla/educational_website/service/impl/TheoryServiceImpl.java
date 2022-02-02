@@ -7,7 +7,6 @@ import com.moon.senla.educational_website.service.TheoryService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,11 +14,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class TheoryServiceImpl implements TheoryService {
 
-    @Autowired
     private final TheoryRepository theoryRepository;
+
+    @Autowired
+    public TheoryServiceImpl(TheoryRepository theoryRepository) {
+        this.theoryRepository = theoryRepository;
+    }
 
     @Override
     public Theory save(Theory theory) {
@@ -44,18 +46,6 @@ public class TheoryServiceImpl implements TheoryService {
     @Override
     public void deleteById(long id) {
         theoryRepository.deleteById(id);
-    }
-
-    @Override
-    public Page<Theory> findAllTheoriesByTopicId(long id, Pageable pageable) {
-        List<Theory> list = theoryRepository.findAll();
-        List<Theory> theories = new ArrayList<>();
-        for (Theory theory : list) {
-            if (theory.getTopic().getId().equals(id)) {
-                theories.add(theory);
-            }
-        }
-        return new PageImpl<>(theories, pageable, theories.size());
     }
 
     @Override

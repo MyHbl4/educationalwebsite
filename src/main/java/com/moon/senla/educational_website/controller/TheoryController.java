@@ -69,15 +69,6 @@ public class TheoryController {
         theoryService.deleteById(id);
     }
 
-    @GetMapping(path = "/topics/{id}")
-    public Page<TheoryDto> findAllTheoriesByTopicId(@PathVariable(name = "id") long id,
-        @PageableDefault(sort = {"id"})
-            Pageable pageable) {
-        log.info("find all theories by topic id {}", id);
-        return theoryService.findAllTheoriesByTopicId(id, pageable)
-            .map(TheoryMapper.INSTANCE::theoryToTheoryDto);
-    }
-
     @GetMapping(path = "/find-needed")
     public Page<TheoryDto> findAllTheoriesByParam(
         @PageableDefault(sort = {"id"}) Pageable pageable,

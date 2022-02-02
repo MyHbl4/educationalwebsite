@@ -5,18 +5,20 @@ import com.moon.senla.educational_website.dao.GroupRepository;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.service.GroupService;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
-    @Autowired
     private final GroupRepository groupRepository;
+
+    @Autowired
+    public GroupServiceImpl(GroupRepository groupRepository) {
+        this.groupRepository = groupRepository;
+    }
 
     @Override
     public Group save(Group group) {
