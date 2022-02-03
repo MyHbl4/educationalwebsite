@@ -13,5 +13,7 @@ public interface GroupService {
     Page<Group> findAll(Pageable pageable);
 
     void deleteById(long id);
+
+    Page<Group> findAllGroupsByCourse_Id(Pageable pageable, long id);
 }
 

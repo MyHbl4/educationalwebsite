@@ -44,4 +44,9 @@ public class GroupServiceImpl implements GroupService {
     public void deleteById(long id) {
         groupRepository.deleteById(id);
     }
+
+    @Override
+    public Page<Group> findAllGroupsByCourse_Id(Pageable pageable, long id) {
+        return groupRepository.findAllByCourse_Id(pageable, id);
+    }
 }

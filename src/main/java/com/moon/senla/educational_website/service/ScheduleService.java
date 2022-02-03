@@ -13,5 +13,7 @@ public interface ScheduleService {
     Page<Schedule> findAll(Pageable pageable);
 
     void deleteById(long id);
+
+    Page<Schedule> findAllByGroup_Id(Pageable pageable, long groupId);
 }
 

@@ -3,7 +3,10 @@ package com.moon.senla.educational_website.controller;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
+import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
+import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
 import com.moon.senla.educational_website.service.GroupService;
+import com.moon.senla.educational_website.service.ScheduleService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,9 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class GroupController {
 
     private final GroupService groupService;
+    private final ScheduleService scheduleService;
 
-    public GroupController(GroupService groupService) {
+    public GroupController(GroupService groupService,
+        ScheduleService scheduleService) {
         this.groupService = groupService;
+        this.scheduleService = scheduleService;
     }
 
     @GetMapping()
@@ -67,5 +73,13 @@ public class GroupController {
     public void delete(@PathVariable(name = "id") long id) {
         log.info("delete group by id {}", id);
         groupService.deleteById(id);
+    }
+
+    @GetMapping(path = "/{id}/schedules")
+    public Page<ScheduleDto> findAllSchedulesByGroupId(@PathVariable(name = "id") long id,
+        Pageable pageable) {
+        log.info("find schedules by group id {}", id);
+        return scheduleService.findAllByGroup_Id(pageable, id)
+            .map(ScheduleMapper.INSTANCE::scheduleToScheduleDto);
     }
 }

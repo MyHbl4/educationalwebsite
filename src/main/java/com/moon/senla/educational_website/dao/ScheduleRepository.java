@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     Page<Schedule> findAll(Pageable pageable);
+
+    Page<Schedule> findAllByGroup_Id(Pageable pageable, long groupId);
 }

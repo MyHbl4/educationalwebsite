@@ -44,4 +44,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     public void deleteById(long id) {
         scheduleRepository.deleteById(id);
     }
+
+    @Override
+    public Page<Schedule> findAllByGroup_Id(Pageable pageable, long groupId) {
+        return scheduleRepository.findAllByGroup_Id(pageable, groupId);
+    }
 }

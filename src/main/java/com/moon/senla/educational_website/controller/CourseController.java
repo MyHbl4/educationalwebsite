@@ -2,8 +2,11 @@ package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.dto.course.CourseDto;
+import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
+import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.service.CourseService;
+import com.moon.senla.educational_website.service.GroupService;
 import com.moon.senla.educational_website.service.SearchFilterService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +32,14 @@ public class CourseController {
 
     private final CourseService courseService;
     private final SearchFilterService searchFilterService;
+    private final GroupService groupService;
 
     public CourseController(CourseService courseService,
-        SearchFilterService searchFilterService) {
+        SearchFilterService searchFilterService,
+        GroupService groupService) {
         this.courseService = courseService;
         this.searchFilterService = searchFilterService;
+        this.groupService = groupService;
     }
 
     @GetMapping()
@@ -72,7 +78,7 @@ public class CourseController {
         courseService.deleteById(id);
     }
 
-    @GetMapping(path = "/find-needed")
+    @GetMapping(path = "/search")
     public Page<CourseDto> findAllCoursesByParam(
         @PageableDefault(sort = {"id"}) Pageable pageable,
         @RequestParam(value = "name", required = false) String name,
@@ -80,5 +86,13 @@ public class CourseController {
         @RequestParam(value = "user_name", required = false) String authorName) {
         return searchFilterService.findAllCoursesByParam(pageable, name, topicName, authorName)
             .map(CourseMapper.INSTANCE::courseToCourseDto);
+    }
+
+    @GetMapping(path = "/{id}/groups")
+    public Page<GroupDto> findAllGroupsByCourse_Id(@PathVariable(name = "id") long id,
+        Pageable pageable) {
+        log.info("find groups by course id {}", id);
+        return groupService.findAllGroupsByCourse_Id(pageable, id)
+            .map(GroupMapper.INSTANCE::groupToGroupDto);
     }
 }

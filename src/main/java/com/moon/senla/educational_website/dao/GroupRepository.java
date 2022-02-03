@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
     Page<Group> findAll(Pageable pageable);
+
+    Page<Group> findAllByCourse_Id(Pageable pageable, long courseId);
 }

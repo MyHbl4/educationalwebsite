@@ -14,6 +14,4 @@ public class GroupDto {
     private String name;
     @JsonProperty("course")
     private CourseDtoShort course;
-    @JsonProperty
-    private List<ScheduleDto> schedules;
 }
