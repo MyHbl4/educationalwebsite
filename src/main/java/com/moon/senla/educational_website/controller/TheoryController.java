@@ -3,6 +3,7 @@ package com.moon.senla.educational_website.controller;
 import com.moon.senla.educational_website.model.Theory;
 import com.moon.senla.educational_website.model.dto.mapper.TheoryMapper;
 import com.moon.senla.educational_website.model.dto.theory.TheoryDto;
+import com.moon.senla.educational_website.service.SearchFilterService;
 import com.moon.senla.educational_website.service.TheoryService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class TheoryController {
 
     private final TheoryService theoryService;
+    private final SearchFilterService searchFilterService;
 
-    public TheoryController(TheoryService theoryService) {
+    public TheoryController(TheoryService theoryService,
+        SearchFilterService searchFilterService) {
         this.theoryService = theoryService;
+        this.searchFilterService = searchFilterService;
     }
 
     @GetMapping()
@@ -69,13 +73,13 @@ public class TheoryController {
         theoryService.deleteById(id);
     }
 
-    @GetMapping(path = "/find-needed")
+    @GetMapping(path = "/search")
     public Page<TheoryDto> findAllTheoriesByParam(
         @PageableDefault(sort = {"id"}) Pageable pageable,
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic_name", required = false) String topicName,
         @RequestParam(value = "user_name", required = false) String userName) {
-        return theoryService.findAllTheoriesByParam(pageable, name, topicName, userName)
+        return searchFilterService.findAllTheoriesByParam(pageable, name, topicName, userName)
             .map(TheoryMapper.INSTANCE::theoryToTheoryDto);
     }
 }

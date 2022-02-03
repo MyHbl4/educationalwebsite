@@ -48,21 +48,4 @@ public class TheoryServiceImpl implements TheoryService {
         theoryRepository.deleteById(id);
     }
 
-    @Override
-    public Page<Theory> findAllTheoriesByParam(Pageable pageable, String name, String topicName,
-        String userName) {
-        Page<Theory> page = theoryRepository.findAll(pageable);
-        List<Theory> allContent = page.getContent();
-        List<Theory> theories = new ArrayList<>();
-        for (Theory theory : allContent) {
-            if (theory.getName().equals(name)) {
-                theories.add(theory);
-            } else if (topicName != null && theory.getTopic().getName().equals(topicName)) {
-                theories.add(theory);
-            } else if (userName != null && theory.getUser().getUsername().equals(userName)) {
-                theories.add(theory);
-            }
-        }
-        return new PageImpl<>(theories, pageable, theories.size());
-    }
 }

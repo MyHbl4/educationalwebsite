@@ -48,21 +48,4 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.deleteById(id);
     }
 
-    @Override
-    public Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
-        String userName) {
-        Page<Course> page = courseRepository.findAll(pageable);
-        List<Course> allContent = page.getContent();
-        List<Course> courses = new ArrayList<>();
-        for (Course course : allContent) {
-            if (course.getName().equals(name)) {
-                courses.add(course);
-            } else if (topicName != null && course.getTopic().getName().equals(topicName)) {
-                courses.add(course);
-            } else if (userName != null && course.getUser().getUsername().equals(userName)) {
-                courses.add(course);
-            }
-        }
-        return new PageImpl<>(courses, pageable, courses.size());
-    }
 }

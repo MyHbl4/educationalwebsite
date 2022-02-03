@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.dto.course.CourseDto;
 import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.service.CourseService;
+import com.moon.senla.educational_website.service.SearchFilterService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,9 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseController {
 
     private final CourseService courseService;
+    private final SearchFilterService searchFilterService;
 
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService,
+        SearchFilterService searchFilterService) {
         this.courseService = courseService;
+        this.searchFilterService = searchFilterService;
     }
 
     @GetMapping()
@@ -73,8 +77,8 @@ public class CourseController {
         @PageableDefault(sort = {"id"}) Pageable pageable,
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic_name", required = false) String topicName,
-        @RequestParam(value = "user_name", required = false) String userName) {
-        return courseService.findAllCoursesByParam(pageable, name, topicName, userName)
+        @RequestParam(value = "user_name", required = false) String authorName) {
+        return searchFilterService.findAllCoursesByParam(pageable, name, topicName, authorName)
             .map(CourseMapper.INSTANCE::courseToCourseDto);
     }
 }

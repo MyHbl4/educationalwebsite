@@ -14,7 +14,5 @@ public interface TheoryService {
 
     void deleteById(long id);
 
-    Page<Theory> findAllTheoriesByParam(Pageable pageable, String name, String topicName,
-        String userName);
 }
 

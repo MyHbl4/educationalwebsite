@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.user.UserDto;
 import com.moon.senla.educational_website.service.UserService;
+import com.moon.senla.educational_website.service.impl.SearchFilterServiceImpl;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,9 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final SearchFilterServiceImpl searchFilterService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+        SearchFilterServiceImpl searchFilterService) {
         this.userService = userService;
+        this.searchFilterService = searchFilterService;
     }
 
     @GetMapping()
@@ -37,6 +42,16 @@ public class UserController {
         @PageableDefault(sort = {"id"}) Pageable pageable) {
         log.info("find all users");
         return userService.findAll(pageable)
+            .map(UserMapper.INSTANCE::userToUserDto);
+    }
+
+    @GetMapping(path = "/search")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public Page<UserDto> findAllUsersByParam(
+        @PageableDefault(sort = {"id"}) Pageable pageable,
+        @RequestParam(value = "firstName", required = false) String firstName,
+        @RequestParam(value = "LastName", required = false) String lastName) {
+        return searchFilterService.findAllUsersByParam(pageable, firstName, lastName)
             .map(UserMapper.INSTANCE::userToUserDto);
     }
 
