@@ -1,6 +1,7 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Group;
+import com.moon.senla.educational_website.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,5 +16,7 @@ public interface GroupService {
     void deleteById(long id);
 
     Page<Group> findAllGroupsByCourse_Id(Pageable pageable, long id);
+
+    Page<User> getAllUsersByGroup_Id(Pageable pageable, long groupId);
 }
 

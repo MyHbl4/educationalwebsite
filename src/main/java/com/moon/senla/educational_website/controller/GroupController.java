@@ -4,7 +4,9 @@ import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
+import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
+import com.moon.senla.educational_website.model.dto.user.UserDtoShort;
 import com.moon.senla.educational_website.service.GroupService;
 import com.moon.senla.educational_website.service.ScheduleService;
 import io.swagger.annotations.Api;
@@ -81,5 +83,13 @@ public class GroupController {
         log.info("find schedules by group id {}", id);
         return scheduleService.findAllByGroup_Id(pageable, id)
             .map(ScheduleMapper.INSTANCE::scheduleToScheduleDto);
+    }
+
+    @GetMapping(path = "/{id}/users")
+    public Page<UserDtoShort> getAllUsersByGroup_Id(Pageable pageable,
+        @PathVariable(name = "id") long id) {
+        log.info("find users by group id {}", id);
+        return groupService.getAllUsersByGroup_Id(pageable, id)
+            .map(UserMapper.INSTANCE::userToUserDtoShort);
     }
 }

@@ -5,7 +5,6 @@ import com.moon.senla.educational_website.dao.TopicRepository;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.service.TopicService;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
