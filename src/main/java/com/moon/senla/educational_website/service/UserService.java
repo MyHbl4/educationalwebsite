@@ -1,5 +1,6 @@
 package com.moon.senla.educational_website.service;
 
+import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,5 @@ public interface UserService {
 
     void deleteById(long id);
 
+    Page<Course> findAllCoursesByUserId(Pageable pageable, long userId);
 }

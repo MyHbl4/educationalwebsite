@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.user.AuthenticationRequestDto;
 import com.moon.senla.educational_website.model.dto.user.UserDto;
+import com.moon.senla.educational_website.model.dto.user.UserNewDto;
 import com.moon.senla.educational_website.service.AuthenticationService;
 import io.swagger.annotations.Api;
 import javax.validation.Valid;
@@ -35,7 +36,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public UserDto registerUser(@RequestBody @Valid User user) {
+    public UserDto registerUser(@RequestBody @Valid UserNewDto user) {
         User newUser = authenticationService.register(user);
         return UserMapper.INSTANCE.userToUserDto(newUser);
     }

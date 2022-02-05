@@ -1,8 +1,13 @@
 package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.course.CourseDto;
+import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.user.UserDto;
+import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
+import com.moon.senla.educational_website.model.dto.user.UserNewDto;
+import com.moon.senla.educational_website.service.AuthenticationService;
 import com.moon.senla.educational_website.service.UserService;
 import com.moon.senla.educational_website.service.impl.SearchFilterServiceImpl;
 import io.swagger.annotations.Api;
@@ -29,11 +34,14 @@ public class UserController {
 
     private final UserService userService;
     private final SearchFilterServiceImpl searchFilterService;
+    private final AuthenticationService authenticationService;
 
     public UserController(UserService userService,
-        SearchFilterServiceImpl searchFilterService) {
+        SearchFilterServiceImpl searchFilterService,
+        AuthenticationService authenticationService) {
         this.userService = userService;
         this.searchFilterService = searchFilterService;
+        this.authenticationService = authenticationService;
     }
 
     @GetMapping()
@@ -64,18 +72,17 @@ public class UserController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public UserDto save(@RequestBody User user) {
+    public UserDto newUser(@RequestBody UserNewDto user) {
         log.info("save user {}", user);
-        User newUser = userService.save(user);
+        User newUser = authenticationService.register(user);
         return UserMapper.INSTANCE.userToUserDto(newUser);
-
     }
 
     @PutMapping()
     @PreAuthorize("#userToUpdate.username == authentication.name")
-    public UserDto update(@RequestBody User userToUpdate) {
+    public UserDto update(@RequestBody UserDtoUpdate userToUpdate) {
         log.info("update user {}", userToUpdate);
-        User user = userService.save(userToUpdate);
+        User user = authenticationService.update(userToUpdate);
         return UserMapper.INSTANCE.userToUserDto(user);
     }
 
@@ -86,4 +93,12 @@ public class UserController {
         userService.deleteById(id);
     }
 
+    @GetMapping(path = "/{id}/courses")
+    public Page<CourseDto> findAllCoursesByUserId(
+        @PathVariable(name = "id") long id,
+        Pageable pageable) {
+        log.info("find courses where author is user and him id {}", id);
+        return userService.findAllCoursesByUserId(pageable, id)
+            .map(CourseMapper.INSTANCE::courseToCourseDto);
+    }
 }

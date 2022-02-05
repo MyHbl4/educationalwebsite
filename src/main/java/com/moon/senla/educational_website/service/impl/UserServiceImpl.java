@@ -1,11 +1,12 @@
 package com.moon.senla.educational_website.service.impl;
 
+import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
+import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.UserService;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,12 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository,
+        CourseRepository courseRepository) {
         this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
@@ -57,5 +60,8 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-
+    @Override
+    public Page<Course> findAllCoursesByUserId(Pageable pageable, long userId) {
+        return courseRepository.getCoursesByUser_Id(pageable, userId);
+    }
 }

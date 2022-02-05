@@ -5,7 +5,10 @@ import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.Status;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.user.AuthenticationRequestDto;
+import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
+import com.moon.senla.educational_website.model.dto.user.UserNewDto;
 import com.moon.senla.educational_website.security.jwt.JwtTokenProvider;
 import com.moon.senla.educational_website.service.AuthenticationService;
 import java.util.ArrayList;
@@ -75,7 +78,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    public User register(User user) {
+    public User register(UserNewDto userNew) {
+        User user = UserMapper.INSTANCE.userNewDtoToUser(userNew);
         Role roleUser = roleRepository.findByName("ROLE_USER");
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(roleUser);
@@ -83,9 +87,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setRoles(userRoles);
         user.setStatus(Status.ACTIVE);
         User registeredUser = userRepository.save(user);
-        log.info("IN register - user: {} successfully registered", registeredUser);
+        log.info("IN register - user id: {} successfully registered", registeredUser.getId());
 
         return registeredUser;
     }
 
+    public User update(UserDtoUpdate updateUser) {
+        User user = UserMapper.INSTANCE.userDtoUpdateToUser(updateUser);
+        Role roleUser = roleRepository.findByName("ROLE_USER");
+        List<Role> userRoles = new ArrayList<>();
+        userRoles.add(roleUser);
+        user.setRoles(userRoles);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setStatus(Status.ACTIVE);
+        User updatedUser = userRepository.save(user);
+        log.info("IN update - user id: {} successfully updated", updatedUser.getId());
+
+        return updatedUser;
+    }
 }
