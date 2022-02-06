@@ -2,6 +2,7 @@ package com.moon.senla.educational_website.service.impl;
 
 import com.moon.senla.educational_website.dao.RoleRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
+import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.Status;
 import com.moon.senla.educational_website.model.User;
@@ -17,10 +18,9 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -72,37 +72,47 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             response.put("token", token);
 
             return response;
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid username or password");
         }
     }
 
 
     public User register(UserNewDto userNew) {
-        User user = UserMapper.INSTANCE.userNewDtoToUser(userNew);
-        Role roleUser = roleRepository.findByName("ROLE_USER");
-        List<Role> userRoles = new ArrayList<>();
-        userRoles.add(roleUser);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(userRoles);
-        user.setStatus(Status.ACTIVE);
-        User registeredUser = userRepository.save(user);
-        log.info("IN register - user id: {} successfully registered", registeredUser.getId());
+        try {
+            User user = UserMapper.INSTANCE.userNewDtoToUser(userNew);
+            Role roleUser = roleRepository.findByName("ROLE_USER");
+            List<Role> userRoles = new ArrayList<>();
+            userRoles.add(roleUser);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(userRoles);
+            user.setStatus(Status.ACTIVE);
+            User registeredUser = userRepository.save(user);
+            log.info("IN register - user id: {} successfully registered", registeredUser.getId());
 
-        return registeredUser;
+            return registeredUser;
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, user could not be saved");
+        }
     }
 
     public User update(UserDtoUpdate updateUser) {
-        User user = UserMapper.INSTANCE.userDtoUpdateToUser(updateUser);
-        Role roleUser = roleRepository.findByName("ROLE_USER");
-        List<Role> userRoles = new ArrayList<>();
-        userRoles.add(roleUser);
-        user.setRoles(userRoles);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setStatus(Status.ACTIVE);
-        User updatedUser = userRepository.save(user);
-        log.info("IN update - user id: {} successfully updated", updatedUser.getId());
+        try {
+            User user = UserMapper.INSTANCE.userDtoUpdateToUser(updateUser);
+            Role roleUser = roleRepository.findByName("ROLE_USER");
+            List<Role> userRoles = new ArrayList<>();
+            userRoles.add(roleUser);
+            user.setRoles(userRoles);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setStatus(Status.ACTIVE);
+            User updatedUser = userRepository.save(user);
+            log.info("IN update - user id: {} successfully updated", updatedUser.getId());
 
-        return updatedUser;
+            return updatedUser;
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, update could not be saved");
+        }
     }
 }

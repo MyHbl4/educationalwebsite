@@ -12,7 +12,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Page<Course> findAll(Pageable pageable);
 
-        @Query(
+    @Query(
         value =
             "select c.id, rating, price, user_id, name, topic_id from users u full join courses c ON c.user_id = u.id WHERE u.username = ?1",
         nativeQuery = true)

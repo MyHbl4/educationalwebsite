@@ -2,12 +2,14 @@ package com.moon.senla.educational_website.service.impl;
 
 
 import com.moon.senla.educational_website.dao.CourseRepository;
+import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.service.CourseService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +24,12 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course save(Course course) {
-        return courseRepository.save(course);
+        try {
+            return courseRepository.save(course);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, course could not be saved");
+        }
     }
 
     @Override
@@ -32,17 +39,29 @@ public class CourseServiceImpl implements CourseService {
         if (option.isPresent()) {
             course = option.get();
         }
+        if (course == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Course Not Found");
+        }
         return course;
     }
 
     @Override
     public Page<Course> findAll(Pageable pageable) {
-        return courseRepository.findAll(pageable);
+        Page<Course> courses = courseRepository.findAll(pageable);
+        if (courses.getContent().isEmpty()) {
+            throw new CustomException(HttpStatus.NO_CONTENT,
+                "Request has been successfully processed and the response is  blank. Courses Not Found");
+        }
+        return courses;
     }
 
     @Override
     public void deleteById(long id) {
-        courseRepository.deleteById(id);
+        try {
+            courseRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Course Not Found");
+        }
     }
 
 }
