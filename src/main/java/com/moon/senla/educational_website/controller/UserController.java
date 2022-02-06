@@ -11,6 +11,7 @@ import com.moon.senla.educational_website.service.AuthenticationService;
 import com.moon.senla.educational_website.service.UserService;
 import com.moon.senla.educational_website.service.impl.SearchFilterServiceImpl;
 import io.swagger.annotations.Api;
+import java.security.Principal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -93,12 +94,12 @@ public class UserController {
         userService.deleteById(id);
     }
 
-    @GetMapping(path = "/{id}/courses")
-    public Page<CourseDto> findAllCoursesByUserId(
-        @PathVariable(name = "id") long id,
+    @GetMapping(path = "/courses")
+    public Page<CourseDto> findAllCoursesByUsername(
+        Principal user,
         Pageable pageable) {
-        log.info("find courses where author is user and him id {}", id);
-        return userService.findAllCoursesByUserId(pageable, id)
+        log.info("find courses where author is user: {}", user.getName());
+        return userService.findAllCoursesByUsername(pageable, user.getName())
             .map(CourseMapper.INSTANCE::courseToCourseDto);
     }
 }

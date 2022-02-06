@@ -17,5 +17,5 @@ public interface UserService {
 
     void deleteById(long id);
 
-    Page<Course> findAllCoursesByUserId(Pageable pageable, long userId);
+    Page<Course> findAllCoursesByUsername(Pageable pageable, String username);
 }

@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<Course> findAllCoursesByUserId(Pageable pageable, long userId) {
-        return courseRepository.getCoursesByUser_Id(pageable, userId);
+    public Page<Course> findAllCoursesByUsername(Pageable pageable, String username) {
+        return courseRepository.findAllCoursesByUsername(pageable, username);
     }
 }
