@@ -2,13 +2,17 @@ package com.moon.senla.educational_website.service.impl;
 
 
 import com.moon.senla.educational_website.dao.TheoryRepository;
+import com.moon.senla.educational_website.dao.TopicRepository;
+import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Theory;
+import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.mapper.TheoryMapper;
+import com.moon.senla.educational_website.model.dto.theory.TheoryNewDto;
+import com.moon.senla.educational_website.model.dto.theory.TheoryUpdateDto;
 import com.moon.senla.educational_website.service.TheoryService;
-import java.util.Optional;
+import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +20,25 @@ import org.springframework.stereotype.Service;
 public class TheoryServiceImpl implements TheoryService {
 
     private final TheoryRepository theoryRepository;
+    private final UserRepository userRepository;
+    private final TopicRepository topicRepository;
 
     @Autowired
-    public TheoryServiceImpl(TheoryRepository theoryRepository) {
+    public TheoryServiceImpl(TheoryRepository theoryRepository,
+        UserRepository userRepository,
+        TopicRepository topicRepository) {
         this.theoryRepository = theoryRepository;
+        this.userRepository = userRepository;
+        this.topicRepository = topicRepository;
     }
 
     @Override
-    public Theory save(Theory theory) {
+    public Theory save(Principal principal, TheoryNewDto newTheory) {
+        topicRepository.findById(newTheory.getTopic().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found"));
         try {
+            Theory theory = TheoryMapper.INSTANCE.theoryNewDtoToTheory(newTheory);
+            theory.setUser(userRepository.findByUsername(principal.getName()));
             return theoryRepository.save(theory);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
@@ -33,28 +47,30 @@ public class TheoryServiceImpl implements TheoryService {
     }
 
     @Override
-    public Theory findById(long id) {
-        Theory theory = null;
-        Optional<Theory> option = theoryRepository.findById(id);
-        if (option.isPresent()) {
-            theory = option.get();
+    public Theory update(Principal principal, TheoryUpdateDto theory) {
+        User user = userRepository.findById(theory.getUser().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+        if (!user.getUsername().equals(principal.getName())) {
+            throw new CustomException(HttpStatus.FORBIDDEN,
+                "Invalid request, access is denied");
         }
-        if (theory == null) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Theory Not Found");
+        topicRepository.findById(theory.getTopic().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found"));
+        theoryRepository.findById(theory.getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Theory Not Found"));
+        try {
+            return theoryRepository.save(TheoryMapper.INSTANCE.theoryUpdateDtoToTheory(theory));
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, theory could not be updated");
         }
-        return theory;
     }
 
     @Override
-    public Page<Theory> findAll(Pageable pageable) {
-        Page<Theory> theories = theoryRepository.findAll(pageable);
-        if (theories.getContent().isEmpty()) {
-            throw new CustomException(HttpStatus.NO_CONTENT,
-                "Request has been successfully processed and the response is  blank. Theories Not Found");
-        }
-        return theories;
+    public Theory findById(long id) {
+        return theoryRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Theory Not Found"));
     }
-
 
     @Override
     public void deleteById(long id) {

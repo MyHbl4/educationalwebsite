@@ -1,18 +1,18 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Theory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.moon.senla.educational_website.model.dto.theory.TheoryNewDto;
+import com.moon.senla.educational_website.model.dto.theory.TheoryUpdateDto;
+import java.security.Principal;
 
 public interface TheoryService {
 
-    Theory save(Theory theory);
+    Theory save(Principal principal, TheoryNewDto theory);
+
+    Theory update(Principal principal, TheoryUpdateDto theory);
 
     Theory findById(long id);
 
-    Page<Theory> findAll(Pageable pageable);
-
     void deleteById(long id);
-
 }
 
