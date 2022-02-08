@@ -4,7 +4,6 @@ import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.UserService;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,15 +34,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(long id) {
-        User user = null;
-        Optional<User> option = userRepository.findById(id);
-        if (option.isPresent()) {
-            user = option.get();
-        }
-        if (user == null) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "User Not Found");
-        }
-        return user;
+        return userRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
     }
 
 

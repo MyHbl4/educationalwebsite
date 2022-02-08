@@ -4,8 +4,10 @@ package com.moon.senla.educational_website.service.impl;
 import com.moon.senla.educational_website.dao.TopicRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Topic;
+import com.moon.senla.educational_website.model.dto.mapper.TopicMapper;
+import com.moon.senla.educational_website.model.dto.topic.TopicDto;
+import com.moon.senla.educational_website.model.dto.topic.TopicNewDto;
 import com.moon.senla.educational_website.service.TopicService;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +25,9 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public Topic save(Topic topic) {
+    public Topic save(TopicNewDto topic) {
         try {
-            return topicRepository.save(topic);
+            return topicRepository.save(TopicMapper.INSTANCE.topicNewDtoToTopic(topic));
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, topic could not be saved");
@@ -34,26 +36,18 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Topic findById(long id) {
-        Topic topic = null;
-        Optional<Topic> option = topicRepository.findById(id);
-        if (option.isPresent()) {
-            topic = option.get();
-        }
-        if (topic == null) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found");
-        }
-        return topic;
+        return topicRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found"));
     }
 
     @Override
     public Page<Topic> findAll(Pageable pageable) {
-
-        Page<Topic> topics = topicRepository.findAll(pageable);
-        if (topics.getContent().isEmpty()) {
-            throw new CustomException(HttpStatus.NO_CONTENT,
-                "Request has been successfully processed and the response is  blank. Topics Not Found");
+        try {
+            return topicRepository.findAll(pageable);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, topic cannot be found");
         }
-        return topics;
     }
 
     @Override
@@ -62,6 +56,18 @@ public class TopicServiceImpl implements TopicService {
             topicRepository.deleteById(id);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found");
+        }
+    }
+
+    @Override
+    public Topic update(TopicDto topicUpdate) {
+        topicRepository.findById(topicUpdate.getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found"));
+        try {
+            return topicRepository.save(TopicMapper.INSTANCE.topicDtoToTopic(topicUpdate));
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, topic could not be updated");
         }
     }
 }
