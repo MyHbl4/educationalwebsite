@@ -3,8 +3,11 @@ package com.moon.senla.educational_website.controller;
 import com.moon.senla.educational_website.model.Schedule;
 import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
+import com.moon.senla.educational_website.model.dto.schedule.ScheduleNewDto;
+import com.moon.senla.educational_website.model.dto.schedule.ScheduleShortDto;
 import com.moon.senla.educational_website.service.ScheduleService;
 import io.swagger.annotations.Api;
+import java.security.Principal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +35,7 @@ public class ScheduleController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<ScheduleDto> findAll(@PageableDefault(sort = {"id"})
         Pageable pageable) {
         log.info("find all schedules");
@@ -47,19 +51,17 @@ public class ScheduleController {
     }
 
     @PostMapping()
-    @PreAuthorize("#schedule.group.course.user.username == authentication.name")
-    public ScheduleDto save(@RequestBody Schedule schedule) {
-        log.info("save schedule {}", schedule);
-        Schedule newSchedule = scheduleService.save(schedule);
-        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(newSchedule);
+    public ScheduleShortDto save(Principal principal, @RequestBody ScheduleNewDto schedule) {
+        log.info("save schedule: {}", schedule.getDate());
+        Schedule newSchedule = scheduleService.save(principal, schedule);
+        return ScheduleMapper.INSTANCE.scheduleToScheduleShortDto(newSchedule);
     }
 
     @PutMapping()
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ScheduleDto update(@RequestBody Schedule scheduleToUpdate) {
-        log.info("update schedule {}", scheduleToUpdate);
-        Schedule schedule = scheduleService.save(scheduleToUpdate);
-        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(schedule);
+    public ScheduleShortDto update(Principal principal, @RequestBody ScheduleDto scheduleToUpdate) {
+        log.info("update schedule: {}", scheduleToUpdate.getId());
+        Schedule schedule = scheduleService.update(principal, scheduleToUpdate);
+        return ScheduleMapper.INSTANCE.scheduleToScheduleShortDto(schedule);
     }
 
     @DeleteMapping(path = "/{id}")

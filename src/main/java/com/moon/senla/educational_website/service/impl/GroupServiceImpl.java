@@ -1,12 +1,18 @@
 package com.moon.senla.educational_website.service.impl;
 
 
+import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.GroupRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.group.GroupDto;
+import com.moon.senla.educational_website.model.dto.group.GroupNewDto;
+import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.service.GroupService;
+import java.security.Principal;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,18 +25,30 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
 
     @Autowired
     public GroupServiceImpl(GroupRepository groupRepository,
-        UserRepository userRepository) {
+        UserRepository userRepository,
+        CourseRepository courseRepository) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
-    public Group save(Group group) {
+    public Group save(Principal principal, GroupNewDto group) {
+        Group newGroup = GroupMapper.INSTANCE.groupNewDtoToGroup(group);
+        Course course = courseRepository.findById(group.getCourse().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+        User user = userRepository.findById(course.getUser().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+        if (!principal.getName().equals(user.getUsername())) {
+            throw new CustomException(HttpStatus.FORBIDDEN,
+                "Invalid request, access is denied");
+        }
         try {
-            return groupRepository.save(group);
+            return groupRepository.save(newGroup);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, group could not be saved");
@@ -52,12 +70,12 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Page<Group> findAll(Pageable pageable) {
-        Page<Group> groups = groupRepository.findAll(pageable);
-        if (groups.getContent().isEmpty()) {
-            throw new CustomException(HttpStatus.NO_CONTENT,
-                "Request has been successfully processed and the response is  blank. Groups Not Found");
+        try {
+            return groupRepository.findAll(pageable);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, groups cannot be found");
         }
-        return groups;
     }
 
     @Override
@@ -72,12 +90,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Page<Group> findAllGroupsByCourse_Id(Pageable pageable, long id) {
         try {
-            Page<Group> groups = groupRepository.findAllByCourse_Id(pageable, id);
-            if (groups.getContent().isEmpty()) {
-                throw new CustomException(HttpStatus.NOT_FOUND,
-                    "Groups by this course id Not Found");
-            }
-            return groups;
+            return groupRepository.findAllByCourse_Id(pageable, id);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, groups cannot be found");
@@ -85,17 +98,24 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Page<User> getAllUsersByGroup_Id(Pageable pageable, long groupId) {
+    public Group update(Principal principal, GroupDto groupDto) {
+        Group group = GroupMapper.INSTANCE.groupDtoToGroup(groupDto);
+        Course course = courseRepository.findById(groupDto.getCourse().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+        User user = userRepository.findById(course.getUser().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+        if (!principal.getName().equals(user.getUsername())) {
+            throw new CustomException(HttpStatus.FORBIDDEN,
+                "Invalid request, access is denied");
+        }
+        groupRepository.findById(groupDto.getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
+        group.setCourse(course);
         try {
-            Page<User> users = userRepository.getAllUsersByGroup_Id(pageable, groupId);
-            if (users.getContent().isEmpty()) {
-                throw new CustomException(HttpStatus.NOT_FOUND,
-                    "Users by this group id Not Found");
-            }
-            return users;
+            return groupRepository.save(group);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, users cannot be found");
+                "Invalid request, group could not be updated");
         }
     }
 }

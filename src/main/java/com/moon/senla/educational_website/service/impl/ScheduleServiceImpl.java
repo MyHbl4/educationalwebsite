@@ -1,10 +1,19 @@
 package com.moon.senla.educational_website.service.impl;
 
+import com.moon.senla.educational_website.dao.CourseRepository;
+import com.moon.senla.educational_website.dao.GroupRepository;
 import com.moon.senla.educational_website.dao.ScheduleRepository;
+import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.model.Course;
+import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.Schedule;
+import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
+import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
+import com.moon.senla.educational_website.model.dto.schedule.ScheduleNewDto;
 import com.moon.senla.educational_website.service.ScheduleService;
-import java.util.Optional;
+import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,17 +24,30 @@ import org.springframework.stereotype.Service;
 public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final GroupRepository groupRepository;
+    private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public ScheduleServiceImpl(
-        ScheduleRepository scheduleRepository) {
+        ScheduleRepository scheduleRepository,
+        GroupRepository groupRepository,
+        CourseRepository courseRepository,
+        UserRepository userRepository) {
         this.scheduleRepository = scheduleRepository;
+        this.groupRepository = groupRepository;
+        this.courseRepository = courseRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Schedule save(Schedule schedule) {
+    public Schedule save(Principal principal, ScheduleNewDto schedule) {
+        Group group = checkRequest(principal, schedule.getGroup().getId());
+        Schedule newSchedule = ScheduleMapper.INSTANCE.scheduleNewDtoToSchedule(schedule);
+        newSchedule.setGroup(group);
+        newSchedule.setDate(schedule.getDate());
         try {
-            return scheduleRepository.save(schedule);
+            return scheduleRepository.save(newSchedule);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, schedule could not be saved");
@@ -34,25 +56,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Schedule findById(long id) {
-        Schedule schedule = null;
-        Optional<Schedule> option = scheduleRepository.findById(id);
-        if (option.isPresent()) {
-            schedule = option.get();
-        }
-        if (schedule == null) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Schedule Not Found");
-        }
-        return schedule;
+        return scheduleRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Schedule Not Found"));
     }
 
     @Override
     public Page<Schedule> findAll(Pageable pageable) {
-        Page<Schedule> schedules = scheduleRepository.findAll(pageable);
-        if (schedules.getContent().isEmpty()) {
-            throw new CustomException(HttpStatus.NO_CONTENT,
-                "Request has been successfully processed and the response is  blank. Schedules Not Found");
+        try {
+            return scheduleRepository.findAll(pageable);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, schedules cannot be found");
         }
-        return schedules;
     }
 
     @Override
@@ -66,11 +81,43 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Page<Schedule> findAllByGroup_Id(Pageable pageable, long groupId) {
+        groupRepository.findById(groupId)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
         try {
             return scheduleRepository.findAllByGroup_Id(pageable, groupId);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, schedules cannot be found");
         }
+    }
+
+    @Override
+    public Schedule update(Principal principal, ScheduleDto schedule) {
+        scheduleRepository.findById(schedule.getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Schedule Not Found"));
+        Group group = checkRequest(principal, schedule.getGroup().getId());
+        Schedule updateSchedule = ScheduleMapper.INSTANCE.scheduleDtoToSchedule(schedule);
+        updateSchedule.setGroup(group);
+        updateSchedule.setDate(schedule.getDate());
+        try {
+            return scheduleRepository.save(updateSchedule);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, schedule could not be updated");
+        }
+    }
+
+    private Group checkRequest(Principal principal, Long id) {
+        Group group = groupRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
+        Course course = courseRepository.findById(group.getCourse().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+        User user = userRepository.findById(course.getUser().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+        if (!user.getUsername().equals(principal.getName())) {
+            throw new CustomException(HttpStatus.FORBIDDEN,
+                "Invalid request, access is denied");
+        }
+        return group;
     }
 }

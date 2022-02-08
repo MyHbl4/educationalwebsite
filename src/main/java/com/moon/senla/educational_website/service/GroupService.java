@@ -1,13 +1,15 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Group;
-import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.group.GroupDto;
+import com.moon.senla.educational_website.model.dto.group.GroupNewDto;
+import java.security.Principal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface GroupService {
 
-    Group save(Group group);
+    Group save(Principal principal, GroupNewDto group);
 
     Group findById(long id);
 
@@ -17,6 +19,6 @@ public interface GroupService {
 
     Page<Group> findAllGroupsByCourse_Id(Pageable pageable, long id);
 
-    Page<User> getAllUsersByGroup_Id(Pageable pageable, long groupId);
+    Group update(Principal principal, GroupDto group);
 }
 
