@@ -1,8 +1,6 @@
 package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.course.CourseDto;
-import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.user.UserDto;
 import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
@@ -45,15 +43,6 @@ public class UserController {
         this.authenticationService = authenticationService;
     }
 
-    @GetMapping()
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public Page<UserDto> findAll(
-        @PageableDefault(sort = {"id"}) Pageable pageable) {
-        log.info("find all users");
-        return userService.findAll(pageable)
-            .map(UserMapper.INSTANCE::userToUserDto);
-    }
-
     @GetMapping(path = "/search")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<UserDto> findAllUsersByParam(
@@ -74,16 +63,15 @@ public class UserController {
     @PostMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public UserDto newUser(@RequestBody UserNewDto user) {
-        log.info("save user {}", user);
+        log.info("save user: {}", user.getUsername());
         User newUser = authenticationService.register(user);
         return UserMapper.INSTANCE.userToUserDto(newUser);
     }
 
     @PutMapping()
-    @PreAuthorize("#userToUpdate.username == authentication.name")
-    public UserDto update(@RequestBody UserDtoUpdate userToUpdate) {
-        log.info("update user {}", userToUpdate);
-        User user = authenticationService.update(userToUpdate);
+    public UserDto update(Principal principal, @RequestBody UserDtoUpdate userToUpdate) {
+        log.info("update user: {}", principal.getName());
+        User user = authenticationService.update(principal, userToUpdate);
         return UserMapper.INSTANCE.userToUserDto(user);
     }
 
@@ -92,14 +80,5 @@ public class UserController {
     public void delete(@PathVariable(name = "id") long id) {
         log.info("delete user by id {}", id);
         userService.deleteById(id);
-    }
-
-    @GetMapping(path = "/courses")
-    public Page<CourseDto> findAllCoursesByUsername(
-        Principal user,
-        Pageable pageable) {
-        log.info("find courses where author is user: {}", user.getName());
-        return userService.findAllCoursesByUsername(pageable, user.getName())
-            .map(CourseMapper.INSTANCE::courseToCourseDto);
     }
 }
