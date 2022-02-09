@@ -8,12 +8,11 @@ import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.group.GroupNewDto;
+import com.moon.senla.educational_website.model.dto.group.GroupShortDto;
 import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.service.GroupService;
 import java.security.Principal;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,14 +38,8 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group save(Principal principal, GroupNewDto group) {
         Group newGroup = GroupMapper.INSTANCE.groupNewDtoToGroup(group);
-        Course course = courseRepository.findById(group.getCourse().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
-        User user = userRepository.findById(course.getUser().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
-        if (!principal.getName().equals(user.getUsername())) {
-            throw new CustomException(HttpStatus.FORBIDDEN,
-                "Invalid request, access is denied");
-        }
+        Course course = checkRequest(principal, group.getCourse().getId());
+        newGroup.setCourse(course);
         try {
             return groupRepository.save(newGroup);
         } catch (Exception e) {
@@ -57,15 +50,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group findById(long id) {
-        Group group = null;
-        Optional<Group> option = groupRepository.findById(id);
-        if (option.isPresent()) {
-            group = option.get();
-        }
-        if (group == null) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Group Not Found");
-        }
-        return group;
+        return groupRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
     }
 
     @Override
@@ -98,9 +84,21 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group update(Principal principal, GroupDto groupDto) {
-        Group group = GroupMapper.INSTANCE.groupDtoToGroup(groupDto);
-        Course course = courseRepository.findById(groupDto.getCourse().getId())
+    public Group update(Principal principal, GroupShortDto groupDto) {
+        Group group = groupRepository.findById(groupDto.getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
+        checkRequest(principal, group.getCourse().getId());
+        group.setName(groupDto.getName());
+        try {
+            return groupRepository.save(group);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, group could not be updated");
+        }
+    }
+
+    private Course checkRequest(Principal principal, Long id) {
+        Course course = courseRepository.findById(id)
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
         User user = userRepository.findById(course.getUser().getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
@@ -108,14 +106,6 @@ public class GroupServiceImpl implements GroupService {
             throw new CustomException(HttpStatus.FORBIDDEN,
                 "Invalid request, access is denied");
         }
-        groupRepository.findById(groupDto.getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
-        group.setCourse(course);
-        try {
-            return groupRepository.save(group);
-        } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, group could not be updated");
-        }
+        return course;
     }
 }

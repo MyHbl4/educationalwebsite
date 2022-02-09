@@ -3,6 +3,7 @@ package com.moon.senla.educational_website.service;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.group.GroupNewDto;
+import com.moon.senla.educational_website.model.dto.group.GroupShortDto;
 import java.security.Principal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,6 @@ public interface GroupService {
 
     Page<Group> findAllGroupsByCourse_Id(Pageable pageable, long id);
 
-    Group update(Principal principal, GroupDto group);
+    Group update(Principal principal, GroupShortDto group);
 }
 

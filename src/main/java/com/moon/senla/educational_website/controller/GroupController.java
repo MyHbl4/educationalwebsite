@@ -3,6 +3,7 @@ package com.moon.senla.educational_website.controller;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.group.GroupNewDto;
+import com.moon.senla.educational_website.model.dto.group.GroupShortDto;
 import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
@@ -69,7 +70,7 @@ public class GroupController {
     }
 
     @PutMapping()
-    public GroupDto update(Principal principal, @RequestBody GroupDto groupToUpdate) {
+    public GroupDto update(Principal principal, @RequestBody GroupShortDto groupToUpdate) {
         log.info("update group name: {}", groupToUpdate.getName());
         Group group = groupService.update(principal, groupToUpdate);
         return GroupMapper.INSTANCE.groupToGroupDto(group);
