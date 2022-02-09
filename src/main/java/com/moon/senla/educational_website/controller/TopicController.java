@@ -6,6 +6,7 @@ import com.moon.senla.educational_website.model.dto.topic.TopicDto;
 import com.moon.senla.educational_website.model.dto.topic.TopicNewDto;
 import com.moon.senla.educational_website.service.TopicService;
 import io.swagger.annotations.Api;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +49,7 @@ public class TopicController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public TopicDto save(@RequestBody TopicNewDto topic) {
+    public TopicDto save(@Valid @RequestBody TopicNewDto topic) {
         log.info("save topic: {}", topic.getName());
         Topic newTopic = topicService.save(topic);
         return TopicMapper.INSTANCE.topicToTopicDto(newTopic);
@@ -56,7 +57,7 @@ public class TopicController {
 
     @PutMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public TopicDto update(@RequestBody TopicDto topicToUpdate) {
+    public TopicDto update(@Valid @RequestBody TopicDto topicToUpdate) {
         log.info("update topic: {}", topicToUpdate.getName());
         Topic topic = topicService.update(topicToUpdate);
         return TopicMapper.INSTANCE.topicToTopicDto(topic);

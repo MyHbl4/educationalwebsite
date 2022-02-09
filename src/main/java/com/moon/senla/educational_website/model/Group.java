@@ -18,6 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class Group implements Serializable {
 
     @Column(name = "name", nullable = false, unique = true)
     @Size(max = 128)
+    @NotBlank
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)

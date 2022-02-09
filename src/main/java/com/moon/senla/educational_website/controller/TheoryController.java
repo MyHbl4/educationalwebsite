@@ -9,6 +9,7 @@ import com.moon.senla.educational_website.service.SearchFilterService;
 import com.moon.senla.educational_website.service.TheoryService;
 import io.swagger.annotations.Api;
 import java.security.Principal;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,14 +48,15 @@ public class TheoryController {
     }
 
     @PostMapping()
-    public TheoryDto save(Principal principal, @RequestBody TheoryNewDto theory) {
+    public TheoryDto save(Principal principal, @Valid @RequestBody TheoryNewDto theory) {
         log.info("save theory: {}", theory.getName());
         Theory newTheory = theoryService.save(principal, theory);
         return TheoryMapper.INSTANCE.theoryToTheoryDto(newTheory);
     }
 
     @PutMapping()
-    public TheoryDto update(Principal principal, @RequestBody TheoryUpdateDto theoryToUpdate) {
+    public TheoryDto update(Principal principal,
+        @Valid @RequestBody TheoryUpdateDto theoryToUpdate) {
         log.info("update theory: {}", theoryToUpdate.getName());
         Theory theory = theoryService.update(principal, theoryToUpdate);
         return TheoryMapper.INSTANCE.theoryToTheoryDto(theory);

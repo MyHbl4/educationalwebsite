@@ -14,6 +14,7 @@ import com.moon.senla.educational_website.service.ScheduleService;
 import com.moon.senla.educational_website.service.UserService;
 import io.swagger.annotations.Api;
 import java.security.Principal;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,14 +64,14 @@ public class GroupController {
     }
 
     @PostMapping()
-    public GroupDto save(Principal principal, @RequestBody GroupNewDto group) {
+    public GroupDto save(Principal principal, @Valid @RequestBody GroupNewDto group) {
         log.info("save group name: {}", group.getName());
         Group newGroup = groupService.save(principal, group);
         return GroupMapper.INSTANCE.groupToGroupDto(newGroup);
     }
 
     @PutMapping()
-    public GroupDto update(Principal principal, @RequestBody GroupShortDto groupToUpdate) {
+    public GroupDto update(Principal principal, @Valid @RequestBody GroupShortDto groupToUpdate) {
         log.info("update group name: {}", groupToUpdate.getName());
         Group group = groupService.update(principal, groupToUpdate);
         return GroupMapper.INSTANCE.groupToGroupDto(group);

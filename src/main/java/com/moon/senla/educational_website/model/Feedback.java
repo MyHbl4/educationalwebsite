@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,11 +48,13 @@ public class Feedback implements Serializable {
     @Column(name = "detention")
     @Lob
     @Type(type = "org.hibernate.type.TextType")
+    @NotBlank
     private String detention;
 
     @Column(name = "rank", nullable = false)
     @Min(1)
     @Max(5)
+    @NotBlank
     private int rank;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

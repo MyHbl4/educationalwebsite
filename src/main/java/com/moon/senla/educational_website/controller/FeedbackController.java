@@ -8,6 +8,7 @@ import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
 import com.moon.senla.educational_website.service.FeedbackService;
 import io.swagger.annotations.Api;
 import java.security.Principal;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,7 +53,7 @@ public class FeedbackController {
     }
 
     @PostMapping()
-    public FeedbackDto save(Principal principal, @RequestBody FeedbackNewDto feedback) {
+    public FeedbackDto save(Principal principal, @Valid @RequestBody FeedbackNewDto feedback) {
         log.info("save feedback by user: {}", principal.getName());
         Feedback newFeedback = feedbackService.save(principal, feedback);
         return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(newFeedback);
@@ -60,7 +61,7 @@ public class FeedbackController {
 
     @PutMapping()
     public FeedbackDto update(Principal principal,
-        @RequestBody FeedbackUpdateDto feedbackToUpdate) {
+        @Valid @RequestBody FeedbackUpdateDto feedbackToUpdate) {
         log.info("update feedback id: {}", feedbackToUpdate.getId());
         Feedback feedback = feedbackService.update(principal, feedbackToUpdate);
         return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(feedback);

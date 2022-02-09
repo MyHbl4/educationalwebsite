@@ -15,6 +15,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,9 +38,14 @@ public class Course implements Serializable {
     private Long id;
 
     @Column(name = "name", nullable = false)
+    @Size(max = 128)
+    @NotBlank
     private String name;
 
     @Column(name = "price")
+    @Min(0)
+    @Max(100000)
+    @NotBlank
     private int price;
 
     @ManyToOne(fetch = FetchType.EAGER)

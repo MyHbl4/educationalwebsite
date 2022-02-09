@@ -19,6 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -44,23 +45,27 @@ public class User extends BaseEntity implements Serializable {
 
     @Column(name = "email", nullable = false, unique = true)
     @Email
-    @NotEmpty
+    @NotBlank
     @Size(max = 128)
     private String email;
 
     @Column(name = "username", nullable = false, unique = true)
+    @NotBlank
     @Size(max = 128)
     private String username;
 
     @Column(name = "first_name", nullable = false)
+    @NotBlank
     @Size(max = 128)
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
+    @NotBlank
     @Size(max = 128)
     private String lastName;
 
     @Column(name = "password", nullable = false)
+    @NotBlank
     @Size(max = 256)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;

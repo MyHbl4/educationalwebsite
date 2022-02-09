@@ -8,6 +8,7 @@ import com.moon.senla.educational_website.model.dto.schedule.ScheduleShortDto;
 import com.moon.senla.educational_website.service.ScheduleService;
 import io.swagger.annotations.Api;
 import java.security.Principal;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,14 +52,15 @@ public class ScheduleController {
     }
 
     @PostMapping()
-    public ScheduleShortDto save(Principal principal, @RequestBody ScheduleNewDto schedule) {
+    public ScheduleShortDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
         log.info("save schedule: {}", schedule.getDate());
         Schedule newSchedule = scheduleService.save(principal, schedule);
         return ScheduleMapper.INSTANCE.scheduleToScheduleShortDto(newSchedule);
     }
 
     @PutMapping()
-    public ScheduleShortDto update(Principal principal, @RequestBody ScheduleDto scheduleToUpdate) {
+    public ScheduleShortDto update(Principal principal,
+        @Valid @RequestBody ScheduleDto scheduleToUpdate) {
         log.info("update schedule: {}", scheduleToUpdate.getId());
         Schedule schedule = scheduleService.update(principal, scheduleToUpdate);
         return ScheduleMapper.INSTANCE.scheduleToScheduleShortDto(schedule);

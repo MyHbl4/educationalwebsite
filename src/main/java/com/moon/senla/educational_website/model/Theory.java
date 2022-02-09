@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,11 +40,13 @@ public class Theory implements Serializable {
 
     @Column(name = "name", nullable = false, unique = true)
     @Size(max = 128)
+    @NotBlank
     private String name;
 
     @Column(name = "description")
     @Lob
     @Type(type = "org.hibernate.type.TextType")
+    @NotBlank
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)

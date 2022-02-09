@@ -15,6 +15,7 @@ import com.moon.senla.educational_website.service.GroupService;
 import com.moon.senla.educational_website.service.SearchFilterService;
 import io.swagger.annotations.Api;
 import java.security.Principal;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,14 +67,15 @@ public class CourseController {
     }
 
     @PostMapping()
-    public CourseDto save(Principal principal, @RequestBody CourseNewDto course) {
+    public CourseDto save(Principal principal, @Valid @RequestBody CourseNewDto course) {
         log.info("save course: {}", course.getName());
         Course newCourse = courseService.save(principal, course);
         return CourseMapper.INSTANCE.courseToCourseDto(newCourse);
     }
 
     @PutMapping()
-    public CourseDto update(Principal principal, @RequestBody CourseUpdateDto courseToUpdate) {
+    public CourseDto update(Principal principal,
+        @Valid @RequestBody CourseUpdateDto courseToUpdate) {
         log.info("update course: {}", courseToUpdate.getName());
         Course course = courseService.update(principal, courseToUpdate);
         return CourseMapper.INSTANCE.courseToCourseDto(course);
