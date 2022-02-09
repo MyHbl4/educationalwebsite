@@ -2,9 +2,12 @@ package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.dto.feedback.FeedbackDto;
+import com.moon.senla.educational_website.model.dto.feedback.FeedbackNewDto;
+import com.moon.senla.educational_website.model.dto.feedback.FeedbackUpdateDto;
 import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
 import com.moon.senla.educational_website.service.FeedbackService;
 import io.swagger.annotations.Api;
+import java.security.Principal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +36,7 @@ public class FeedbackController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<FeedbackDto> findAll(@PageableDefault(sort = {"id"})
         Pageable pageable) {
         log.info("find all feedbacks");
@@ -48,24 +52,23 @@ public class FeedbackController {
     }
 
     @PostMapping()
-    public FeedbackDto save(@RequestBody Feedback feedback) {
-        log.info("save feedback {}", feedback);
-        Feedback newFeedback = feedbackService.save(feedback);
+    public FeedbackDto save(Principal principal, @RequestBody FeedbackNewDto feedback) {
+        log.info("save feedback by user: {}", principal.getName());
+        Feedback newFeedback = feedbackService.save(principal, feedback);
         return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(newFeedback);
     }
 
     @PutMapping()
-    @PreAuthorize("#feedbackToUpdate.user.username == authentication.name")
-    public FeedbackDto update(@RequestBody Feedback feedbackToUpdate) {
-        log.info("update feedback {}", feedbackToUpdate);
-        Feedback feedback = feedbackService.save(feedbackToUpdate);
+    public FeedbackDto update(Principal principal,
+        @RequestBody FeedbackUpdateDto feedbackToUpdate) {
+        log.info("update feedback id: {}", feedbackToUpdate.getId());
+        Feedback feedback = feedbackService.update(principal, feedbackToUpdate);
         return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(feedback);
     }
 
     @DeleteMapping(path = "/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void delete(@PathVariable(name = "id") long id) {
+    public void delete(Principal principal, @PathVariable(name = "id") long id) {
         log.info("delete feedback by id {}", id);
-        feedbackService.deleteById(id);
+        feedbackService.deleteById(principal, id);
     }
 }

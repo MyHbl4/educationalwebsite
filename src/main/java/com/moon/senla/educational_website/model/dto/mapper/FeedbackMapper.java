@@ -3,6 +3,7 @@ package com.moon.senla.educational_website.model.dto.mapper;
 import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.dto.feedback.FeedbackDto;
 import com.moon.senla.educational_website.model.dto.feedback.FeedbackNewDto;
+import com.moon.senla.educational_website.model.dto.feedback.FeedbackUpdateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -17,4 +18,8 @@ public interface FeedbackMapper {
     Feedback feedbackDtoToFeedback(FeedbackDto feedback);
 
     Feedback feedbackNewDtoToFeedback(FeedbackNewDto feedback);
+
+    FeedbackUpdateDto feedbackToFeedbackUpdateDto(Feedback feedback);
+
+    Feedback feedbackUpdateDtoToFeedback(FeedbackUpdateDto feedback);
 }

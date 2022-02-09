@@ -1,13 +1,18 @@
 package com.moon.senla.educational_website.service.impl;
 
 
+import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.FeedbackRepository;
+import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Feedback;
-import com.moon.senla.educational_website.service.CourseService;
+import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.feedback.FeedbackNewDto;
+import com.moon.senla.educational_website.model.dto.feedback.FeedbackUpdateDto;
+import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
 import com.moon.senla.educational_website.service.FeedbackService;
-import java.util.Optional;
+import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,26 +24,34 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedbackServiceImpl implements FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
-    private final CourseService courseService;
+    private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public FeedbackServiceImpl(
         FeedbackRepository feedbackRepository,
-        CourseService courseService) {
+        CourseRepository courseRepository,
+        UserRepository userRepository) {
         this.feedbackRepository = feedbackRepository;
-        this.courseService = courseService;
+        this.courseRepository = courseRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     @Transactional
-    public Feedback save(Feedback feedback) {
+    public Feedback save(Principal principal, FeedbackNewDto newFeedback) {
+        Feedback feedback = FeedbackMapper.INSTANCE.feedbackNewDtoToFeedback(newFeedback);
+        User user = userRepository.findByUsername(principal.getName());
+        Course course = courseRepository.findById(feedback.getCourse().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+        feedback.setUser(user);
+        feedback.setCourse(course);
         try {
             Feedback feed = feedbackRepository.save(feedback);
             int averageRank = feedbackRepository.findAverageRankByCourseId(
                 feed.getCourse().getId());
-            Course course = courseService.findById(feed.getCourse().getId());
             course.setRating(averageRank);
-            courseService.save(course);
+            courseRepository.save(course);
             return feed;
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
@@ -48,33 +61,82 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public Feedback findById(long id) {
-        Feedback feedback = null;
-        Optional<Feedback> option = feedbackRepository.findById(id);
-        if (option.isPresent()) {
-            feedback = option.get();
-        }
-        if (feedback == null) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Feedback Not Found");
-        }
-        return feedback;
+        return feedbackRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Feedback Not Found"));
     }
 
     @Override
     public Page<Feedback> findAll(Pageable pageable) {
-        Page<Feedback> feedbacks = feedbackRepository.findAll(pageable);
-        if (feedbacks.getContent().isEmpty()) {
-            throw new CustomException(HttpStatus.NO_CONTENT,
-                "Request has been successfully processed and the response is  blank. Feedbacks Not Found");
+        try {
+            return feedbackRepository.findAll(pageable);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, feedback cannot be found");
         }
-        return feedbacks;
+    }
+
+
+    @Override
+    @Transactional
+    public void deleteById(Principal principal, long id) {
+        Feedback oldFeedback = feedbackRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Feedback Not Found"));
+        Course course = courseRepository.findById(oldFeedback.getCourse().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+        User user = userRepository.findById(oldFeedback.getUser().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+        if (!user.getUsername().equals(principal.getName())) {
+            throw new CustomException(HttpStatus.FORBIDDEN,
+                "Invalid request, access is denied");
+        }
+        try {
+            feedbackRepository.deleteById(id);
+            int averageRank = feedbackRepository.findAverageRankByCourseId(
+                course.getId());
+            course.setRating(averageRank);
+            courseRepository.save(course);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, feedback could not be saved");
+        }
     }
 
     @Override
-    public void deleteById(long id) {
+    public Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, long courseId) {
         try {
-            feedbackRepository.deleteById(id);
+            return feedbackRepository.findAllByCourse_Id(pageable, courseId);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Feedback Not Found");
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, feedbacks cannot be found");
+        }
+    }
+
+    @Override
+    @Transactional
+    public Feedback update(Principal principal, FeedbackUpdateDto feedbackToUpdate) {
+        Feedback feedback = FeedbackMapper.INSTANCE.feedbackUpdateDtoToFeedback(feedbackToUpdate);
+        Feedback oldFeedback = feedbackRepository.findById(feedbackToUpdate.getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Feedback Not Found"));
+        User user = userRepository.findById(oldFeedback.getUser().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+        if (!user.getUsername().equals(principal.getName())) {
+            throw new CustomException(HttpStatus.FORBIDDEN,
+                "Invalid request, access is denied");
+        }
+        Course course = courseRepository.findById(oldFeedback.getCourse().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+        feedback.setUser(user);
+        feedback.setCourse(course);
+        try {
+            Feedback feed = feedbackRepository.save(feedback);
+            int averageRank = feedbackRepository.findAverageRankByCourseId(
+                feed.getCourse().getId());
+            course.setRating(averageRank);
+            courseRepository.save(course);
+            return feed;
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, feedback could not be saved");
         }
     }
 
