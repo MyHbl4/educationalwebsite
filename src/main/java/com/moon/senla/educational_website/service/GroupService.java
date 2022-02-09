@@ -1,7 +1,6 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Group;
-import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.group.GroupNewDto;
 import com.moon.senla.educational_website.model.dto.group.GroupShortDto;
 import java.security.Principal;
