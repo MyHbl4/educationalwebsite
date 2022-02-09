@@ -44,7 +44,6 @@ public class UserController {
     }
 
     @GetMapping(path = "/search")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<UserDto> findAllUsersByParam(
         @PageableDefault(sort = {"id"}) Pageable pageable,
         @RequestParam(value = "firstName", required = false) String firstName,

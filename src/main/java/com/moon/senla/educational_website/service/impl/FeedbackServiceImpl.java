@@ -103,6 +103,8 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, long courseId) {
+        courseRepository.findById(courseId)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
         try {
             return feedbackRepository.findAllByCourse_Id(pageable, courseId);
         } catch (Exception e) {

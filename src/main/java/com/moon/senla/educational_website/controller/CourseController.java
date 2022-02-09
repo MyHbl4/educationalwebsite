@@ -2,13 +2,19 @@ package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.dto.course.CourseDto;
+import com.moon.senla.educational_website.model.dto.course.CourseNewDto;
+import com.moon.senla.educational_website.model.dto.course.CourseUpdateDto;
+import com.moon.senla.educational_website.model.dto.feedback.FeedbackDto;
 import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
+import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
 import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.service.CourseService;
+import com.moon.senla.educational_website.service.FeedbackService;
 import com.moon.senla.educational_website.service.GroupService;
 import com.moon.senla.educational_website.service.SearchFilterService;
 import io.swagger.annotations.Api;
+import java.security.Principal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,13 +39,16 @@ public class CourseController {
     private final CourseService courseService;
     private final SearchFilterService searchFilterService;
     private final GroupService groupService;
+    private final FeedbackService feedbackService;
 
     public CourseController(CourseService courseService,
         SearchFilterService searchFilterService,
-        GroupService groupService) {
+        GroupService groupService,
+        FeedbackService feedbackService) {
         this.courseService = courseService;
         this.searchFilterService = searchFilterService;
         this.groupService = groupService;
+        this.feedbackService = feedbackService;
     }
 
     @GetMapping()
@@ -57,17 +66,16 @@ public class CourseController {
     }
 
     @PostMapping()
-    public CourseDto save(@RequestBody Course course) {
-        log.info("save course {}", course);
-        Course newCourse = courseService.save(course);
+    public CourseDto save(Principal principal, @RequestBody CourseNewDto course) {
+        log.info("save course: {}", course.getName());
+        Course newCourse = courseService.save(principal, course);
         return CourseMapper.INSTANCE.courseToCourseDto(newCourse);
     }
 
     @PutMapping()
-    @PreAuthorize("#courseToUpdate.user.username == authentication.name")
-    public CourseDto update(@RequestBody Course courseToUpdate) {
-        log.info("update course {}", courseToUpdate);
-        Course course = courseService.save(courseToUpdate);
+    public CourseDto update(Principal principal, @RequestBody CourseUpdateDto courseToUpdate) {
+        log.info("update course: {}", courseToUpdate.getName());
+        Course course = courseService.update(principal, courseToUpdate);
         return CourseMapper.INSTANCE.courseToCourseDto(course);
     }
 
@@ -94,5 +102,22 @@ public class CourseController {
         log.info("find groups by course id {}", id);
         return groupService.findAllGroupsByCourse_Id(pageable, id)
             .map(GroupMapper.INSTANCE::groupToGroupDto);
+    }
+
+    @GetMapping(path = "/courses")
+    public Page<CourseDto> findAllCoursesByUsername(
+        Principal principal,
+        Pageable pageable) {
+        log.info("find courses where author is user: {}", principal.getName());
+        return courseService.findAllCoursesByUsername(pageable, principal.getName())
+            .map(CourseMapper.INSTANCE::courseToCourseDto);
+    }
+
+    @GetMapping(path = "/{id}/feedbacks")
+    public Page<FeedbackDto> findAllFeedbacksByCourse_Id(@PathVariable(name = "id") long id,
+        Pageable pageable) {
+        log.info("find groups by course id {}", id);
+        return feedbackService.getAllFeedbackByCourseId(pageable, id)
+            .map(FeedbackMapper.INSTANCE::feedbackToFeedbackDto);
     }
 }

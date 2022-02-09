@@ -54,7 +54,6 @@ public class TheoryController {
     }
 
     @PutMapping()
-    @PreAuthorize("#theoryToUpdate.user.username == authentication.name")
     public TheoryDto update(Principal principal, @RequestBody TheoryUpdateDto theoryToUpdate) {
         log.info("update theory: {}", theoryToUpdate.getName());
         Theory theory = theoryService.update(principal, theoryToUpdate);

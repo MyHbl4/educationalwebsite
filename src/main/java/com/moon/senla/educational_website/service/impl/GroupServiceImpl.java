@@ -75,6 +75,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Page<Group> findAllGroupsByCourse_Id(Pageable pageable, long id) {
+        courseRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
         try {
             return groupRepository.findAllByCourse_Id(pageable, id);
         } catch (Exception e) {

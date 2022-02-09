@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.dto.course.CourseDto;
 import com.moon.senla.educational_website.model.dto.course.CourseDtoShort;
 import com.moon.senla.educational_website.model.dto.course.CourseNewDto;
+import com.moon.senla.educational_website.model.dto.course.CourseUpdateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -22,4 +23,8 @@ public interface CourseMapper {
     Course courseDtoShortToCourse(CourseDtoShort course);
 
     Course courseNewDtoToCourse(CourseNewDto course);
+
+    CourseUpdateDto courseToCourseUpdateDto(Course update);
+
+    Course courseUpdateDtoToCourse(CourseUpdateDto update);
 }

@@ -2,10 +2,15 @@ package com.moon.senla.educational_website.service.impl;
 
 
 import com.moon.senla.educational_website.dao.CourseRepository;
+import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Course;
+import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.model.dto.course.CourseNewDto;
+import com.moon.senla.educational_website.model.dto.course.CourseUpdateDto;
+import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.service.CourseService;
-import java.util.Optional;
+import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,15 +21,20 @@ import org.springframework.stereotype.Service;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository,
+        UserRepository userRepository) {
         this.courseRepository = courseRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Course save(Course course) {
+    public Course save(Principal principal, CourseNewDto newCourse) {
         try {
+            Course course = CourseMapper.INSTANCE.courseNewDtoToCourse(newCourse);
+            course.setUser(userRepository.findByUsername(principal.getName()));
             return courseRepository.save(course);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
@@ -34,25 +44,18 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course findById(long id) {
-        Course course = null;
-        Optional<Course> option = courseRepository.findById(id);
-        if (option.isPresent()) {
-            course = option.get();
-        }
-        if (course == null) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Course Not Found");
-        }
-        return course;
+        return courseRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
     }
 
     @Override
     public Page<Course> findAll(Pageable pageable) {
-        Page<Course> courses = courseRepository.findAll(pageable);
-        if (courses.getContent().isEmpty()) {
-            throw new CustomException(HttpStatus.NO_CONTENT,
-                "Request has been successfully processed and the response is  blank. Courses Not Found");
+        try {
+            return courseRepository.findAll(pageable);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, courses cannot be found");
         }
-        return courses;
     }
 
     @Override
@@ -61,6 +64,41 @@ public class CourseServiceImpl implements CourseService {
             courseRepository.deleteById(id);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.NOT_FOUND, "Course Not Found");
+        }
+    }
+
+    @Override
+    public Course update(Principal principal, CourseUpdateDto courseToUpdate) {
+        Course oldCourse = courseRepository.findById(courseToUpdate.getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+        User user = userRepository.findById(oldCourse.getUser().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+        if (!user.getUsername().equals(principal.getName())) {
+            throw new CustomException(HttpStatus.FORBIDDEN,
+                "Invalid request, access is denied");
+        }
+        oldCourse.setName(courseToUpdate.getName());
+        oldCourse.setPrice(courseToUpdate.getPrice());
+        try {
+            return courseRepository.save(oldCourse);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, course could not be updated");
+        }
+    }
+
+    @Override
+    public Page<Course> findAllCoursesByUsername(Pageable pageable, String username) {
+        try {
+            Page<Course> courses = courseRepository.findAllCoursesByUsername(pageable, username);
+            if (courses.getContent().isEmpty()) {
+                throw new CustomException(HttpStatus.NO_CONTENT,
+                    "Courses by this user id Not Found");
+            }
+            return courses;
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, courses cannot be found");
         }
     }
 

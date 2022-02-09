@@ -12,6 +12,7 @@ import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
 import com.moon.senla.educational_website.model.dto.user.UserNewDto;
 import com.moon.senla.educational_website.security.jwt.JwtTokenProvider;
 import com.moon.senla.educational_website.service.AuthenticationService;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +89,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setRoles(userRoles);
             user.setStatus(Status.ACTIVE);
             User registeredUser = userRepository.save(user);
-            log.info("IN register - user id: {} successfully registered", registeredUser.getId());
+            log.info("Register - user id: {} successfully registered", registeredUser.getId());
 
             return registeredUser;
         } catch (Exception e) {
@@ -97,17 +98,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    public User update(UserDtoUpdate updateUser) {
+    public User update(Principal principal, UserDtoUpdate updateUser) {
         try {
             User user = UserMapper.INSTANCE.userDtoUpdateToUser(updateUser);
+            User oldUser = userRepository.findByUsername(principal.getName());
             Role roleUser = roleRepository.findByName("ROLE_USER");
             List<Role> userRoles = new ArrayList<>();
             userRoles.add(roleUser);
+            user.setUsername(oldUser.getUsername());
+            user.setId(oldUser.getId());
             user.setRoles(userRoles);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setStatus(Status.ACTIVE);
             User updatedUser = userRepository.save(user);
-            log.info("IN update - user id: {} successfully updated", updatedUser.getId());
+            log.info("Update - user id: {} successfully updated", updatedUser.getId());
 
             return updatedUser;
         } catch (Exception e) {
