@@ -48,18 +48,18 @@ public class TheoryServiceImpl implements TheoryService {
 
     @Override
     public Theory update(Principal principal, TheoryUpdateDto theory) {
-        User user = userRepository.findById(theory.getUser().getId())
+        Theory oldTheory = theoryRepository.findById(theory.getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Theory Not Found"));
+        User user = userRepository.findById(oldTheory.getUser().getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
         if (!user.getUsername().equals(principal.getName())) {
             throw new CustomException(HttpStatus.FORBIDDEN,
                 "Invalid request, access is denied");
         }
-        topicRepository.findById(theory.getTopic().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found"));
-        theoryRepository.findById(theory.getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Theory Not Found"));
+        oldTheory.setName(theory.getName());
+        oldTheory.setDescription(theory.getDescription());
         try {
-            return theoryRepository.save(TheoryMapper.INSTANCE.theoryUpdateDtoToTheory(theory));
+            return theoryRepository.save(oldTheory);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, theory could not be updated");
@@ -74,10 +74,13 @@ public class TheoryServiceImpl implements TheoryService {
 
     @Override
     public void deleteById(long id) {
+        theoryRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Theory Not Found"));
         try {
             theoryRepository.deleteById(id);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Theory Not Found");
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, failed to delete");
         }
     }
 

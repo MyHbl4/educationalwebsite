@@ -66,10 +66,13 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void deleteById(long id) {
+        groupRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
         try {
             groupRepository.deleteById(id);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Group Not Found");
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, failed to delete");
         }
     }
 

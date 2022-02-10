@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @PutMapping()
-    public UserDto update(Principal principal, @Valid @RequestBody UserDtoUpdate userToUpdate) {
+    public UserDto updateUser(Principal principal, @Valid @RequestBody UserDtoUpdate userToUpdate) {
         log.info("update user: {}", principal.getName());
         User user = authenticationService.update(principal, userToUpdate);
         return UserMapper.INSTANCE.userToUserDto(user);
@@ -77,8 +77,8 @@ public class UserController {
 
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void delete(@PathVariable(name = "id") long id) {
+    public UserDto delete(@PathVariable(name = "id") long id) {
         log.info("delete user by id {}", id);
-        userService.deleteById(id);
+        return UserMapper.INSTANCE.userToUserDto(userService.deleteById(id));
     }
 }

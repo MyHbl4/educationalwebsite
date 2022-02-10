@@ -116,7 +116,6 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     @Transactional
     public Feedback update(Principal principal, FeedbackUpdateDto feedbackToUpdate) {
-        Feedback feedback = FeedbackMapper.INSTANCE.feedbackUpdateDtoToFeedback(feedbackToUpdate);
         Feedback oldFeedback = feedbackRepository.findById(feedbackToUpdate.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Feedback Not Found"));
         User user = userRepository.findById(oldFeedback.getUser().getId())
@@ -127,10 +126,10 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
         Course course = courseRepository.findById(oldFeedback.getCourse().getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
-        feedback.setUser(user);
-        feedback.setCourse(course);
+        oldFeedback.setDetention(feedbackToUpdate.getDetention());
+        oldFeedback.setRank(feedbackToUpdate.getRank());
         try {
-            Feedback feed = feedbackRepository.save(feedback);
+            Feedback feed = feedbackRepository.save(oldFeedback);
             int averageRank = feedbackRepository.findAverageRankByCourseId(
                 feed.getCourse().getId());
             course.setRating(averageRank);

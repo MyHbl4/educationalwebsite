@@ -100,17 +100,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public User update(Principal principal, UserDtoUpdate updateUser) {
         try {
-            User user = UserMapper.INSTANCE.userDtoUpdateToUser(updateUser);
             User oldUser = userRepository.findByUsername(principal.getName());
-            Role roleUser = roleRepository.findByName("ROLE_USER");
-            List<Role> userRoles = new ArrayList<>();
-            userRoles.add(roleUser);
-            user.setUsername(oldUser.getUsername());
-            user.setId(oldUser.getId());
-            user.setRoles(userRoles);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setStatus(Status.ACTIVE);
-            User updatedUser = userRepository.save(user);
+            oldUser.setEmail(updateUser.getEmail());
+            oldUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
+            oldUser.setFirstName(updateUser.getFirstName());
+            oldUser.setLastName(updateUser.getLastName());
+            oldUser.setStatus(updateUser.getStatus());
+            User updatedUser = userRepository.save(oldUser);
             log.info("Update - user id: {} successfully updated", updatedUser.getId());
 
             return updatedUser;

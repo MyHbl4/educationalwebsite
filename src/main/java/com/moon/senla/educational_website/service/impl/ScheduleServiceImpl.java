@@ -10,8 +10,8 @@ import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.Schedule;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
-import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleNewDto;
+import com.moon.senla.educational_website.model.dto.schedule.ScheduleUpdateDto;
 import com.moon.senla.educational_website.service.ScheduleService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +71,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public void deleteById(long id) {
+    public void deleteById(Principal principal, long id) {
+        Schedule oldSchedule = scheduleRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Schedule Not Found"));
+        checkRequest(principal, oldSchedule.getGroup().getId());
         try {
             scheduleRepository.deleteById(id);
         } catch (Exception e) {
@@ -92,15 +95,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule update(Principal principal, ScheduleDto schedule) {
-        scheduleRepository.findById(schedule.getId())
+    public Schedule update(Principal principal, ScheduleUpdateDto schedule) {
+        Schedule oldSchedule = scheduleRepository.findById(schedule.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Schedule Not Found"));
-        Group group = checkRequest(principal, schedule.getGroup().getId());
-        Schedule updateSchedule = ScheduleMapper.INSTANCE.scheduleDtoToSchedule(schedule);
-        updateSchedule.setGroup(group);
-        updateSchedule.setDate(schedule.getDate());
+        checkRequest(principal, oldSchedule.getGroup().getId());
+        oldSchedule.setDate(schedule.getDate());
         try {
-            return scheduleRepository.save(updateSchedule);
+            return scheduleRepository.save(oldSchedule);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, schedule could not be updated");

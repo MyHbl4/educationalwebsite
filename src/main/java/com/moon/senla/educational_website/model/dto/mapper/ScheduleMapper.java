@@ -4,7 +4,6 @@ import com.moon.senla.educational_website.model.Schedule;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleDateDto;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleNewDto;
-import com.moon.senla.educational_website.model.dto.schedule.ScheduleShortDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -23,8 +22,4 @@ public interface ScheduleMapper {
     Schedule scheduleToScheduleDateDto(ScheduleDateDto schedule);
 
     ScheduleDateDto scheduleDateDtoToSchedule(Schedule schedule);
-
-    ScheduleShortDto scheduleToScheduleShortDto(Schedule schedule);
-
-    Schedule scheduleShortDtoToSchedule(ScheduleShortDto schedule);
 }

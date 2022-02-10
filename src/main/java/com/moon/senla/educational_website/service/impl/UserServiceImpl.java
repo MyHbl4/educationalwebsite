@@ -3,6 +3,7 @@ package com.moon.senla.educational_website.service.impl;
 import com.moon.senla.educational_website.dao.GroupRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.model.Status;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,11 +47,15 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void deleteById(long id) {
+    public User deleteById(long id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+        user.setStatus(Status.DELETED);
         try {
-            userRepository.deleteById(id);
+            return userRepository.save(user);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "User Not Found");
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, failed to delete");
         }
     }
 

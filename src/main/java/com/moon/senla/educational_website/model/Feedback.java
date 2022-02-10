@@ -54,7 +54,6 @@ public class Feedback implements Serializable {
     @Column(name = "rank", nullable = false)
     @Min(1)
     @Max(5)
-    @NotBlank
     private int rank;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

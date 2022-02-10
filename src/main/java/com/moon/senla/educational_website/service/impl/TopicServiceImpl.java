@@ -52,19 +52,23 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public void deleteById(long id) {
+        topicRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found"));
         try {
             topicRepository.deleteById(id);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found");
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, failed to delete");
         }
     }
 
     @Override
     public Topic update(TopicDto topicUpdate) {
-        topicRepository.findById(topicUpdate.getId())
+        Topic oldTopic = topicRepository.findById(topicUpdate.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found"));
+        oldTopic.setName(topicUpdate.getName());
         try {
-            return topicRepository.save(TopicMapper.INSTANCE.topicDtoToTopic(topicUpdate));
+            return topicRepository.save(oldTopic);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, topic could not be updated");

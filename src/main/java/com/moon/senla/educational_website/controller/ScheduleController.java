@@ -4,7 +4,7 @@ import com.moon.senla.educational_website.model.Schedule;
 import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleNewDto;
-import com.moon.senla.educational_website.model.dto.schedule.ScheduleShortDto;
+import com.moon.senla.educational_website.model.dto.schedule.ScheduleUpdateDto;
 import com.moon.senla.educational_website.service.ScheduleService;
 import io.swagger.annotations.Api;
 import java.security.Principal;
@@ -52,24 +52,23 @@ public class ScheduleController {
     }
 
     @PostMapping()
-    public ScheduleShortDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
+    public ScheduleDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
         log.info("save schedule: {}", schedule.getDate());
         Schedule newSchedule = scheduleService.save(principal, schedule);
-        return ScheduleMapper.INSTANCE.scheduleToScheduleShortDto(newSchedule);
+        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(newSchedule);
     }
 
     @PutMapping()
-    public ScheduleShortDto update(Principal principal,
-        @Valid @RequestBody ScheduleDto scheduleToUpdate) {
+    public ScheduleDto update(Principal principal,
+        @Valid @RequestBody ScheduleUpdateDto scheduleToUpdate) {
         log.info("update schedule: {}", scheduleToUpdate.getId());
         Schedule schedule = scheduleService.update(principal, scheduleToUpdate);
-        return ScheduleMapper.INSTANCE.scheduleToScheduleShortDto(schedule);
+        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(schedule);
     }
 
     @DeleteMapping(path = "/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void delete(@PathVariable(name = "id") long id) {
+    public void delete(Principal principal, @PathVariable(name = "id") long id) {
         log.info("delete schedule by id {}", id);
-        scheduleService.deleteById(id);
+        scheduleService.deleteById(principal, id);
     }
 }

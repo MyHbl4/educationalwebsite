@@ -10,7 +10,7 @@ public interface UserService {
 
     User findById(long id);
 
-    void deleteById(long id);
+    User deleteById(long id);
 
     Page<User> getAllUsersByGroup_Id(Pageable pageable, long groupId);
 }

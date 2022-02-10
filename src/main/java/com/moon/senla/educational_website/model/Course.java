@@ -45,7 +45,6 @@ public class Course implements Serializable {
     @Column(name = "price")
     @Min(0)
     @Max(100000)
-    @NotBlank
     private int price;
 
     @ManyToOne(fetch = FetchType.EAGER)

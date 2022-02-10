@@ -1,7 +1,6 @@
 package com.moon.senla.educational_website.model.dto.schedule;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.group.GroupShortDto;
 import java.time.LocalDateTime;
 import lombok.Getter;

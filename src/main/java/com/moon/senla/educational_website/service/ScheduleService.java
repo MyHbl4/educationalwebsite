@@ -1,8 +1,8 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Schedule;
-import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleNewDto;
+import com.moon.senla.educational_website.model.dto.schedule.ScheduleUpdateDto;
 import java.security.Principal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +15,10 @@ public interface ScheduleService {
 
     Page<Schedule> findAll(Pageable pageable);
 
-    void deleteById(long id);
+    void deleteById(Principal principal, long id);
 
     Page<Schedule> findAllByGroup_Id(Pageable pageable, long groupId);
 
-    Schedule update(Principal principal, ScheduleDto schedule);
+    Schedule update(Principal principal, ScheduleUpdateDto schedule);
 }
 
