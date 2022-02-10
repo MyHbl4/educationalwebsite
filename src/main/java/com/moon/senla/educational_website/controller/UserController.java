@@ -81,4 +81,11 @@ public class UserController {
         log.info("delete user by id {}", id);
         return UserMapper.INSTANCE.userToUserDto(userService.deleteById(id));
     }
+
+    @GetMapping(path = "/my-page")
+    public UserDto showMyPage(Principal principal) {
+        log.info("show {} page", principal.getName());
+        User user = userService.findByUsername(principal.getName());
+        return UserMapper.INSTANCE.userToUserDto(user);
+    }
 }
