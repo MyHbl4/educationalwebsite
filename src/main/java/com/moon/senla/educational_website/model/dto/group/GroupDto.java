@@ -14,4 +14,6 @@ public class GroupDto {
     private String name;
     @JsonProperty("course")
     private CourseDtoShort course;
+    private int capacity;
+    private int available;
 }

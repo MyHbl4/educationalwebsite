@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class GroupNewDto {
     private String name;
+    private int capacity;
     @JsonProperty("course")
     private CourseDtoShort course;
 }

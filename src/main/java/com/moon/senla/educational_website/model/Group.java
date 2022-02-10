@@ -18,6 +18,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -56,6 +58,16 @@ public class Group implements Serializable {
         joinColumns = @JoinColumn(name = "group_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users = new ArrayList<>();
+
+    @Column(name = "capacity", nullable = false)
+    @Min(1)
+    @Max(100)
+    private int capacity;
+
+    @Column(name = "available", nullable = false)
+    @Min(0)
+    @Max(100)
+    private int available = capacity;
 
     public void addUser(User user) {
         users.add(user);

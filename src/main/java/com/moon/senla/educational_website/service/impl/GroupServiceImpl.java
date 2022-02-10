@@ -40,6 +40,7 @@ public class GroupServiceImpl implements GroupService {
         Group newGroup = GroupMapper.INSTANCE.groupNewDtoToGroup(group);
         Course course = checkRequest(principal, group.getCourse().getId());
         newGroup.setCourse(course);
+        newGroup.setAvailable(group.getCapacity());
         try {
             return groupRepository.save(newGroup);
         } catch (Exception e) {
@@ -90,12 +91,12 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group update(Principal principal, GroupShortDto groupDto) {
-        Group group = groupRepository.findById(groupDto.getId())
+        Group oldGroup = groupRepository.findById(groupDto.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
-        checkRequest(principal, group.getCourse().getId());
-        group.setName(groupDto.getName());
+        checkRequest(principal, oldGroup.getCourse().getId());
+        oldGroup.setName(groupDto.getName());
         try {
-            return groupRepository.save(group);
+            return groupRepository.save(oldGroup);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, group could not be updated");
