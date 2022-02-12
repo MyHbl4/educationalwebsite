@@ -93,12 +93,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Page<Course> findAllCoursesByUsername(Pageable pageable, String username) {
         try {
-            Page<Course> courses = courseRepository.findAllCoursesByUsername(pageable, username);
-            if (courses.getContent().isEmpty()) {
-                throw new CustomException(HttpStatus.NO_CONTENT,
-                    "Courses by this user id Not Found");
-            }
-            return courses;
+            return courseRepository.findAllCoursesByUsername(pageable, username);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, courses cannot be found");

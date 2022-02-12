@@ -12,7 +12,7 @@ public interface TopicMapper {
 
     TopicDto topicToTopicDto(Topic topic);
 
-    TopicNewDto topicNewDtoToTopic(Topic topic);
+    TopicNewDto topicToTopicNewDto(Topic topic);
 
     Topic topicDtoToTopic(TopicDto topicDto);
 

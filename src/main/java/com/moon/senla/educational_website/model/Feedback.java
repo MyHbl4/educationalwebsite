@@ -48,7 +48,6 @@ public class Feedback implements Serializable {
     @Column(name = "detention")
     @Lob
     @Type(type = "org.hibernate.type.TextType")
-    @NotBlank
     private String detention;
 
     @Column(name = "rank", nullable = false)
