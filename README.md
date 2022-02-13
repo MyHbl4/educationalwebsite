@@ -56,3 +56,5 @@ _Educational website - это справочный и образовательн
 ```
 ____
 <a href="http://localhost:8081/swagger-ui.html#/">Swagger-UI</a> позволяет проверить фунциональность сервиса.
+
+![picture alt](https://sun9-87.userapi.com/impg/dZu8DuzfC_QG-cJGztGtKnt80WaV5nbjcF4EZA/J2sNFQLAYKs.jpg?size=1920x1080&quality=96&sign=d57ef818a07a08d534244d128a472a16&type=album "Swagger-ui")
