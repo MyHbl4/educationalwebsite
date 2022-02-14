@@ -34,21 +34,18 @@ _Educational website - это справочный и образовательн
 ## Установка / Начало работы ##
 ### 1. Необходимо клонировать репозиторий 
 ```
-  git clone https://github.com/mehail/ScooterRentalService.git
+  git@github.com:MyHbl4/educationalwebsite.git
 ```
 ### 2. Запуск приложения 
+* Запускаем [build.bat](https://github.com/MyHbl4/educationalwebsite/blob/master/build.bat "Goto build.bat") и потом  [run.bat](https://github.com/MyHbl4/educationalwebsite/blob/master/run.bat "Goto run.bat")
 ```
-  mvn clean
+  mvn clean install
+  java -jar target/educational_website-0.0.1-SNAPSHOT.jar
 ```
-```
-  mvn install
-```
-```
-  mvn spring-boot:run
-```
+
 или 
 ```
-  mvn clean install spring-boot:run
+  mvn spring-boot:run
 ```
 ### 3. Тесты
 ```
