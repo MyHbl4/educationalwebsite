@@ -36,18 +36,26 @@ _Educational website - это справочный и образовательн
 ```
   git@github.com:MyHbl4/educationalwebsite.git
 ```
-### 2. Запуск приложения 
-* Запускаем [build.bat](https://github.com/MyHbl4/educationalwebsite/blob/master/build.bat "Goto build.bat") и потом  [run.bat](https://github.com/MyHbl4/educationalwebsite/blob/master/run.bat "Goto run.bat")
+### 2. Заходим в PostgreSQL и создаём базу данных
+```
+  drop database if exists educationalwebsite;
+  create database educationalwebsite;
+```
+### 3. Компилируем приложение и создаём .jar
+* Запускаем [build.bat](https://github.com/MyHbl4/educationalwebsite/blob/master/build.bat "Goto build.bat") 
 ```
   mvn clean install
+```
+### 3. Запускаем приложение
+* Запускаем [run.bat](https://github.com/MyHbl4/educationalwebsite/blob/master/run.bat "Goto run.bat")
+```
   java -jar target/educational_website-0.0.1-SNAPSHOT.jar
 ```
-
-или 
+или
 ```
   mvn spring-boot:run
 ```
-### 3. Тесты
+### 4. Тесты
 ```
   mvn test
 ```
