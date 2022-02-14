@@ -1,0 +1,1 @@
+java -jar target/educational_website-0.0.1-SNAPSHOT.jar
