@@ -11,12 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @ ClassName  :SubscriptionController
- * @ Author     :gmoon
- * @ Description:
- */
-
 @RestController
 @RequestMapping(value = "/api/subscription")
 @Slf4j

@@ -17,7 +17,7 @@ public interface ScheduleService {
 
     void deleteById(Principal principal, long id);
 
-    Page<Schedule> findAllByGroup_Id(Pageable pageable, long groupId);
+    Page<Schedule> findAllByGroupId(Pageable pageable, long groupId);
 
     Schedule update(Principal principal, ScheduleUpdateDto schedule);
 }

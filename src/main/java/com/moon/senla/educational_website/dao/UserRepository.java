@@ -37,6 +37,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
         value =
             "select id, email, username, first_name, last_name, password, status, group_id, user_id from Users u full join user_group ug ON u.id = ug.user_id WHERE ug.group_id = (:group_id)",
         nativeQuery = true)
-    Page<User> getAllUsersByGroup_Id(Pageable pageable, @Param("group_id") long group_id);
+    Page<User> getAllUsersByGroupId(Pageable pageable, @Param("group_id") long groupId);
 }
 

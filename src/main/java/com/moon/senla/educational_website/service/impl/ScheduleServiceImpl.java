@@ -83,11 +83,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Page<Schedule> findAllByGroup_Id(Pageable pageable, long groupId) {
+    public Page<Schedule> findAllByGroupId(Pageable pageable, long groupId) {
         groupRepository.findById(groupId)
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
         try {
-            return scheduleRepository.findAllByGroup_Id(pageable, groupId);
+            return scheduleRepository.findAllByGroupId(pageable, groupId);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, schedules cannot be found");

@@ -88,15 +88,15 @@ public class GroupController {
     public Page<ScheduleDto> findAllSchedulesByGroupId(@PathVariable(name = "id") long id,
         Pageable pageable) {
         log.info("find schedules by group id {}", id);
-        return scheduleService.findAllByGroup_Id(pageable, id)
+        return scheduleService.findAllByGroupId(pageable, id)
             .map(ScheduleMapper.INSTANCE::scheduleToScheduleDto);
     }
 
     @GetMapping(path = "/{id}/users")
-    public Page<UserDtoShort> getAllUsersByGroup_Id(Pageable pageable,
+    public Page<UserDtoShort> getAllUsersByGroupId(Pageable pageable,
         @PathVariable(name = "id") long id) {
         log.info("find users by group id {}", id);
-        return userService.getAllUsersByGroup_Id(pageable, id)
+        return userService.getAllUsersByGroupId(pageable, id)
             .map(UserMapper.INSTANCE::userToUserDtoShort);
     }
 }

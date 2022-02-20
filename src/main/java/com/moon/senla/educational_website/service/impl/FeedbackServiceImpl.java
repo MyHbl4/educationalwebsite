@@ -106,7 +106,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         courseRepository.findById(courseId)
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
         try {
-            return feedbackRepository.findAllByCourse_Id(pageable, courseId);
+            return feedbackRepository.findAllByCourseId(pageable, courseId);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, feedbacks cannot be found");

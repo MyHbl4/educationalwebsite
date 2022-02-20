@@ -99,10 +99,10 @@ public class CourseController {
     }
 
     @GetMapping(path = "/{id}/groups")
-    public Page<GroupDto> findAllGroupsByCourse_Id(@PathVariable(name = "id") long id,
+    public Page<GroupDto> findAllGroupsByCourseId(@PathVariable(name = "id") long id,
         Pageable pageable) {
         log.info("find groups by course id {}", id);
-        return groupService.findAllGroupsByCourse_Id(pageable, id)
+        return groupService.findAllGroupsByCourseId(pageable, id)
             .map(GroupMapper.INSTANCE::groupToGroupDto);
     }
 
@@ -116,7 +116,7 @@ public class CourseController {
     }
 
     @GetMapping(path = "/{id}/feedbacks")
-    public Page<FeedbackDto> findAllFeedbacksByCourse_Id(@PathVariable(name = "id") long id,
+    public Page<FeedbackDto> findAllFeedbacksByCourseId(@PathVariable(name = "id") long id,
         Pageable pageable) {
         log.info("find groups by course id {}", id);
         return feedbackService.getAllFeedbackByCourseId(pageable, id)

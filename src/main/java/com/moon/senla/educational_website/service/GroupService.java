@@ -17,7 +17,7 @@ public interface GroupService {
 
     void deleteById(long id);
 
-    Page<Group> findAllGroupsByCourse_Id(Pageable pageable, long id);
+    Page<Group> findAllGroupsByCourseId(Pageable pageable, long id);
 
     Group update(Principal principal, GroupShortDto group);
 }

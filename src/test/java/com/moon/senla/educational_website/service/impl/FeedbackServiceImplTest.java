@@ -191,7 +191,7 @@ class FeedbackServiceImplTest {
     void getAllFeedbackByCourseId() {
         Pageable pageable = PageRequest.of(0, 10);
         when(courseRepository.findById(1L)).thenReturn(Optional.ofNullable(course));
-        when(feedbackRepository.findAllByCourse_Id(pageable, 1L)).thenReturn(page);
+        when(feedbackRepository.findAllByCourseId(pageable, 1L)).thenReturn(page);
 
         Page<Feedback> pageFeedback = feedbackService.getAllFeedbackByCourseId(pageable, 1L);
 

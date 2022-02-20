@@ -124,9 +124,9 @@ class UserServiceImplTest {
     void getAllUsersByGroup_Id() {
         Pageable pageable = PageRequest.of(0, 10);
         when(groupRepository.findById(1L)).thenReturn(Optional.ofNullable(group));
-        when(userRepository.getAllUsersByGroup_Id(pageable, 1L)).thenReturn(page);
+        when(userRepository.getAllUsersByGroupId(pageable, 1L)).thenReturn(page);
 
-        Page<User> pageUser = userService.getAllUsersByGroup_Id(pageable, 1L);
+        Page<User> pageUser = userService.getAllUsersByGroupId(pageable, 1L);
 
         assertEquals(page.getContent(), pageUser.getContent());
     }

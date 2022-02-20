@@ -26,12 +26,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * @ ClassName  :AuthenticationServiceImpl
- * @ Author     :gmoon
- * @ Description:
- */
-
 @Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
