@@ -62,14 +62,14 @@ public class UserController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public UserDto newUser(@Valid @RequestBody UserNewDto user) {
+    public UserDto save(@Valid @RequestBody UserNewDto user) {
         log.info("save user: {}", user.getUsername());
         User newUser = authenticationService.register(user);
         return UserMapper.INSTANCE.userToUserDto(newUser);
     }
 
     @PutMapping()
-    public UserDto updateUser(Principal principal, @Valid @RequestBody UserDtoUpdate userToUpdate) {
+    public UserDto update(Principal principal, @Valid @RequestBody UserDtoUpdate userToUpdate) {
         log.info("update user: {}", principal.getName());
         User user = authenticationService.update(principal, userToUpdate);
         return UserMapper.INSTANCE.userToUserDto(user);

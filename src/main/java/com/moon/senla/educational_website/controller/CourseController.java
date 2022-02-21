@@ -106,8 +106,8 @@ public class CourseController {
             .map(GroupMapper.INSTANCE::groupToGroupDto);
     }
 
-    @GetMapping(path = "/courses")
-    public Page<CourseDto> findAllCoursesByUsername(
+    @GetMapping(path = "/my-courses")
+    public Page<CourseDto> findAllMyCourses(
         Principal principal,
         Pageable pageable) {
         log.info("find courses where author is user: {}", principal.getName());

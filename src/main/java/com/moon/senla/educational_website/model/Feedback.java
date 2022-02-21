@@ -66,7 +66,7 @@ public class Feedback implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Feedback)) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
         Feedback feedback = (Feedback) o;

@@ -48,7 +48,7 @@ public class Schedule implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Schedule)) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
         Schedule schedule = (Schedule) o;
