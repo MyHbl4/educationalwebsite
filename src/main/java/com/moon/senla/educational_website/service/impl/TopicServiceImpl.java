@@ -55,8 +55,9 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public void deleteById(long id) {
-        topicRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, TOPIC_NF.value));
+        if (!topicRepository.findById(id).isPresent()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, TOPIC_NF.value);
+        }
         try {
             topicRepository.deleteById(id);
         } catch (Exception e) {

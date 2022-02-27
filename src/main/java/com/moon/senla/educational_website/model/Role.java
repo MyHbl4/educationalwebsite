@@ -1,5 +1,6 @@
 package com.moon.senla.educational_website.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -17,7 +18,7 @@ import lombok.Setter;
 @Table(name = "roles")
 @Getter
 @Setter
-public class Role {
+public class Role implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -72,8 +72,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void deleteById(long id) {
-        groupRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
+        if (!groupRepository.findById(id).isPresent()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value);
+        }
         try {
             groupRepository.deleteById(id);
         } catch (Exception e) {
@@ -84,8 +85,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Page<Group> findAllGroupsByCourseId(Pageable pageable, long id) {
-        courseRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
+        if (!courseRepository.findById(id).isPresent()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value);
+        }
         try {
             return groupRepository.findAllByCourseId(pageable, id);
         } catch (Exception e) {

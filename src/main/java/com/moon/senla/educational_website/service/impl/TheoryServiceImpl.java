@@ -39,8 +39,9 @@ public class TheoryServiceImpl implements TheoryService {
 
     @Override
     public Theory save(Principal principal, TheoryNewDto newTheory) {
-        topicRepository.findById(newTheory.getTopic().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, TOPIC_NF.value));
+        if (!topicRepository.findById(newTheory.getTopic().getId()).isPresent()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, TOPIC_NF.value);
+        }
         try {
             Theory theory = TheoryMapper.INSTANCE.theoryNewDtoToTheory(newTheory);
             theory.setUser(userRepository.findByUsername(principal.getName()));
@@ -79,8 +80,9 @@ public class TheoryServiceImpl implements TheoryService {
 
     @Override
     public void deleteById(long id) {
-        theoryRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, THEORY_NF.value));
+        if (!theoryRepository.findById(id).isPresent()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, THEORY_NF.value);
+        }
         try {
             theoryRepository.deleteById(id);
         } catch (Exception e) {

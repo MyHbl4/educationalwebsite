@@ -78,9 +78,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public void deleteById(Principal principal, long id) {
-        Schedule oldSchedule = scheduleRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, SCHEDULE_NF.value));
-        checkRequest(principal, oldSchedule.getGroup().getId());
+        if (!scheduleRepository.findById(id).isPresent()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, SCHEDULE_NF.value);
+        }
+        checkRequest(principal, id);
         try {
             scheduleRepository.deleteById(id);
         } catch (Exception e) {
@@ -90,8 +91,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Page<Schedule> findAllByGroupId(Pageable pageable, long groupId) {
-        groupRepository.findById(groupId)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
+        if (!groupRepository.findById(groupId).isPresent()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value);
+        }
         try {
             return scheduleRepository.findAllByGroupId(pageable, groupId);
         } catch (Exception e) {

@@ -66,8 +66,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> getAllUsersByGroupId(Pageable pageable, long groupId) {
-        groupRepository.findById(groupId)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
+        if (!groupRepository.findById(groupId).isPresent()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value);
+        }
         try {
             return userRepository.getAllUsersByGroupId(pageable, groupId);
         } catch (Exception e) {

@@ -53,10 +53,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedback.setCourse(course);
         try {
             Feedback feed = feedbackRepository.save(feedback);
-            int averageRank = feedbackRepository.findAverageRankByCourseId(
-                feed.getCourse().getId());
-            course.setRating(averageRank);
-            courseRepository.save(course);
+            ratingCalculation(course);
             return feed;
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
@@ -86,30 +83,32 @@ public class FeedbackServiceImpl implements FeedbackService {
     public void deleteById(Principal principal, long id) {
         Feedback oldFeedback = feedbackRepository.findById(id)
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, FEEDBACK_NF.value));
-        User user = userRepository.findById(oldFeedback.getUser().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
-        if (!user.getUsername().equals(principal.getName())) {
-            throw new CustomException(HttpStatus.FORBIDDEN,
-                "Invalid request, access is denied");
-        }
-        Course course = courseRepository.findById(oldFeedback.getCourse().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
+        Course course = check(principal, oldFeedback);
         try {
             feedbackRepository.deleteById(id);
-            int averageRank = feedbackRepository.findAverageRankByCourseId(
-                course.getId());
-            course.setRating(averageRank);
-            courseRepository.save(course);
+            ratingCalculation(course);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 COULD_NOT_DELETE.value);
         }
     }
 
+    private Course check(Principal principal, Feedback oldFeedback) {
+        User user = userRepository.findById(oldFeedback.getUser().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
+        if (!user.getUsername().equals(principal.getName())) {
+            throw new CustomException(HttpStatus.FORBIDDEN,
+                "Invalid request, access is denied");
+        }
+        return courseRepository.findById(oldFeedback.getCourse().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
+    }
+
     @Override
     public Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, long courseId) {
-        courseRepository.findById(courseId)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
+        if (!courseRepository.findById(courseId).isPresent()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value);
+        }
         try {
             return feedbackRepository.findAllByCourseId(pageable, courseId);
         } catch (Exception e) {
@@ -123,27 +122,24 @@ public class FeedbackServiceImpl implements FeedbackService {
     public Feedback update(Principal principal, FeedbackUpdateDto feedbackToUpdate) {
         Feedback oldFeedback = feedbackRepository.findById(feedbackToUpdate.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, FEEDBACK_NF.value));
-        User user = userRepository.findById(oldFeedback.getUser().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
-        if (!user.getUsername().equals(principal.getName())) {
-            throw new CustomException(HttpStatus.FORBIDDEN,
-                "Invalid request, access is denied");
-        }
-        Course course = courseRepository.findById(oldFeedback.getCourse().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
+        Course course = check(principal, oldFeedback);
         oldFeedback.setDetention(feedbackToUpdate.getDetention());
         oldFeedback.setRank(feedbackToUpdate.getRank());
         try {
             Feedback feed = feedbackRepository.save(oldFeedback);
-            int averageRank = feedbackRepository.findAverageRankByCourseId(
-                feed.getCourse().getId());
-            course.setRating(averageRank);
-            courseRepository.save(course);
+            ratingCalculation(course);
             return feed;
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, feedback could not be saved");
         }
+    }
+
+    private void ratingCalculation(Course course) {
+        int averageRank = feedbackRepository.findAverageRankByCourseId(
+            course.getId());
+        course.setRating(averageRank);
+        courseRepository.save(course);
     }
 
 }

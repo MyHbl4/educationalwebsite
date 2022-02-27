@@ -64,8 +64,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteById(long id) {
-        courseRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
+        if(!courseRepository.findById(id).isPresent()){
+            throw new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value);
+        }
         try {
             courseRepository.deleteById(id);
         } catch (Exception e) {

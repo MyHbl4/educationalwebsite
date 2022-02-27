@@ -20,9 +20,6 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,18 +27,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
     @Autowired
-    public AuthenticationServiceImpl(
-        AuthenticationManager authenticationManager,
-        JwtTokenProvider jwtTokenProvider, RoleRepository roleRepository,
+    public AuthenticationServiceImpl(JwtTokenProvider jwtTokenProvider,
+        RoleRepository roleRepository,
         BCryptPasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -49,23 +43,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public Map<String, String> login(AuthenticationRequestDto requestDto) {
+        String username = requestDto.getUsername();
+        if (userRepository.findByUsername(username) == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND,
+                "User with username: " + username + ", not found");
+        }
+        User user = userRepository.findByUsername(username);
+        if (user.getStatus().equals(Status.DELETED)) {
+            throw new CustomException(HttpStatus.FORBIDDEN,
+                "You cannot log in with this username, because your account has been deleted");
+        }
         try {
-            String username = requestDto.getUsername();
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-            User user = userRepository.findByUsername(username);
-
-            if (user == null) {
-                throw new UsernameNotFoundException(
-                    "User with username: " + username + " not found");
-            }
-
             String token = jwtTokenProvider.createToken(username, user.getRoles());
-
             Map<String, String> response = new HashMap<>();
             response.put("username", username);
             response.put("token", token);
-
             return response;
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid username or password");

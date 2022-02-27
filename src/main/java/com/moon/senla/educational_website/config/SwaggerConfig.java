@@ -1,6 +1,6 @@
 package com.moon.senla.educational_website.config;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +37,7 @@ public class SwaggerConfig {
             "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return Arrays.asList(new SecurityReference("JWT", authorizationScopes));
+        return Collections.singletonList(new SecurityReference("JWT", authorizationScopes));
     }
 
     private ApiInfo apiInfo() {
@@ -53,8 +53,8 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
             .apiInfo(apiInfo())
-            .securityContexts(Arrays.asList(securityContext()))
-            .securitySchemes(Arrays.asList(apiKey()))
+            .securityContexts(Collections.singletonList(securityContext()))
+            .securitySchemes(Collections.singletonList(apiKey()))
             .pathMapping("/")
             .select()
             .paths(PathSelectors.regex("/api.*"))
