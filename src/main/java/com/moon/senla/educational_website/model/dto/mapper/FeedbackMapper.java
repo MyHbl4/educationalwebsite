@@ -6,9 +6,12 @@ import com.moon.senla.educational_website.model.dto.feedback.FeedbackNewDto;
 import com.moon.senla.educational_website.model.dto.feedback.FeedbackUpdateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
+@Component
 public interface FeedbackMapper {
+
     FeedbackMapper INSTANCE = Mappers.getMapper(FeedbackMapper.class);
 
     FeedbackDto feedbackToFeedbackDto(Feedback feedback);

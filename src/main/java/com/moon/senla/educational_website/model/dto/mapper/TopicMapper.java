@@ -5,9 +5,12 @@ import com.moon.senla.educational_website.model.dto.topic.TopicDto;
 import com.moon.senla.educational_website.model.dto.topic.TopicNewDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
+@Component
 public interface TopicMapper {
+
     TopicMapper INSTANCE = Mappers.getMapper(TopicMapper.class);
 
     TopicDto topicToTopicDto(Topic topic);

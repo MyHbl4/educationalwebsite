@@ -38,13 +38,22 @@ public class GroupController {
     private final GroupService groupService;
     private final ScheduleService scheduleService;
     private final UserService userService;
+    private final GroupMapper groupMapper;
+    private final ScheduleMapper scheduleMapper;
+    private final UserMapper userMapper;
 
     public GroupController(GroupService groupService,
         ScheduleService scheduleService,
-        UserService userService) {
+        UserService userService,
+        GroupMapper groupMapper,
+        ScheduleMapper scheduleMapper,
+        UserMapper userMapper) {
         this.groupService = groupService;
         this.scheduleService = scheduleService;
         this.userService = userService;
+        this.groupMapper = groupMapper;
+        this.scheduleMapper = scheduleMapper;
+        this.userMapper = userMapper;
     }
 
     @GetMapping()
@@ -53,28 +62,28 @@ public class GroupController {
         Pageable pageable) {
         log.info("find all groups");
         return groupService.findAll(pageable)
-            .map(GroupMapper.INSTANCE::groupToGroupDto);
+            .map(groupMapper::groupToGroupDto);
     }
 
     @GetMapping(path = "/{id}")
     public GroupDto findById(@PathVariable(name = "id") long id) {
         log.info("find group by id {}", id);
         Group group = groupService.findById(id);
-        return GroupMapper.INSTANCE.groupToGroupDto(group);
+        return groupMapper.groupToGroupDto(group);
     }
 
     @PostMapping()
     public GroupDto save(Principal principal, @Valid @RequestBody GroupNewDto group) {
         log.info("save group name: {}", group.getName());
         Group newGroup = groupService.save(principal, group);
-        return GroupMapper.INSTANCE.groupToGroupDto(newGroup);
+        return groupMapper.groupToGroupDto(newGroup);
     }
 
     @PutMapping()
     public GroupDto update(Principal principal, @Valid @RequestBody GroupShortDto groupToUpdate) {
         log.info("update group name: {}", groupToUpdate.getName());
         Group group = groupService.update(principal, groupToUpdate);
-        return GroupMapper.INSTANCE.groupToGroupDto(group);
+        return groupMapper.groupToGroupDto(group);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -89,7 +98,7 @@ public class GroupController {
         Pageable pageable) {
         log.info("find schedules by group id {}", id);
         return scheduleService.findAllByGroupId(pageable, id)
-            .map(ScheduleMapper.INSTANCE::scheduleToScheduleDto);
+            .map(scheduleMapper::scheduleToScheduleDto);
     }
 
     @GetMapping(path = "/{id}/users")
@@ -97,6 +106,6 @@ public class GroupController {
         @PathVariable(name = "id") long id) {
         log.info("find users by group id {}", id);
         return userService.getAllUsersByGroupId(pageable, id)
-            .map(UserMapper.INSTANCE::userToUserDtoShort);
+            .map(userMapper::userToUserDtoShort);
     }
 }

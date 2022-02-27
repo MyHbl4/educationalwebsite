@@ -41,36 +41,45 @@ public class CourseController {
     private final SearchFilterService searchFilterService;
     private final GroupService groupService;
     private final FeedbackService feedbackService;
+    private final CourseMapper courseMapper;
+    private final GroupMapper groupMapper;
+    private final FeedbackMapper feedbackMapper;
 
     public CourseController(CourseService courseService,
         SearchFilterService searchFilterService,
         GroupService groupService,
-        FeedbackService feedbackService) {
+        FeedbackService feedbackService,
+        CourseMapper courseMapper,
+        GroupMapper groupMapper,
+        FeedbackMapper feedbackMapper) {
         this.courseService = courseService;
         this.searchFilterService = searchFilterService;
         this.groupService = groupService;
         this.feedbackService = feedbackService;
+        this.courseMapper = courseMapper;
+        this.groupMapper = groupMapper;
+        this.feedbackMapper = feedbackMapper;
     }
 
     @GetMapping()
     public Page<CourseDto> findAll(@PageableDefault(sort = {"id"}) Pageable pageable) {
         log.info("find all courses");
         return courseService.findAll(pageable)
-            .map(CourseMapper.INSTANCE::courseToCourseDto);
+            .map(courseMapper::courseToCourseDto);
     }
 
     @GetMapping(path = "/{id}")
     public CourseDto findById(@PathVariable(name = "id") long id) {
         log.info("find course by id {}", id);
         Course course = courseService.findById(id);
-        return CourseMapper.INSTANCE.courseToCourseDto(course);
+        return courseMapper.courseToCourseDto(course);
     }
 
     @PostMapping()
     public CourseDto save(Principal principal, @Valid @RequestBody CourseNewDto course) {
         log.info("save course: {}", course.getName());
         Course newCourse = courseService.save(principal, course);
-        return CourseMapper.INSTANCE.courseToCourseDto(newCourse);
+        return courseMapper.courseToCourseDto(newCourse);
     }
 
     @PutMapping()
@@ -78,7 +87,7 @@ public class CourseController {
         @Valid @RequestBody CourseUpdateDto courseToUpdate) {
         log.info("update course: {}", courseToUpdate.getName());
         Course course = courseService.update(principal, courseToUpdate);
-        return CourseMapper.INSTANCE.courseToCourseDto(course);
+        return courseMapper.courseToCourseDto(course);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -95,7 +104,7 @@ public class CourseController {
         @RequestParam(value = "topic_name", required = false) String topicName,
         @RequestParam(value = "user_name", required = false) String authorName) {
         return searchFilterService.findAllCoursesByParam(pageable, name, topicName, authorName)
-            .map(CourseMapper.INSTANCE::courseToCourseDto);
+            .map(courseMapper::courseToCourseDto);
     }
 
     @GetMapping(path = "/{id}/groups")
@@ -103,7 +112,7 @@ public class CourseController {
         Pageable pageable) {
         log.info("find groups by course id {}", id);
         return groupService.findAllGroupsByCourseId(pageable, id)
-            .map(GroupMapper.INSTANCE::groupToGroupDto);
+            .map(groupMapper::groupToGroupDto);
     }
 
     @GetMapping(path = "/my-courses")
@@ -112,7 +121,7 @@ public class CourseController {
         Pageable pageable) {
         log.info("find courses where author is user: {}", principal.getName());
         return courseService.findAllCoursesByUsername(pageable, principal.getName())
-            .map(CourseMapper.INSTANCE::courseToCourseDto);
+            .map(courseMapper::courseToCourseDto);
     }
 
     @GetMapping(path = "/{id}/feedbacks")
@@ -120,6 +129,6 @@ public class CourseController {
         Pageable pageable) {
         log.info("find groups by course id {}", id);
         return feedbackService.getAllFeedbackByCourseId(pageable, id)
-            .map(FeedbackMapper.INSTANCE::feedbackToFeedbackDto);
+            .map(feedbackMapper::feedbackToFeedbackDto);
     }
 }

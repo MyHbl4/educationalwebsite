@@ -7,9 +7,12 @@ import com.moon.senla.educational_website.model.dto.course.CourseNewDto;
 import com.moon.senla.educational_website.model.dto.course.CourseUpdateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
+@Component
 public interface CourseMapper {
+
     CourseMapper INSTANCE = Mappers.getMapper(CourseMapper.class);
 
     CourseDto courseToCourseDto(Course course);

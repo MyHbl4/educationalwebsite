@@ -28,23 +28,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class TopicController {
 
     private final TopicService topicService;
+    private final TopicMapper topicMapper;
 
-    public TopicController(TopicService topicService) {
+    public TopicController(TopicService topicService,
+        TopicMapper topicMapper) {
         this.topicService = topicService;
+        this.topicMapper = topicMapper;
     }
 
     @GetMapping()
     public Page<TopicDto> findAll(@PageableDefault(sort = {"id"}) Pageable pageable) {
         log.info("find all topics");
         return topicService.findAll(pageable)
-            .map(TopicMapper.INSTANCE::topicToTopicDto);
+            .map(topicMapper::topicToTopicDto);
     }
 
     @GetMapping(path = "/{id}")
     public TopicDto findById(@PathVariable(name = "id") long id) {
         log.info("find topic by id {}", id);
         Topic topic = topicService.findById(id);
-        return TopicMapper.INSTANCE.topicToTopicDto(topic);
+        return topicMapper.topicToTopicDto(topic);
     }
 
     @PostMapping()
@@ -52,7 +55,7 @@ public class TopicController {
     public TopicDto save(@Valid @RequestBody TopicNewDto topic) {
         log.info("save topic: {}", topic.getName());
         Topic newTopic = topicService.save(topic);
-        return TopicMapper.INSTANCE.topicToTopicDto(newTopic);
+        return topicMapper.topicToTopicDto(newTopic);
     }
 
     @PutMapping()
@@ -60,7 +63,7 @@ public class TopicController {
     public TopicDto update(@Valid @RequestBody TopicDto topicToUpdate) {
         log.info("update topic: {}", topicToUpdate.getName());
         Topic topic = topicService.update(topicToUpdate);
-        return TopicMapper.INSTANCE.topicToTopicDto(topic);
+        return topicMapper.topicToTopicDto(topic);
     }
 
     @DeleteMapping(path = "/{id}")

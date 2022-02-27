@@ -30,9 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final ScheduleMapper scheduleMapper;
 
-    public ScheduleController(ScheduleService scheduleService) {
+    public ScheduleController(ScheduleService scheduleService,
+        ScheduleMapper scheduleMapper) {
         this.scheduleService = scheduleService;
+        this.scheduleMapper = scheduleMapper;
     }
 
     @GetMapping()
@@ -41,21 +44,21 @@ public class ScheduleController {
         Pageable pageable) {
         log.info("find all schedules");
         return scheduleService.findAll(pageable)
-            .map(ScheduleMapper.INSTANCE::scheduleToScheduleDto);
+            .map(scheduleMapper::scheduleToScheduleDto);
     }
 
     @GetMapping(path = "/{id}")
     public ScheduleDto findById(@PathVariable(name = "id") long id) {
         log.info("find schedule by id {}", id);
         Schedule schedule = scheduleService.findById(id);
-        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(schedule);
+        return scheduleMapper.scheduleToScheduleDto(schedule);
     }
 
     @PostMapping()
     public ScheduleDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
         log.info("save schedule: {}", schedule.getDate());
         Schedule newSchedule = scheduleService.save(principal, schedule);
-        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(newSchedule);
+        return scheduleMapper.scheduleToScheduleDto(newSchedule);
     }
 
     @PutMapping()
@@ -63,7 +66,7 @@ public class ScheduleController {
         @Valid @RequestBody ScheduleUpdateDto scheduleToUpdate) {
         log.info("update schedule: {}", scheduleToUpdate.getId());
         Schedule schedule = scheduleService.update(principal, scheduleToUpdate);
-        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(schedule);
+        return scheduleMapper.scheduleToScheduleDto(schedule);
     }
 
     @DeleteMapping(path = "/{id}")

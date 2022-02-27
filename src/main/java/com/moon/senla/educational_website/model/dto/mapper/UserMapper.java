@@ -7,9 +7,12 @@ import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
 import com.moon.senla.educational_website.model.dto.user.UserNewDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
+@Component
 public interface UserMapper {
+
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     UserDto userToUserDto(User user);

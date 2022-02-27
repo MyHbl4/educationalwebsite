@@ -35,13 +35,16 @@ public class UserController {
     private final UserService userService;
     private final SearchFilterServiceImpl searchFilterService;
     private final AuthenticationService authenticationService;
+    private final UserMapper userMapper;
 
     public UserController(UserService userService,
         SearchFilterServiceImpl searchFilterService,
-        AuthenticationService authenticationService) {
+        AuthenticationService authenticationService,
+        UserMapper userMapper) {
         this.userService = userService;
         this.searchFilterService = searchFilterService;
         this.authenticationService = authenticationService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping(path = "/search")
@@ -50,14 +53,14 @@ public class UserController {
         @RequestParam(value = "firstName", required = false) String firstName,
         @RequestParam(value = "LastName", required = false) String lastName) {
         return searchFilterService.findAllUsersByParam(pageable, firstName, lastName)
-            .map(UserMapper.INSTANCE::userToUserDto);
+            .map(userMapper::userToUserDto);
     }
 
     @GetMapping(path = "/{id}")
     public UserDto findById(@PathVariable(name = "id") long id) {
         log.info("find user by id {}", id);
         User user = userService.findById(id);
-        return UserMapper.INSTANCE.userToUserDto(user);
+        return userMapper.userToUserDto(user);
     }
 
     @PostMapping()
@@ -65,27 +68,27 @@ public class UserController {
     public UserDto save(@Valid @RequestBody UserNewDto user) {
         log.info("save user: {}", user.getUsername());
         User newUser = authenticationService.register(user);
-        return UserMapper.INSTANCE.userToUserDto(newUser);
+        return userMapper.userToUserDto(newUser);
     }
 
     @PutMapping()
     public UserDto update(Principal principal, @Valid @RequestBody UserDtoUpdate userToUpdate) {
         log.info("update user: {}", principal.getName());
         User user = authenticationService.update(principal, userToUpdate);
-        return UserMapper.INSTANCE.userToUserDto(user);
+        return userMapper.userToUserDto(user);
     }
 
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public UserDto delete(@PathVariable(name = "id") long id) {
         log.info("delete user by id {}", id);
-        return UserMapper.INSTANCE.userToUserDto(userService.deleteById(id));
+        return userMapper.userToUserDto(userService.deleteById(id));
     }
 
     @GetMapping(path = "/my-page")
     public UserDto showMyPage(Principal principal) {
         log.info("show {} page", principal.getName());
         User user = userService.findByUsername(principal.getName());
-        return UserMapper.INSTANCE.userToUserDto(user);
+        return userMapper.userToUserDto(user);
     }
 }

@@ -33,25 +33,28 @@ public class TheoryController {
 
     private final TheoryService theoryService;
     private final SearchFilterService searchFilterService;
+    private final TheoryMapper theoryMapper;
 
     public TheoryController(TheoryService theoryService,
-        SearchFilterService searchFilterService) {
+        SearchFilterService searchFilterService,
+        TheoryMapper theoryMapper) {
         this.theoryService = theoryService;
         this.searchFilterService = searchFilterService;
+        this.theoryMapper = theoryMapper;
     }
 
     @GetMapping(path = "/{id}")
     public TheoryDto findById(@PathVariable(name = "id") long id) {
         log.info("find theory by id {}", id);
         Theory theory = theoryService.findById(id);
-        return TheoryMapper.INSTANCE.theoryToTheoryDto(theory);
+        return theoryMapper.theoryToTheoryDto(theory);
     }
 
     @PostMapping()
     public TheoryDto save(Principal principal, @Valid @RequestBody TheoryNewDto theory) {
         log.info("save theory: {}", theory.getName());
         Theory newTheory = theoryService.save(principal, theory);
-        return TheoryMapper.INSTANCE.theoryToTheoryDto(newTheory);
+        return theoryMapper.theoryToTheoryDto(newTheory);
     }
 
     @PutMapping()
@@ -59,7 +62,7 @@ public class TheoryController {
         @Valid @RequestBody TheoryUpdateDto theoryToUpdate) {
         log.info("update theory: {}", theoryToUpdate.getName());
         Theory theory = theoryService.update(principal, theoryToUpdate);
-        return TheoryMapper.INSTANCE.theoryToTheoryDto(theory);
+        return theoryMapper.theoryToTheoryDto(theory);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -76,6 +79,6 @@ public class TheoryController {
         @RequestParam(value = "topic_name", required = false) String topicName,
         @RequestParam(value = "user_name", required = false) String userName) {
         return searchFilterService.findAllTheoriesByParam(pageable, name, topicName, userName)
-            .map(TheoryMapper.INSTANCE::theoryToTheoryDto);
+            .map(theoryMapper::theoryToTheoryDto);
     }
 }

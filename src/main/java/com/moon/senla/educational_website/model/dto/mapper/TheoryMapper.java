@@ -6,9 +6,12 @@ import com.moon.senla.educational_website.model.dto.theory.TheoryNewDto;
 import com.moon.senla.educational_website.model.dto.theory.TheoryUpdateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
+@Component
 public interface TheoryMapper {
+
     TheoryMapper INSTANCE = Mappers.getMapper(TheoryMapper.class);
 
     TheoryDto theoryToTheoryDto(Theory theory);

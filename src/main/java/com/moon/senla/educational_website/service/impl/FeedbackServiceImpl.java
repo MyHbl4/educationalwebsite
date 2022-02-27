@@ -81,14 +81,14 @@ public class FeedbackServiceImpl implements FeedbackService {
     public void deleteById(Principal principal, long id) {
         Feedback oldFeedback = feedbackRepository.findById(id)
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Feedback Not Found"));
-        Course course = courseRepository.findById(oldFeedback.getCourse().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
         User user = userRepository.findById(oldFeedback.getUser().getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
         if (!user.getUsername().equals(principal.getName())) {
             throw new CustomException(HttpStatus.FORBIDDEN,
                 "Invalid request, access is denied");
         }
+        Course course = courseRepository.findById(oldFeedback.getCourse().getId())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
         try {
             feedbackRepository.deleteById(id);
             int averageRank = feedbackRepository.findAverageRankByCourseId(

@@ -23,11 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final UserMapper userMapper;
 
     @Autowired
     public AuthenticationController(
-        AuthenticationService authenticationService) {
+        AuthenticationService authenticationService,
+        UserMapper userMapper) {
         this.authenticationService = authenticationService;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/login")
@@ -38,6 +41,6 @@ public class AuthenticationController {
     @PostMapping("/register")
     public UserDto registerUser(@RequestBody @Valid UserNewDto user) {
         User newUser = authenticationService.register(user);
-        return UserMapper.INSTANCE.userToUserDto(newUser);
+        return userMapper.userToUserDto(newUser);
     }
 }

@@ -30,10 +30,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
+    private final FeedbackMapper feedbackMapper;
 
     public FeedbackController(
-        FeedbackService feedbackService) {
+        FeedbackService feedbackService,
+        FeedbackMapper feedbackMapper) {
         this.feedbackService = feedbackService;
+        this.feedbackMapper = feedbackMapper;
     }
 
     @GetMapping()
@@ -42,21 +45,21 @@ public class FeedbackController {
         Pageable pageable) {
         log.info("find all feedbacks");
         return feedbackService.findAll(pageable)
-            .map(FeedbackMapper.INSTANCE::feedbackToFeedbackDto);
+            .map(feedbackMapper::feedbackToFeedbackDto);
     }
 
     @GetMapping(path = "/{id}")
     public FeedbackDto findById(@PathVariable(name = "id") long id) {
         log.info("find feedback by id {}", id);
         Feedback feedback = feedbackService.findById(id);
-        return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(feedback);
+        return feedbackMapper.feedbackToFeedbackDto(feedback);
     }
 
     @PostMapping()
     public FeedbackDto save(Principal principal, @Valid @RequestBody FeedbackNewDto feedback) {
         log.info("save feedback by user: {}", principal.getName());
         Feedback newFeedback = feedbackService.save(principal, feedback);
-        return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(newFeedback);
+        return feedbackMapper.feedbackToFeedbackDto(newFeedback);
     }
 
     @PutMapping()
@@ -64,7 +67,7 @@ public class FeedbackController {
         @Valid @RequestBody FeedbackUpdateDto feedbackToUpdate) {
         log.info("update feedback id: {}", feedbackToUpdate.getId());
         Feedback feedback = feedbackService.update(principal, feedbackToUpdate);
-        return FeedbackMapper.INSTANCE.feedbackToFeedbackDto(feedback);
+        return feedbackMapper.feedbackToFeedbackDto(feedback);
     }
 
     @DeleteMapping(path = "/{id}")
