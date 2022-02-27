@@ -35,11 +35,13 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody AuthenticationRequestDto requestDto) {
+        log.info("login - login user with username: {}", requestDto.getUsername());
         return ResponseEntity.ok(authenticationService.login(requestDto));
     }
 
     @PostMapping("/register")
     public UserDto registerUser(@RequestBody @Valid UserNewDto user) {
+        log.info("registerUser - register user with username: {}", user.getUsername());
         User newUser = authenticationService.register(user);
         return userMapper.userToUserDto(newUser);
     }

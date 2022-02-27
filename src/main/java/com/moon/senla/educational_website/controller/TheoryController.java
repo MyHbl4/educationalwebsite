@@ -45,14 +45,14 @@ public class TheoryController {
 
     @GetMapping(path = "/{id}")
     public TheoryDto findById(@PathVariable(name = "id") long id) {
-        log.info("find theory by id {}", id);
+        log.info("findById - find theory by id {}", id);
         Theory theory = theoryService.findById(id);
         return theoryMapper.theoryToTheoryDto(theory);
     }
 
     @PostMapping()
     public TheoryDto save(Principal principal, @Valid @RequestBody TheoryNewDto theory) {
-        log.info("save theory: {}", theory.getName());
+        log.info("save - save theory by name: {}", theory.getName());
         Theory newTheory = theoryService.save(principal, theory);
         return theoryMapper.theoryToTheoryDto(newTheory);
     }
@@ -60,7 +60,7 @@ public class TheoryController {
     @PutMapping()
     public TheoryDto update(Principal principal,
         @Valid @RequestBody TheoryUpdateDto theoryToUpdate) {
-        log.info("update theory: {}", theoryToUpdate.getName());
+        log.info("update - update theory by id: {}", theoryToUpdate.getId());
         Theory theory = theoryService.update(principal, theoryToUpdate);
         return theoryMapper.theoryToTheoryDto(theory);
     }
@@ -68,7 +68,7 @@ public class TheoryController {
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(@PathVariable(name = "id") long id) {
-        log.info("delete theory by id {}", id);
+        log.info("delete - delete theory by id: {}", id);
         theoryService.deleteById(id);
     }
 
@@ -78,6 +78,7 @@ public class TheoryController {
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic_name", required = false) String topicName,
         @RequestParam(value = "user_name", required = false) String userName) {
+        log.info("findAllTheoriesByParam - find all theories by param");
         return searchFilterService.findAllTheoriesByParam(pageable, name, topicName, userName)
             .map(theoryMapper::theoryToTheoryDto);
     }

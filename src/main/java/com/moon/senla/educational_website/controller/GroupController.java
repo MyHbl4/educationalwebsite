@@ -60,28 +60,28 @@ public class GroupController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<GroupDto> findAll(@PageableDefault(sort = {"id"})
         Pageable pageable) {
-        log.info("find all groups");
+        log.info("findAll - find all groups");
         return groupService.findAll(pageable)
             .map(groupMapper::groupToGroupDto);
     }
 
     @GetMapping(path = "/{id}")
     public GroupDto findById(@PathVariable(name = "id") long id) {
-        log.info("find group by id {}", id);
+        log.info("findById - find group by id: {}", id);
         Group group = groupService.findById(id);
         return groupMapper.groupToGroupDto(group);
     }
 
     @PostMapping()
     public GroupDto save(Principal principal, @Valid @RequestBody GroupNewDto group) {
-        log.info("save group name: {}", group.getName());
+        log.info("save - save group by name: {}", group.getName());
         Group newGroup = groupService.save(principal, group);
         return groupMapper.groupToGroupDto(newGroup);
     }
 
     @PutMapping()
     public GroupDto update(Principal principal, @Valid @RequestBody GroupShortDto groupToUpdate) {
-        log.info("update group name: {}", groupToUpdate.getName());
+        log.info("update - update group by id: {}", groupToUpdate.getId());
         Group group = groupService.update(principal, groupToUpdate);
         return groupMapper.groupToGroupDto(group);
     }
@@ -89,14 +89,14 @@ public class GroupController {
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(@PathVariable(name = "id") long id) {
-        log.info("delete group by id {}", id);
+        log.info("delete - delete group by id: {}", id);
         groupService.deleteById(id);
     }
 
     @GetMapping(path = "/{id}/schedules")
     public Page<ScheduleDto> findAllSchedulesByGroupId(@PathVariable(name = "id") long id,
         Pageable pageable) {
-        log.info("find schedules by group id {}", id);
+        log.info("findAllSchedulesByGroupId - find schedules by group id: {}", id);
         return scheduleService.findAllByGroupId(pageable, id)
             .map(scheduleMapper::scheduleToScheduleDto);
     }
@@ -104,7 +104,7 @@ public class GroupController {
     @GetMapping(path = "/{id}/users")
     public Page<UserDtoShort> getAllUsersByGroupId(Pageable pageable,
         @PathVariable(name = "id") long id) {
-        log.info("find users by group id {}", id);
+        log.info("getAllUsersByGroupId - find users by group id: {}", id);
         return userService.getAllUsersByGroupId(pageable, id)
             .map(userMapper::userToUserDtoShort);
     }

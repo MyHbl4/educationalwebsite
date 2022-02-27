@@ -43,21 +43,21 @@ public class FeedbackController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<FeedbackDto> findAll(@PageableDefault(sort = {"id"})
         Pageable pageable) {
-        log.info("find all feedbacks");
+        log.info("findAll - find all feedbacks");
         return feedbackService.findAll(pageable)
             .map(feedbackMapper::feedbackToFeedbackDto);
     }
 
     @GetMapping(path = "/{id}")
     public FeedbackDto findById(@PathVariable(name = "id") long id) {
-        log.info("find feedback by id {}", id);
+        log.info("findById - find feedback by id: {}", id);
         Feedback feedback = feedbackService.findById(id);
         return feedbackMapper.feedbackToFeedbackDto(feedback);
     }
 
     @PostMapping()
     public FeedbackDto save(Principal principal, @Valid @RequestBody FeedbackNewDto feedback) {
-        log.info("save feedback by user: {}", principal.getName());
+        log.info("save - save feedback by user: {}", principal.getName());
         Feedback newFeedback = feedbackService.save(principal, feedback);
         return feedbackMapper.feedbackToFeedbackDto(newFeedback);
     }
@@ -65,14 +65,14 @@ public class FeedbackController {
     @PutMapping()
     public FeedbackDto update(Principal principal,
         @Valid @RequestBody FeedbackUpdateDto feedbackToUpdate) {
-        log.info("update feedback id: {}", feedbackToUpdate.getId());
+        log.info("update - update feedback by id: {}", feedbackToUpdate.getId());
         Feedback feedback = feedbackService.update(principal, feedbackToUpdate);
         return feedbackMapper.feedbackToFeedbackDto(feedback);
     }
 
     @DeleteMapping(path = "/{id}")
     public void delete(Principal principal, @PathVariable(name = "id") long id) {
-        log.info("delete feedback by id {}", id);
+        log.info("delete - delete feedback by id: {}", id);
         feedbackService.deleteById(principal, id);
     }
 }

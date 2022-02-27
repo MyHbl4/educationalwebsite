@@ -52,13 +52,14 @@ public class UserController {
         @PageableDefault(sort = {"id"}) Pageable pageable,
         @RequestParam(value = "firstName", required = false) String firstName,
         @RequestParam(value = "LastName", required = false) String lastName) {
+        log.info("findAllUsersByParam - find all users by param");
         return searchFilterService.findAllUsersByParam(pageable, firstName, lastName)
             .map(userMapper::userToUserDto);
     }
 
     @GetMapping(path = "/{id}")
     public UserDto findById(@PathVariable(name = "id") long id) {
-        log.info("find user by id {}", id);
+        log.info("findById - find user by id: {}", id);
         User user = userService.findById(id);
         return userMapper.userToUserDto(user);
     }
@@ -66,14 +67,14 @@ public class UserController {
     @PostMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public UserDto save(@Valid @RequestBody UserNewDto user) {
-        log.info("save user: {}", user.getUsername());
+        log.info("save - save user with username: {}", user.getUsername());
         User newUser = authenticationService.register(user);
         return userMapper.userToUserDto(newUser);
     }
 
     @PutMapping()
     public UserDto update(Principal principal, @Valid @RequestBody UserDtoUpdate userToUpdate) {
-        log.info("update user: {}", principal.getName());
+        log.info("update - update user with username: {}", principal.getName());
         User user = authenticationService.update(principal, userToUpdate);
         return userMapper.userToUserDto(user);
     }
@@ -81,13 +82,13 @@ public class UserController {
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public UserDto delete(@PathVariable(name = "id") long id) {
-        log.info("delete user by id {}", id);
+        log.info("delete - delete user by id: {}", id);
         return userMapper.userToUserDto(userService.deleteById(id));
     }
 
     @GetMapping(path = "/my-page")
     public UserDto showMyPage(Principal principal) {
-        log.info("show {} page", principal.getName());
+        log.info("showMyPage - show {} page", principal.getName());
         User user = userService.findByUsername(principal.getName());
         return userMapper.userToUserDto(user);
     }

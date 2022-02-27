@@ -63,21 +63,21 @@ public class CourseController {
 
     @GetMapping()
     public Page<CourseDto> findAll(@PageableDefault(sort = {"id"}) Pageable pageable) {
-        log.info("find all courses");
+        log.info("findAll - find all courses");
         return courseService.findAll(pageable)
             .map(courseMapper::courseToCourseDto);
     }
 
     @GetMapping(path = "/{id}")
     public CourseDto findById(@PathVariable(name = "id") long id) {
-        log.info("find course by id {}", id);
+        log.info("findById - find course by id {}", id);
         Course course = courseService.findById(id);
         return courseMapper.courseToCourseDto(course);
     }
 
     @PostMapping()
     public CourseDto save(Principal principal, @Valid @RequestBody CourseNewDto course) {
-        log.info("save course: {}", course.getName());
+        log.info("save - save course by name: {}", course.getName());
         Course newCourse = courseService.save(principal, course);
         return courseMapper.courseToCourseDto(newCourse);
     }
@@ -85,7 +85,7 @@ public class CourseController {
     @PutMapping()
     public CourseDto update(Principal principal,
         @Valid @RequestBody CourseUpdateDto courseToUpdate) {
-        log.info("update course: {}", courseToUpdate.getName());
+        log.info("update - update course by id: {}", courseToUpdate.getId());
         Course course = courseService.update(principal, courseToUpdate);
         return courseMapper.courseToCourseDto(course);
     }
@@ -93,7 +93,7 @@ public class CourseController {
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(@PathVariable(name = "id") long id) {
-        log.info("delete course by id {}", id);
+        log.info("delete - delete course by id: {}", id);
         courseService.deleteById(id);
     }
 
@@ -103,6 +103,7 @@ public class CourseController {
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic_name", required = false) String topicName,
         @RequestParam(value = "user_name", required = false) String authorName) {
+        log.info("findAllCoursesByParam - find all courses by param");
         return searchFilterService.findAllCoursesByParam(pageable, name, topicName, authorName)
             .map(courseMapper::courseToCourseDto);
     }
@@ -110,7 +111,7 @@ public class CourseController {
     @GetMapping(path = "/{id}/groups")
     public Page<GroupDto> findAllGroupsByCourseId(@PathVariable(name = "id") long id,
         Pageable pageable) {
-        log.info("find groups by course id {}", id);
+        log.info("findAllGroupsByCourseId - find groups by course id {}", id);
         return groupService.findAllGroupsByCourseId(pageable, id)
             .map(groupMapper::groupToGroupDto);
     }
@@ -119,7 +120,7 @@ public class CourseController {
     public Page<CourseDto> findAllMyCourses(
         Principal principal,
         Pageable pageable) {
-        log.info("find courses where author is user: {}", principal.getName());
+        log.info("findAllMyCourses - find courses where author is user: {}", principal.getName());
         return courseService.findAllCoursesByUsername(pageable, principal.getName())
             .map(courseMapper::courseToCourseDto);
     }
@@ -127,7 +128,7 @@ public class CourseController {
     @GetMapping(path = "/{id}/feedbacks")
     public Page<FeedbackDto> findAllFeedbacksByCourseId(@PathVariable(name = "id") long id,
         Pageable pageable) {
-        log.info("find groups by course id {}", id);
+        log.info("findAllFeedbacksByCourseId - find groups by course id: {}", id);
         return feedbackService.getAllFeedbackByCourseId(pageable, id)
             .map(feedbackMapper::feedbackToFeedbackDto);
     }

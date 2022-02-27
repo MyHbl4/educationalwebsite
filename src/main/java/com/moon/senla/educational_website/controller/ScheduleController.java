@@ -42,21 +42,21 @@ public class ScheduleController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Page<ScheduleDto> findAll(@PageableDefault(sort = {"id"})
         Pageable pageable) {
-        log.info("find all schedules");
+        log.info("findAll - find all schedules");
         return scheduleService.findAll(pageable)
             .map(scheduleMapper::scheduleToScheduleDto);
     }
 
     @GetMapping(path = "/{id}")
     public ScheduleDto findById(@PathVariable(name = "id") long id) {
-        log.info("find schedule by id {}", id);
+        log.info("findById - find schedule by id: {}", id);
         Schedule schedule = scheduleService.findById(id);
         return scheduleMapper.scheduleToScheduleDto(schedule);
     }
 
     @PostMapping()
     public ScheduleDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
-        log.info("save schedule: {}", schedule.getDate());
+        log.info("save - save schedule: {}", schedule.getDate());
         Schedule newSchedule = scheduleService.save(principal, schedule);
         return scheduleMapper.scheduleToScheduleDto(newSchedule);
     }
@@ -64,14 +64,14 @@ public class ScheduleController {
     @PutMapping()
     public ScheduleDto update(Principal principal,
         @Valid @RequestBody ScheduleUpdateDto scheduleToUpdate) {
-        log.info("update schedule: {}", scheduleToUpdate.getId());
+        log.info("update - update schedule by id: {}", scheduleToUpdate.getId());
         Schedule schedule = scheduleService.update(principal, scheduleToUpdate);
         return scheduleMapper.scheduleToScheduleDto(schedule);
     }
 
     @DeleteMapping(path = "/{id}")
     public void delete(Principal principal, @PathVariable(name = "id") long id) {
-        log.info("delete schedule by id {}", id);
+        log.info("delete - delete schedule by id: {}", id);
         scheduleService.deleteById(principal, id);
     }
 }

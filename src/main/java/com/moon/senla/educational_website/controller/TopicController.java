@@ -38,14 +38,14 @@ public class TopicController {
 
     @GetMapping()
     public Page<TopicDto> findAll(@PageableDefault(sort = {"id"}) Pageable pageable) {
-        log.info("find all topics");
+        log.info("findAll - find all topics");
         return topicService.findAll(pageable)
             .map(topicMapper::topicToTopicDto);
     }
 
     @GetMapping(path = "/{id}")
     public TopicDto findById(@PathVariable(name = "id") long id) {
-        log.info("find topic by id {}", id);
+        log.info("findById - find topic by id: {}", id);
         Topic topic = topicService.findById(id);
         return topicMapper.topicToTopicDto(topic);
     }
@@ -53,7 +53,7 @@ public class TopicController {
     @PostMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public TopicDto save(@Valid @RequestBody TopicNewDto topic) {
-        log.info("save topic: {}", topic.getName());
+        log.info("save - save topic: {}", topic.getName());
         Topic newTopic = topicService.save(topic);
         return topicMapper.topicToTopicDto(newTopic);
     }
@@ -61,7 +61,7 @@ public class TopicController {
     @PutMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public TopicDto update(@Valid @RequestBody TopicDto topicToUpdate) {
-        log.info("update topic: {}", topicToUpdate.getName());
+        log.info("update - update topic by id: {}", topicToUpdate.getId());
         Topic topic = topicService.update(topicToUpdate);
         return topicMapper.topicToTopicDto(topic);
     }
@@ -69,7 +69,7 @@ public class TopicController {
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void delete(@PathVariable(name = "id") long id) {
-        log.info("delete topic by id {}", id);
+        log.info("delete - delete topic by id: {}", id);
         topicService.deleteById(id);
     }
 }
