@@ -1,6 +1,11 @@
 package com.moon.senla.educational_website.service.impl;
 
 
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
+import static com.moon.senla.educational_website.utils.StringConstants.COURSE_NF;
+import static com.moon.senla.educational_website.utils.StringConstants.FEEDBACK_NF;
+import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
+
 import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.FeedbackRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
@@ -43,7 +48,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         Feedback feedback = FeedbackMapper.INSTANCE.feedbackNewDtoToFeedback(newFeedback);
         User user = userRepository.findByUsername(principal.getName());
         Course course = courseRepository.findById(feedback.getCourse().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
         feedback.setUser(user);
         feedback.setCourse(course);
         try {
@@ -62,7 +67,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public Feedback findById(long id) {
         return feedbackRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Feedback Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, FEEDBACK_NF.value));
     }
 
     @Override
@@ -80,15 +85,15 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public void deleteById(Principal principal, long id) {
         Feedback oldFeedback = feedbackRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Feedback Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, FEEDBACK_NF.value));
         User user = userRepository.findById(oldFeedback.getUser().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
         if (!user.getUsername().equals(principal.getName())) {
             throw new CustomException(HttpStatus.FORBIDDEN,
                 "Invalid request, access is denied");
         }
         Course course = courseRepository.findById(oldFeedback.getCourse().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
         try {
             feedbackRepository.deleteById(id);
             int averageRank = feedbackRepository.findAverageRankByCourseId(
@@ -97,14 +102,14 @@ public class FeedbackServiceImpl implements FeedbackService {
             courseRepository.save(course);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, feedback could not be saved");
+                COULD_NOT_DELETE.value);
         }
     }
 
     @Override
     public Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, long courseId) {
         courseRepository.findById(courseId)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
         try {
             return feedbackRepository.findAllByCourseId(pageable, courseId);
         } catch (Exception e) {
@@ -117,15 +122,15 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public Feedback update(Principal principal, FeedbackUpdateDto feedbackToUpdate) {
         Feedback oldFeedback = feedbackRepository.findById(feedbackToUpdate.getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Feedback Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, FEEDBACK_NF.value));
         User user = userRepository.findById(oldFeedback.getUser().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
         if (!user.getUsername().equals(principal.getName())) {
             throw new CustomException(HttpStatus.FORBIDDEN,
                 "Invalid request, access is denied");
         }
         Course course = courseRepository.findById(oldFeedback.getCourse().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
         oldFeedback.setDetention(feedbackToUpdate.getDetention());
         oldFeedback.setRank(feedbackToUpdate.getRank());
         try {

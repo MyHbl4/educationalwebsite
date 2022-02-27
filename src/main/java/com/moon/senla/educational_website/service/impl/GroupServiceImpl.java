@@ -1,6 +1,11 @@
 package com.moon.senla.educational_website.service.impl;
 
 
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
+import static com.moon.senla.educational_website.utils.StringConstants.COURSE_NF;
+import static com.moon.senla.educational_website.utils.StringConstants.GROUP_NF;
+import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
+
 import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.GroupRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
@@ -52,7 +57,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group findById(long id) {
         return groupRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
     }
 
     @Override
@@ -68,19 +73,19 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void deleteById(long id) {
         groupRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
         try {
             groupRepository.deleteById(id);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, failed to delete");
+                COULD_NOT_DELETE.value);
         }
     }
 
     @Override
     public Page<Group> findAllGroupsByCourseId(Pageable pageable, long id) {
         courseRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
         try {
             return groupRepository.findAllByCourseId(pageable, id);
         } catch (Exception e) {
@@ -92,7 +97,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group update(Principal principal, GroupShortDto groupDto) {
         Group oldGroup = groupRepository.findById(groupDto.getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
         checkRequest(principal, oldGroup.getCourse().getId());
         oldGroup.setName(groupDto.getName());
         try {
@@ -105,9 +110,9 @@ public class GroupServiceImpl implements GroupService {
 
     private Course checkRequest(Principal principal, Long id) {
         Course course = courseRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
         User user = userRepository.findById(course.getUser().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
         if (!principal.getName().equals(user.getUsername())) {
             throw new CustomException(HttpStatus.FORBIDDEN,
                 "Invalid request, access is denied");

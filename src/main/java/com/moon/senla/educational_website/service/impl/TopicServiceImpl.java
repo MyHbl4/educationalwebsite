@@ -1,6 +1,9 @@
 package com.moon.senla.educational_website.service.impl;
 
 
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
+import static com.moon.senla.educational_website.utils.StringConstants.TOPIC_NF;
+
 import com.moon.senla.educational_website.dao.TopicRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Topic;
@@ -37,7 +40,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public Topic findById(long id) {
         return topicRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, TOPIC_NF.value));
     }
 
     @Override
@@ -53,19 +56,19 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public void deleteById(long id) {
         topicRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, TOPIC_NF.value));
         try {
             topicRepository.deleteById(id);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, failed to delete");
+                COULD_NOT_DELETE.value);
         }
     }
 
     @Override
     public Topic update(TopicDto topicUpdate) {
         Topic oldTopic = topicRepository.findById(topicUpdate.getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Topic Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, TOPIC_NF.value));
         oldTopic.setName(topicUpdate.getName());
         try {
             return topicRepository.save(oldTopic);

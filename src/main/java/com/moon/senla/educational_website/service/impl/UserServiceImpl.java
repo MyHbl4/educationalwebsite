@@ -1,5 +1,9 @@
 package com.moon.senla.educational_website.service.impl;
 
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
+import static com.moon.senla.educational_website.utils.StringConstants.GROUP_NF;
+import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
+
 import com.moon.senla.educational_website.dao.GroupRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
@@ -32,7 +36,7 @@ public class UserServiceImpl implements UserService {
         User result = userRepository.findByUsername(username);
         if (result == null) {
             log.warn("findByUsername - no user found by username: {}", username);
-            throw new CustomException(HttpStatus.NOT_FOUND, "User Not Found");
+            throw new CustomException(HttpStatus.NOT_FOUND, USER_NF.value);
         }
         log.info("findByUsername - user: {} found by username: {}", username,
             username);
@@ -42,27 +46,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(long id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND,
+                USER_NF.value));
     }
 
 
     @Override
     public User deleteById(long id) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
         user.setStatus(Status.DELETED);
         try {
             return userRepository.save(user);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, failed to delete");
+                COULD_NOT_DELETE.value);
         }
     }
 
     @Override
     public Page<User> getAllUsersByGroupId(Pageable pageable, long groupId) {
         groupRepository.findById(groupId)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
         try {
             return userRepository.getAllUsersByGroupId(pageable, groupId);
         } catch (Exception e) {

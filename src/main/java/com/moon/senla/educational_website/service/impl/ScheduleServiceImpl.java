@@ -1,5 +1,11 @@
 package com.moon.senla.educational_website.service.impl;
 
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
+import static com.moon.senla.educational_website.utils.StringConstants.COURSE_NF;
+import static com.moon.senla.educational_website.utils.StringConstants.GROUP_NF;
+import static com.moon.senla.educational_website.utils.StringConstants.SCHEDULE_NF;
+import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
+
 import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.GroupRepository;
 import com.moon.senla.educational_website.dao.ScheduleRepository;
@@ -57,7 +63,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public Schedule findById(long id) {
         return scheduleRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Schedule Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, SCHEDULE_NF.value));
     }
 
     @Override
@@ -73,19 +79,19 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public void deleteById(Principal principal, long id) {
         Schedule oldSchedule = scheduleRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Schedule Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, SCHEDULE_NF.value));
         checkRequest(principal, oldSchedule.getGroup().getId());
         try {
             scheduleRepository.deleteById(id);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Schedule Not Found");
+            throw new CustomException(HttpStatus.NOT_FOUND, COULD_NOT_DELETE.value);
         }
     }
 
     @Override
     public Page<Schedule> findAllByGroupId(Pageable pageable, long groupId) {
         groupRepository.findById(groupId)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
         try {
             return scheduleRepository.findAllByGroupId(pageable, groupId);
         } catch (Exception e) {
@@ -97,7 +103,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public Schedule update(Principal principal, ScheduleUpdateDto schedule) {
         Schedule oldSchedule = scheduleRepository.findById(schedule.getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Schedule Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, SCHEDULE_NF.value));
         checkRequest(principal, oldSchedule.getGroup().getId());
         oldSchedule.setDate(schedule.getDate());
         try {
@@ -110,11 +116,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private Group checkRequest(Principal principal, Long id) {
         Group group = groupRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Group Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
         Course course = courseRepository.findById(group.getCourse().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
         User user = userRepository.findById(course.getUser().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
         if (!user.getUsername().equals(principal.getName())) {
             throw new CustomException(HttpStatus.FORBIDDEN,
                 "Invalid request, access is denied");

@@ -1,6 +1,10 @@
 package com.moon.senla.educational_website.service.impl;
 
 
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
+import static com.moon.senla.educational_website.utils.StringConstants.COURSE_NF;
+import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
+
 import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
@@ -45,7 +49,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course findById(long id) {
         return courseRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
     }
 
     @Override
@@ -61,21 +65,21 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteById(long id) {
         courseRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
         try {
             courseRepository.deleteById(id);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, failed to delete");
+                COULD_NOT_DELETE.value);
         }
     }
 
     @Override
     public Course update(Principal principal, CourseUpdateDto courseToUpdate) {
         Course oldCourse = courseRepository.findById(courseToUpdate.getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Course Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
         User user = userRepository.findById(oldCourse.getUser().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "User Not Found"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
         if (!user.getUsername().equals(principal.getName())) {
             throw new CustomException(HttpStatus.FORBIDDEN,
                 "Invalid request, access is denied");

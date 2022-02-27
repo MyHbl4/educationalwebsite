@@ -17,12 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-/**
- * @ ClassName  :SearchFilterServiceImpl
- * @ Author     :gmoon
- * @ Description:
- */
-
 @Service
 public class SearchFilterServiceImpl implements SearchFilterService {
 

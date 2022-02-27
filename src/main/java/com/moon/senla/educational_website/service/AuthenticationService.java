@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface AuthenticationService {
 
-    Map<Object, Object> login(AuthenticationRequestDto requestDto);
+    Map<String, String> login(AuthenticationRequestDto requestDto);
 
     User register(UserNewDto user);
 

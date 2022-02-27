@@ -48,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.userRepository = userRepository;
     }
 
-    public Map<Object, Object> login(AuthenticationRequestDto requestDto) {
+    public Map<String, String> login(AuthenticationRequestDto requestDto) {
         try {
             String username = requestDto.getUsername();
             authenticationManager.authenticate(
@@ -62,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             String token = jwtTokenProvider.createToken(username, user.getRoles());
 
-            Map<Object, Object> response = new HashMap<>();
+            Map<String, String> response = new HashMap<>();
             response.put("username", username);
             response.put("token", token);
 
@@ -83,7 +83,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setRoles(userRoles);
             user.setStatus(Status.ACTIVE);
             User registeredUser = userRepository.save(user);
-            log.info("Register - user id: {} successfully registered", registeredUser.getId());
+            log.info("register - register user id: {} successfully registered",
+                registeredUser.getId());
 
             return registeredUser;
         } catch (Exception e) {
@@ -101,7 +102,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             oldUser.setLastName(updateUser.getLastName());
             oldUser.setStatus(updateUser.getStatus());
             User updatedUser = userRepository.save(oldUser);
-            log.info("Update - user id: {} successfully updated", updatedUser.getId());
+            log.info("update - update user id: {} successfully updated", updatedUser.getId());
 
             return updatedUser;
         } catch (Exception e) {
