@@ -6,6 +6,7 @@ import com.moon.senla.educational_website.model.dto.user.UserDto;
 import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
 import com.moon.senla.educational_website.model.dto.user.UserNewDto;
 import com.moon.senla.educational_website.service.AuthenticationService;
+import com.moon.senla.educational_website.service.IFacade;
 import com.moon.senla.educational_website.service.UserService;
 import com.moon.senla.educational_website.service.impl.SearchFilterServiceImpl;
 import io.swagger.annotations.Api;
@@ -36,15 +37,17 @@ public class UserController {
     private final SearchFilterServiceImpl searchFilterService;
     private final AuthenticationService authenticationService;
     private final UserMapper userMapper;
+    private final IFacade facade;
 
     public UserController(UserService userService,
         SearchFilterServiceImpl searchFilterService,
         AuthenticationService authenticationService,
-        UserMapper userMapper) {
+        UserMapper userMapper, IFacade facade) {
         this.userService = userService;
         this.searchFilterService = searchFilterService;
         this.authenticationService = authenticationService;
         this.userMapper = userMapper;
+        this.facade = facade;
     }
 
     @GetMapping(path = "/search")
@@ -53,8 +56,7 @@ public class UserController {
         @RequestParam(value = "firstName", required = false) String firstName,
         @RequestParam(value = "LastName", required = false) String lastName) {
         log.info("findAllUsersByParam - find all users by param");
-        return searchFilterService.findAllUsersByParam(pageable, firstName, lastName)
-            .map(userMapper::userToUserDto);
+        return facade.findAllUsersByParam(pageable, firstName, lastName);
     }
 
     @GetMapping(path = "/{id}")

@@ -113,27 +113,22 @@ public class SearchFilterServiceImpl implements SearchFilterService {
 
     @Override
     public Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName) {
-        try {
-            Page<User> page = userRepository.findAll(pageable);
-            List<User> allContent = page.getContent();
-            List<User> users = new ArrayList<>();
-            for (User user : allContent) {
-                if (firstName == null && lastName == null) {
-                    users.add(user);
-                } else if (firstName == null && user.getLastName()
-                    .equals(lastName)) {
-                    users.add(user);
-                } else if (user.getFirstName().equals(firstName) && lastName == null) {
-                    users.add(user);
-                } else if (user.getFirstName().equals(firstName) && user.getLastName()
-                    .equals(lastName)) {
-                    users.add(user);
-                }
+        Page<User> page = userRepository.findAll(pageable);
+        List<User> allContent = page.getContent();
+        List<User> users = new ArrayList<>();
+        for (User user : allContent) {
+            if (firstName == null && lastName == null) {
+                users.add(user);
+            } else if (firstName == null && user.getLastName()
+                .equals(lastName)) {
+                users.add(user);
+            } else if (user.getFirstName().equals(firstName) && lastName == null) {
+                users.add(user);
+            } else if (user.getFirstName().equals(firstName) && user.getLastName()
+                .equals(lastName)) {
+                users.add(user);
             }
-            return new PageImpl<>(users, pageable, users.size());
-        } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, users cannot be found");
         }
+        return new PageImpl<>(users, pageable, users.size());
     }
 }

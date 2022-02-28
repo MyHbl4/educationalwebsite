@@ -7,6 +7,7 @@ import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
 import com.moon.senla.educational_website.dao.GroupRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.error.ServiceCustomException;
 import com.moon.senla.educational_website.model.Status;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.UserService;
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
         User result = userRepository.findByUsername(username);
         if (result == null) {
             log.warn("findByUsername - no user found by username: {}", username);
-            throw new CustomException(HttpStatus.NOT_FOUND, USER_NF.value);
+            throw new ServiceCustomException(USER_NF.value);
         }
         log.info("findByUsername - user: {} found by username: {}", username,
             username);
@@ -46,8 +47,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(long id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND,
-                USER_NF.value));
+            .orElseThrow(() -> new ServiceCustomException(USER_NF.value));
     }
 
 
