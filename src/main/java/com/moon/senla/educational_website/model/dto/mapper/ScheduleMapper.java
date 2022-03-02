@@ -19,7 +19,7 @@ public interface ScheduleMapper {
 
     ScheduleNewDto scheduleToScheduleNewDto(Schedule schedule);
 
-    ScheduleDateDto scheduleDateDtoToSchedule(Schedule schedule);
+    ScheduleDateDto scheduleToScheduleDateDto(Schedule schedule);
 
     ScheduleUpdateDto scheduleToScheduleUpdateDto(Schedule schedule);
 
@@ -27,7 +27,7 @@ public interface ScheduleMapper {
 
     Schedule scheduleNewDtoToSchedule(ScheduleNewDto schedule);
 
-    Schedule scheduleToScheduleDateDto(ScheduleDateDto schedule);
+    Schedule scheduleDateDtoToSchedule(ScheduleDateDto schedule);
 
     Schedule scheduleUpdateDtoToSchedule(ScheduleUpdateDto schedule);
 }

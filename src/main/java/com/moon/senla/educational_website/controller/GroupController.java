@@ -8,7 +8,7 @@ import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
-import com.moon.senla.educational_website.model.dto.user.UserDtoShort;
+import com.moon.senla.educational_website.model.dto.user.UserGroupDto;
 import com.moon.senla.educational_website.service.GroupService;
 import com.moon.senla.educational_website.service.ScheduleService;
 import com.moon.senla.educational_website.service.UserService;
@@ -103,10 +103,10 @@ public class GroupController {
     }
 
     @GetMapping(path = "/{id}/users")
-    public Page<UserDtoShort> getAllUsersByGroupId(Pageable pageable,
+    public Page<UserGroupDto> getAllUsersByGroupId(Pageable pageable,
         @PathVariable(name = "id") long id) {
         log.info("getAllUsersByGroupId - find users by group id: {}", id);
         return userService.getAllUsersByGroupId(pageable, id)
-            .map(userMapper::userToUserDtoShort);
+            .map(userMapper::userToUserGroupDto);
     }
 }
