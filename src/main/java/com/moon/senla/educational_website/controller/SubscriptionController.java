@@ -37,15 +37,15 @@ public class SubscriptionController {
     public ResponseEntity<Object> unsubscribeFromGroup(Principal principal, long groupId) {
         log.info("unsubscribeFromGroup - remove user id: {} from group id: {}", principal.getName(),
             groupId);
-        managingSubscriptionsService.removeUserFromGroup(principal.getName(), groupId);
+        managingSubscriptionsService.unsubscribeUserFromGroup(principal.getName(), groupId);
         return new ResponseEntity<>("Unsubscribe done!", HttpStatus.OK);
     }
 
     @PostMapping(path = "/remove-user")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> removeUserFromGroup(String username, long groupId) {
-        log.info("removeUserFromGroup - remove user id: {} from group id: {}", username, groupId);
-        managingSubscriptionsService.removeUserFromGroup(username, groupId);
+    public ResponseEntity<Object> removeUserFromGroup(long userId, long groupId) {
+        log.info("removeUserFromGroup - remove user id: {} from group id: {}", userId, groupId);
+        managingSubscriptionsService.removeUserFromGroup(userId, groupId);
         return new ResponseEntity<>("User removed from group!", HttpStatus.OK);
     }
 }
