@@ -18,11 +18,11 @@ public interface GroupMapper {
 
     GroupNewDto groupToGroupNewDto(Group group);
 
+    GroupShortDto groupToGroupShortDto(Group group);
+
     Group groupNewDtoToGroup(GroupNewDto group);
 
     Group groupDtoToGroup(GroupDto group);
 
-    Group groupToGroupShortDto(GroupShortDto group);
-
-    GroupShortDto groupShortDtoToGroup(Group group);
+    Group groupShortDtoToGroup(GroupShortDto group);
 }

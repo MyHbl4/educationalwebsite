@@ -78,7 +78,7 @@ public class CourseController {
     @PostMapping()
     public CourseDto save(Principal principal, @Valid @RequestBody CourseNewDto course) {
         log.info("save - save course by name: {}", course.getName());
-        Course newCourse = courseService.save(principal, course);
+        Course newCourse = courseService.save(principal, courseMapper.courseNewDtoToCourse(course));
         return courseMapper.courseToCourseDto(newCourse);
     }
 
@@ -86,7 +86,8 @@ public class CourseController {
     public CourseDto update(Principal principal,
         @Valid @RequestBody CourseUpdateDto courseToUpdate) {
         log.info("update - update course by id: {}", courseToUpdate.getId());
-        Course course = courseService.update(principal, courseToUpdate);
+        Course course = courseService.update(principal,
+            courseMapper.courseUpdateDtoToCourse(courseToUpdate));
         return courseMapper.courseToCourseDto(course);
     }
 

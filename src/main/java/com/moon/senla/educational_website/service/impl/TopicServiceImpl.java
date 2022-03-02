@@ -7,9 +7,6 @@ import static com.moon.senla.educational_website.utils.StringConstants.TOPIC_NF;
 import com.moon.senla.educational_website.dao.TopicRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Topic;
-import com.moon.senla.educational_website.model.dto.mapper.TopicMapper;
-import com.moon.senla.educational_website.model.dto.topic.TopicDto;
-import com.moon.senla.educational_website.model.dto.topic.TopicNewDto;
 import com.moon.senla.educational_website.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,9 +25,9 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public Topic save(TopicNewDto topic) {
+    public Topic save(Topic topic) {
         try {
-            return topicRepository.save(TopicMapper.INSTANCE.topicNewDtoToTopic(topic));
+            return topicRepository.save(topic);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, topic could not be saved");
@@ -67,7 +64,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public Topic update(TopicDto topicUpdate) {
+    public Topic update(Topic topicUpdate) {
         Topic oldTopic = topicRepository.findById(topicUpdate.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, TOPIC_NF.value));
         oldTopic.setName(topicUpdate.getName());

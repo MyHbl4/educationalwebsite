@@ -6,10 +6,7 @@ import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.Status;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.user.AuthenticationRequestDto;
-import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
-import com.moon.senla.educational_website.model.dto.user.UserNewDto;
 import com.moon.senla.educational_website.security.jwt.JwtTokenProvider;
 import com.moon.senla.educational_website.service.AuthenticationService;
 import java.security.Principal;
@@ -65,9 +62,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    public User register(UserNewDto userNew) {
+    public User register(User user) {
         try {
-            User user = UserMapper.INSTANCE.userNewDtoToUser(userNew);
             Role roleUser = roleRepository.findByName("ROLE_USER");
             List<Role> userRoles = new ArrayList<>();
             userRoles.add(roleUser);
@@ -85,14 +81,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    public User update(Principal principal, UserDtoUpdate updateUser) {
+    public User update(Principal principal, User user) {
         try {
             User oldUser = userRepository.findByUsername(principal.getName());
-            oldUser.setEmail(updateUser.getEmail());
-            oldUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
-            oldUser.setFirstName(updateUser.getFirstName());
-            oldUser.setLastName(updateUser.getLastName());
-            oldUser.setStatus(updateUser.getStatus());
+            oldUser.setEmail(user.getEmail());
+            oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            oldUser.setFirstName(user.getFirstName());
+            oldUser.setLastName(user.getLastName());
+            oldUser.setStatus(user.getStatus());
             User updatedUser = userRepository.save(oldUser);
             log.info("update - update user id: {} successfully updated", updatedUser.getId());
 

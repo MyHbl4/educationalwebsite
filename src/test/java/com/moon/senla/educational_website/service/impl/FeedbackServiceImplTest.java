@@ -15,10 +15,6 @@ import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.course.CourseDtoShort;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackNewDto;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackUpdateDto;
-import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -67,9 +63,9 @@ class FeedbackServiceImplTest {
     Topic topic = new Topic();
     Feedback feedback = new Feedback();
     Page<Feedback> page = new PageImpl<>(listFeedback);
-    FeedbackNewDto newFeedback = new FeedbackNewDto();
-    CourseDtoShort courseShortDto = new CourseDtoShort();
-    FeedbackUpdateDto feedbackUpdateDto = new FeedbackUpdateDto();
+    Feedback newFeedback = new Feedback();
+    Course courseShortDto = new Course();
+    Feedback feedbackUpdateDto = new Feedback();
 
     @BeforeEach
     public void setup() {
@@ -128,10 +124,9 @@ class FeedbackServiceImplTest {
 
     @Test
     void save() {
-        Feedback feedback2 = FeedbackMapper.INSTANCE.feedbackNewDtoToFeedback(newFeedback);
         when(principal.getName()).thenReturn("user");
         when(userRepository.findByUsername(principal.getName())).thenReturn(user);
-        when(courseRepository.findById(feedback2.getCourse().getId())).thenReturn(
+        when(courseRepository.findById(newFeedback.getCourse().getId())).thenReturn(
             Optional.ofNullable(
                 course));
         when(feedbackRepository.save(

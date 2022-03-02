@@ -25,17 +25,19 @@ public class SubscriptionController {
     }
 
     @PostMapping(path = "/subscribe")
-    public ResponseEntity<Object> subscribeToGroup(Principal user, long groupId) {
-        log.info("subscribeToGroup - add user id: {} to group id: {}", user.getName(), groupId);
-        managingSubscriptionsService.addUserToGroup(user.getName(), groupId);
+    public ResponseEntity<Object> subscribeToGroup(Principal principal, long groupId) {
+        log.info("subscribeToGroup - add user id: {} to group id: {}", principal.getName(),
+            groupId);
+        managingSubscriptionsService.addUserToGroup(principal.getName(), groupId);
         return new ResponseEntity<>("Subscribe done!", HttpStatus.OK);
     }
 
 
     @PostMapping(path = "/unsubscribe")
-    public ResponseEntity<Object> unsubscribeFromGroup(Principal user, long groupId) {
-        log.info("unsubscribeFromGroup - remove user id: {} from group id: {}", user.getName(), groupId);
-        managingSubscriptionsService.removeUserFromGroup(user.getName(), groupId);
+    public ResponseEntity<Object> unsubscribeFromGroup(Principal principal, long groupId) {
+        log.info("unsubscribeFromGroup - remove user id: {} from group id: {}", principal.getName(),
+            groupId);
+        managingSubscriptionsService.removeUserFromGroup(principal.getName(), groupId);
         return new ResponseEntity<>("Unsubscribe done!", HttpStatus.OK);
     }
 

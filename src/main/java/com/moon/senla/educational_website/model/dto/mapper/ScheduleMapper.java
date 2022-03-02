@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Schedule;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleDateDto;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleDto;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleNewDto;
+import com.moon.senla.educational_website.model.dto.schedule.ScheduleUpdateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
@@ -18,11 +19,15 @@ public interface ScheduleMapper {
 
     ScheduleNewDto scheduleToScheduleNewDto(Schedule schedule);
 
+    ScheduleDateDto scheduleDateDtoToSchedule(Schedule schedule);
+
+    ScheduleUpdateDto scheduleToScheduleUpdateDto(Schedule schedule);
+
     Schedule scheduleDtoToSchedule(ScheduleDto schedule);
 
     Schedule scheduleNewDtoToSchedule(ScheduleNewDto schedule);
 
     Schedule scheduleToScheduleDateDto(ScheduleDateDto schedule);
 
-    ScheduleDateDto scheduleDateDtoToSchedule(Schedule schedule);
+    Schedule scheduleUpdateDtoToSchedule(ScheduleUpdateDto schedule);
 }

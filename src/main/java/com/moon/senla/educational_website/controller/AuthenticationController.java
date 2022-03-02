@@ -42,7 +42,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public UserDto registerUser(@RequestBody @Valid UserNewDto user) {
         log.info("registerUser - register user with username: {}", user.getUsername());
-        User newUser = authenticationService.register(user);
+        User newUser = authenticationService.register(userMapper.userNewDtoToUser(user));
         return userMapper.userToUserDto(newUser);
     }
 }

@@ -54,7 +54,7 @@ public class TopicController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public TopicDto save(@Valid @RequestBody TopicNewDto topic) {
         log.info("save - save topic: {}", topic.getName());
-        Topic newTopic = topicService.save(topic);
+        Topic newTopic = topicService.save(topicMapper.topicNewDtoToTopic(topic));
         return topicMapper.topicToTopicDto(newTopic);
     }
 
@@ -62,7 +62,7 @@ public class TopicController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public TopicDto update(@Valid @RequestBody TopicDto topicToUpdate) {
         log.info("update - update topic by id: {}", topicToUpdate.getId());
-        Topic topic = topicService.update(topicToUpdate);
+        Topic topic = topicService.update(topicMapper.topicDtoToTopic(topicToUpdate));
         return topicMapper.topicToTopicDto(topic);
     }
 

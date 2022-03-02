@@ -14,12 +14,6 @@ import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.course.CourseDtoShort;
-import com.moon.senla.educational_website.model.dto.course.CourseNewDto;
-import com.moon.senla.educational_website.model.dto.course.CourseUpdateDto;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackNewDto;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackUpdateDto;
-import com.moon.senla.educational_website.model.dto.topic.TopicDto;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -66,12 +60,12 @@ class CourseServiceImplTest {
     Topic topic = new Topic();
     Feedback feedback = new Feedback();
     Page<Course> page = new PageImpl<>(listCourses);
-    FeedbackNewDto newFeedback = new FeedbackNewDto();
-    CourseDtoShort courseShortDto = new CourseDtoShort();
-    FeedbackUpdateDto feedbackUpdateDto = new FeedbackUpdateDto();
-    CourseNewDto courseNewDto = new CourseNewDto();
-    TopicDto topicDto = new TopicDto();
-    CourseUpdateDto courseToUpdate = new CourseUpdateDto();
+    Feedback newFeedback = new Feedback();
+    Course courseShortDto = new Course();
+    Feedback feedbackUpdateDto = new Feedback();
+    Course courseNewDto = new Course();
+    Topic topicDto = new Topic();
+    Course courseToUpdate = new Course();
     String username = "admin";
 
     @BeforeEach
@@ -153,9 +147,9 @@ class CourseServiceImplTest {
     void findById() {
         when(courseRepository.findById(1L)).thenReturn(Optional.ofNullable(course));
 
-        Course findedCourse = courseService.findById(1L);
+        Course foundCourse = courseService.findById(1L);
 
-        assertEquals(course, findedCourse);
+        assertEquals(course, foundCourse);
     }
 
     @Test

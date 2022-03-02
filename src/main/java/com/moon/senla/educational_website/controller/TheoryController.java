@@ -53,7 +53,7 @@ public class TheoryController {
     @PostMapping()
     public TheoryDto save(Principal principal, @Valid @RequestBody TheoryNewDto theory) {
         log.info("save - save theory by name: {}", theory.getName());
-        Theory newTheory = theoryService.save(principal, theory);
+        Theory newTheory = theoryService.save(principal, theoryMapper.theoryNewDtoToTheory(theory));
         return theoryMapper.theoryToTheoryDto(newTheory);
     }
 
@@ -61,7 +61,8 @@ public class TheoryController {
     public TheoryDto update(Principal principal,
         @Valid @RequestBody TheoryUpdateDto theoryToUpdate) {
         log.info("update - update theory by id: {}", theoryToUpdate.getId());
-        Theory theory = theoryService.update(principal, theoryToUpdate);
+        Theory theory = theoryService.update(principal,
+            theoryMapper.theoryUpdateDtoToTheory(theoryToUpdate));
         return theoryMapper.theoryToTheoryDto(theory);
     }
 

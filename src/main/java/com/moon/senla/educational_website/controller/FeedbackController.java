@@ -58,7 +58,8 @@ public class FeedbackController {
     @PostMapping()
     public FeedbackDto save(Principal principal, @Valid @RequestBody FeedbackNewDto feedback) {
         log.info("save - save feedback by user: {}", principal.getName());
-        Feedback newFeedback = feedbackService.save(principal, feedback);
+        Feedback newFeedback = feedbackService.save(principal,
+            feedbackMapper.feedbackNewDtoToFeedback(feedback));
         return feedbackMapper.feedbackToFeedbackDto(newFeedback);
     }
 
@@ -66,7 +67,8 @@ public class FeedbackController {
     public FeedbackDto update(Principal principal,
         @Valid @RequestBody FeedbackUpdateDto feedbackToUpdate) {
         log.info("update - update feedback by id: {}", feedbackToUpdate.getId());
-        Feedback feedback = feedbackService.update(principal, feedbackToUpdate);
+        Feedback feedback = feedbackService.update(principal,
+            feedbackMapper.feedbackUpdateDtoToFeedback(feedbackToUpdate));
         return feedbackMapper.feedbackToFeedbackDto(feedback);
     }
 

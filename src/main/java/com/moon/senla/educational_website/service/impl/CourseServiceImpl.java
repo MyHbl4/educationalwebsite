@@ -10,9 +10,6 @@ import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.course.CourseNewDto;
-import com.moon.senla.educational_website.model.dto.course.CourseUpdateDto;
-import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.service.CourseService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +32,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course save(Principal principal, CourseNewDto newCourse) {
+    public Course save(Principal principal, Course course) {
         try {
-            Course course = CourseMapper.INSTANCE.courseNewDtoToCourse(newCourse);
             course.setUser(userRepository.findByUsername(principal.getName()));
             return courseRepository.save(course);
         } catch (Exception e) {
@@ -64,7 +60,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteById(long id) {
-        if(!courseRepository.findById(id).isPresent()){
+        if (!courseRepository.findById(id).isPresent()) {
             throw new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value);
         }
         try {
@@ -76,7 +72,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course update(Principal principal, CourseUpdateDto courseToUpdate) {
+    public Course update(Principal principal, Course courseToUpdate) {
         Course oldCourse = courseRepository.findById(courseToUpdate.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
         User user = userRepository.findById(oldCourse.getUser().getId())

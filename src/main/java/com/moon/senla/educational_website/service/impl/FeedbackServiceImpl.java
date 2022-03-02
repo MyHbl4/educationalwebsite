@@ -13,9 +13,6 @@ import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackNewDto;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackUpdateDto;
-import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
 import com.moon.senla.educational_website.service.FeedbackService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +41,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     @Transactional
-    public Feedback save(Principal principal, FeedbackNewDto newFeedback) {
-        Feedback feedback = FeedbackMapper.INSTANCE.feedbackNewDtoToFeedback(newFeedback);
+    public Feedback save(Principal principal, Feedback feedback) {
         User user = userRepository.findByUsername(principal.getName());
         Course course = courseRepository.findById(feedback.getCourse().getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
@@ -119,7 +115,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     @Transactional
-    public Feedback update(Principal principal, FeedbackUpdateDto feedbackToUpdate) {
+    public Feedback update(Principal principal, Feedback feedbackToUpdate) {
         Feedback oldFeedback = feedbackRepository.findById(feedbackToUpdate.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, FEEDBACK_NF.value));
         Course course = check(principal, oldFeedback);

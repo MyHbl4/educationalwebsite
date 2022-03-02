@@ -15,9 +15,6 @@ import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.Schedule;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.mapper.ScheduleMapper;
-import com.moon.senla.educational_website.model.dto.schedule.ScheduleNewDto;
-import com.moon.senla.educational_website.model.dto.schedule.ScheduleUpdateDto;
 import com.moon.senla.educational_website.service.ScheduleService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +44,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule save(Principal principal, ScheduleNewDto schedule) {
+    public Schedule save(Principal principal, Schedule schedule) {
         Group group = checkRequest(principal, schedule.getGroup().getId());
-        Schedule newSchedule = ScheduleMapper.INSTANCE.scheduleNewDtoToSchedule(schedule);
-        newSchedule.setGroup(group);
-        newSchedule.setDate(schedule.getDate());
+        schedule.setGroup(group);
+        schedule.setDate(schedule.getDate());
         try {
-            return scheduleRepository.save(newSchedule);
+            return scheduleRepository.save(schedule);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, schedule could not be saved");
@@ -103,7 +99,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule update(Principal principal, ScheduleUpdateDto schedule) {
+    public Schedule update(Principal principal, Schedule schedule) {
         Schedule oldSchedule = scheduleRepository.findById(schedule.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, SCHEDULE_NF.value));
         checkRequest(principal, oldSchedule.getGroup().getId());

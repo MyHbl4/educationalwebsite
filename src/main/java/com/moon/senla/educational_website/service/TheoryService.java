@@ -1,15 +1,13 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Theory;
-import com.moon.senla.educational_website.model.dto.theory.TheoryNewDto;
-import com.moon.senla.educational_website.model.dto.theory.TheoryUpdateDto;
 import java.security.Principal;
 
 public interface TheoryService {
 
-    Theory save(Principal principal, TheoryNewDto theory);
+    Theory save(Principal principal, Theory theory);
 
-    Theory update(Principal principal, TheoryUpdateDto theory);
+    Theory update(Principal principal, Theory theory);
 
     Theory findById(long id);
 

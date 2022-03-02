@@ -12,9 +12,6 @@ import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Theory;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.mapper.TheoryMapper;
-import com.moon.senla.educational_website.model.dto.theory.TheoryNewDto;
-import com.moon.senla.educational_website.model.dto.theory.TheoryUpdateDto;
 import com.moon.senla.educational_website.service.TheoryService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +35,13 @@ public class TheoryServiceImpl implements TheoryService {
     }
 
     @Override
-    public Theory save(Principal principal, TheoryNewDto newTheory) {
+    public Theory save(Principal principal, Theory newTheory) {
         if (!topicRepository.findById(newTheory.getTopic().getId()).isPresent()) {
             throw new CustomException(HttpStatus.NOT_FOUND, TOPIC_NF.value);
         }
         try {
-            Theory theory = TheoryMapper.INSTANCE.theoryNewDtoToTheory(newTheory);
-            theory.setUser(userRepository.findByUsername(principal.getName()));
-            return theoryRepository.save(theory);
+            newTheory.setUser(userRepository.findByUsername(principal.getName()));
+            return theoryRepository.save(newTheory);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, theory could not be saved");
@@ -53,7 +49,7 @@ public class TheoryServiceImpl implements TheoryService {
     }
 
     @Override
-    public Theory update(Principal principal, TheoryUpdateDto theory) {
+    public Theory update(Principal principal, Theory theory) {
         Theory oldTheory = theoryRepository.findById(theory.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, THEORY_NF.value));
         User user = userRepository.findById(oldTheory.getUser().getId())

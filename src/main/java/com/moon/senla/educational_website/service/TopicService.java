@@ -1,14 +1,12 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Topic;
-import com.moon.senla.educational_website.model.dto.topic.TopicDto;
-import com.moon.senla.educational_website.model.dto.topic.TopicNewDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface TopicService {
 
-    Topic save(TopicNewDto topic);
+    Topic save(Topic topic);
 
     Topic findById(long id);
 
@@ -16,6 +14,6 @@ public interface TopicService {
 
     void deleteById(long id);
 
-    Topic update(TopicDto topic);
+    Topic update(Topic topic);
 }
 

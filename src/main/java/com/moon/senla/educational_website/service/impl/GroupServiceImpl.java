@@ -13,9 +13,6 @@ import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.group.GroupNewDto;
-import com.moon.senla.educational_website.model.dto.group.GroupShortDto;
-import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.service.GroupService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +38,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group save(Principal principal, GroupNewDto group) {
-        Group newGroup = GroupMapper.INSTANCE.groupNewDtoToGroup(group);
-        Course course = checkRequest(principal, group.getCourse().getId());
+    public Group save(Principal principal, Group newGroup) {
+        Course course = checkRequest(principal, newGroup.getCourse().getId());
         newGroup.setCourse(course);
-        newGroup.setAvailable(group.getCapacity());
+        newGroup.setAvailable(newGroup.getCapacity());
         try {
             return groupRepository.save(newGroup);
         } catch (Exception e) {
@@ -97,7 +93,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group update(Principal principal, GroupShortDto groupDto) {
+    public Group update(Principal principal, Group groupDto) {
         Group oldGroup = groupRepository.findById(groupDto.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
         checkRequest(principal, oldGroup.getCourse().getId());

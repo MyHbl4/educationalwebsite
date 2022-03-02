@@ -75,14 +75,15 @@ public class GroupController {
     @PostMapping()
     public GroupDto save(Principal principal, @Valid @RequestBody GroupNewDto group) {
         log.info("save - save group by name: {}", group.getName());
-        Group newGroup = groupService.save(principal, group);
+        Group newGroup = groupService.save(principal, groupMapper.groupNewDtoToGroup(group));
         return groupMapper.groupToGroupDto(newGroup);
     }
 
     @PutMapping()
     public GroupDto update(Principal principal, @Valid @RequestBody GroupShortDto groupToUpdate) {
         log.info("update - update group by id: {}", groupToUpdate.getId());
-        Group group = groupService.update(principal, groupToUpdate);
+        Group group = groupService.update(principal,
+            groupMapper.groupShortDtoToGroup(groupToUpdate));
         return groupMapper.groupToGroupDto(group);
     }
 

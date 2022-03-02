@@ -57,7 +57,8 @@ public class ScheduleController {
     @PostMapping()
     public ScheduleDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
         log.info("save - save schedule: {}", schedule.getDate());
-        Schedule newSchedule = scheduleService.save(principal, schedule);
+        Schedule newSchedule = scheduleService.save(principal,
+            scheduleMapper.scheduleNewDtoToSchedule(schedule));
         return scheduleMapper.scheduleToScheduleDto(newSchedule);
     }
 
@@ -65,7 +66,8 @@ public class ScheduleController {
     public ScheduleDto update(Principal principal,
         @Valid @RequestBody ScheduleUpdateDto scheduleToUpdate) {
         log.info("update - update schedule by id: {}", scheduleToUpdate.getId());
-        Schedule schedule = scheduleService.update(principal, scheduleToUpdate);
+        Schedule schedule = scheduleService.update(principal,
+            scheduleMapper.scheduleUpdateDtoToSchedule(scheduleToUpdate));
         return scheduleMapper.scheduleToScheduleDto(schedule);
     }
 
