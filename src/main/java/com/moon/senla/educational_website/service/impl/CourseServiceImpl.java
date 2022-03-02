@@ -9,8 +9,10 @@ import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Course;
+import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.CourseService;
+import com.moon.senla.educational_website.service.TopicService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,18 +25,23 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+    private final TopicService topicService;
 
     @Autowired
     public CourseServiceImpl(CourseRepository courseRepository,
-        UserRepository userRepository) {
+        UserRepository userRepository,
+        TopicService topicService) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
+        this.topicService = topicService;
     }
 
     @Override
     public Course save(Principal principal, Course course) {
+        Topic topic = topicService.findById(course.getTopic().getId());
         try {
             course.setUser(userRepository.findByUsername(principal.getName()));
+            course.setTopic(topic);
             return courseRepository.save(course);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,

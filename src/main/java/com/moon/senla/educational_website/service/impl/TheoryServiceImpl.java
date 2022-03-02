@@ -3,16 +3,16 @@ package com.moon.senla.educational_website.service.impl;
 
 import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
 import static com.moon.senla.educational_website.utils.StringConstants.THEORY_NF;
-import static com.moon.senla.educational_website.utils.StringConstants.TOPIC_NF;
 import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
 
 import com.moon.senla.educational_website.dao.TheoryRepository;
-import com.moon.senla.educational_website.dao.TopicRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Theory;
+import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.TheoryService;
+import com.moon.senla.educational_website.service.TopicService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,24 +23,23 @@ public class TheoryServiceImpl implements TheoryService {
 
     private final TheoryRepository theoryRepository;
     private final UserRepository userRepository;
-    private final TopicRepository topicRepository;
+    private final TopicService topicService;
 
     @Autowired
     public TheoryServiceImpl(TheoryRepository theoryRepository,
         UserRepository userRepository,
-        TopicRepository topicRepository) {
+        TopicService topicService) {
         this.theoryRepository = theoryRepository;
         this.userRepository = userRepository;
-        this.topicRepository = topicRepository;
+        this.topicService = topicService;
     }
 
     @Override
     public Theory save(Principal principal, Theory newTheory) {
-        if (!topicRepository.findById(newTheory.getTopic().getId()).isPresent()) {
-            throw new CustomException(HttpStatus.NOT_FOUND, TOPIC_NF.value);
-        }
+        Topic topic = topicService.findById(newTheory.getTopic().getId());
         try {
             newTheory.setUser(userRepository.findByUsername(principal.getName()));
+            newTheory.setTopic(topic);
             return theoryRepository.save(newTheory);
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
