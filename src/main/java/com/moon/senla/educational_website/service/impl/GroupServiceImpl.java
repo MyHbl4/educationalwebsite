@@ -2,18 +2,16 @@ package com.moon.senla.educational_website.service.impl;
 
 
 import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
-import static com.moon.senla.educational_website.utils.StringConstants.COURSE_NF;
 import static com.moon.senla.educational_website.utils.StringConstants.GROUP_NF;
-import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
 
-import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.GroupRepository;
-import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.service.CourseService;
 import com.moon.senla.educational_website.service.GroupService;
+import com.moon.senla.educational_website.service.UserService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,16 +23,16 @@ import org.springframework.stereotype.Service;
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
-    private final UserRepository userRepository;
-    private final CourseRepository courseRepository;
+    private final UserService userService;
+    private final CourseService courseService;
 
     @Autowired
     public GroupServiceImpl(GroupRepository groupRepository,
-        UserRepository userRepository,
-        CourseRepository courseRepository) {
+        UserService userService,
+        CourseService courseService) {
         this.groupRepository = groupRepository;
-        this.userRepository = userRepository;
-        this.courseRepository = courseRepository;
+        this.userService = userService;
+        this.courseService = courseService;
     }
 
     @Override
@@ -81,11 +79,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Page<Group> findAllGroupsByCourseId(Pageable pageable, long id) {
-        if (!courseRepository.findById(id).isPresent()) {
-            throw new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value);
-        }
+        Course course = courseService.findById(id);
         try {
-            return groupRepository.findAllByCourseId(pageable, id);
+            return groupRepository.findAllByCourseId(pageable, course.getId());
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 "Invalid request, groups cannot be found");
@@ -107,10 +103,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     private Course checkRequest(Principal principal, Long id) {
-        Course course = courseRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
-        User user = userRepository.findById(course.getUser().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
+        Course course = courseService.findById(id);
+        User user = userService.findById(course.getUser().getId());
         if (!principal.getName().equals(user.getUsername())) {
             throw new CustomException(HttpStatus.FORBIDDEN,
                 "Invalid request, access is denied");

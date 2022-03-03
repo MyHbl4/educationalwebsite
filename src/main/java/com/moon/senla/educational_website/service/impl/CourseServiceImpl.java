@@ -3,16 +3,15 @@ package com.moon.senla.educational_website.service.impl;
 
 import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
 import static com.moon.senla.educational_website.utils.StringConstants.COURSE_NF;
-import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
 
 import com.moon.senla.educational_website.dao.CourseRepository;
-import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.CourseService;
 import com.moon.senla.educational_website.service.TopicService;
+import com.moon.senla.educational_website.service.UserService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,15 +23,15 @@ import org.springframework.stereotype.Service;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final TopicService topicService;
 
     @Autowired
     public CourseServiceImpl(CourseRepository courseRepository,
-        UserRepository userRepository,
+        UserService userService,
         TopicService topicService) {
         this.courseRepository = courseRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.topicService = topicService;
     }
 
@@ -40,7 +39,7 @@ public class CourseServiceImpl implements CourseService {
     public Course save(Principal principal, Course course) {
         Topic topic = topicService.findById(course.getTopic().getId());
         try {
-            course.setUser(userRepository.findByUsername(principal.getName()));
+            course.setUser(userService.findByUsername(principal.getName()));
             course.setTopic(topic);
             return courseRepository.save(course);
         } catch (Exception e) {
@@ -82,8 +81,7 @@ public class CourseServiceImpl implements CourseService {
     public Course update(Principal principal, Course courseToUpdate) {
         Course oldCourse = courseRepository.findById(courseToUpdate.getId())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, COURSE_NF.value));
-        User user = userRepository.findById(oldCourse.getUser().getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
+        User user = userService.findById(oldCourse.getUser().getId());
         if (!user.getUsername().equals(principal.getName())) {
             throw new CustomException(HttpStatus.FORBIDDEN,
                 "Invalid request, access is denied");
