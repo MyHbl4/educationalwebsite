@@ -7,7 +7,6 @@ import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
 import com.moon.senla.educational_website.model.dto.user.UserNewDto;
 import com.moon.senla.educational_website.service.AuthenticationService;
 import com.moon.senla.educational_website.service.UserService;
-import com.moon.senla.educational_website.service.impl.SearchFilterServiceImpl;
 import io.swagger.annotations.Api;
 import java.security.Principal;
 import javax.validation.Valid;
@@ -33,28 +32,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    private final SearchFilterServiceImpl searchFilterService;
     private final AuthenticationService authenticationService;
     private final UserMapper userMapper;
 
     public UserController(UserService userService,
-        SearchFilterServiceImpl searchFilterService,
         AuthenticationService authenticationService,
         UserMapper userMapper) {
         this.userService = userService;
-        this.searchFilterService = searchFilterService;
         this.authenticationService = authenticationService;
         this.userMapper = userMapper;
-    }
-
-    @GetMapping(path = "/search")
-    public Page<UserDto> findAllUsersByParam(
-        @PageableDefault(sort = {"id"}) Pageable pageable,
-        @RequestParam(value = "firstName", required = false) String firstName,
-        @RequestParam(value = "LastName", required = false) String lastName) {
-        log.info("findAllUsersByParam - find all users by param");
-        return searchFilterService.findAllUsersByParam(pageable, firstName, lastName)
-            .map(userMapper::userToUserDto);
     }
 
     @GetMapping(path = "/{id}")
@@ -75,7 +61,8 @@ public class UserController {
     @PutMapping()
     public UserDto update(Principal principal, @Valid @RequestBody UserDtoUpdate userToUpdate) {
         log.info("update - update user with username: {}", principal.getName());
-        User user = authenticationService.update(principal, userMapper.userDtoUpdateToUser(userToUpdate));
+        User user = authenticationService.update(principal,
+            userMapper.userDtoUpdateToUser(userToUpdate));
         return userMapper.userToUserDto(user);
     }
 
@@ -91,5 +78,15 @@ public class UserController {
         log.info("showMyPage - show {} page", principal.getName());
         User user = userService.findByUsername(principal.getName());
         return userMapper.userToUserDto(user);
+    }
+
+    @GetMapping(path = "/search-by-param")
+    public Page<UserDto> findAllUsersByParam(
+        @PageableDefault(sort = {"id"}) Pageable pageable,
+        @RequestParam(value = "FirstName", required = false) String firstName,
+        @RequestParam(value = "LastName", required = false) String lastName) {
+        log.info("findByLastName - find all users by param");
+        return userService.findAllUsersByParam(pageable, firstName, lastName)
+            .map(userMapper::userToUserDto);
     }
 }

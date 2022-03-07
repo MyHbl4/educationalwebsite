@@ -76,4 +76,14 @@ public class UserServiceImpl implements UserService {
                 "Invalid request, users cannot be found");
         }
     }
+
+    @Override
+    public Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName) {
+        try {
+            return userRepository.findAllUsersByParam(pageable, firstName, lastName);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, users cannot be found");
+        }
+    }
 }

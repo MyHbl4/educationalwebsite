@@ -18,5 +18,8 @@ public interface CourseService {
     Course update(Principal principal, Course course);
 
     Page<Course> findAllCoursesByUsername(Pageable pageable, String username);
+
+    Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
+        String authorName);
 }
 

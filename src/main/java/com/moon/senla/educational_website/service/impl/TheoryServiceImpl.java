@@ -14,6 +14,8 @@ import com.moon.senla.educational_website.service.TopicService;
 import com.moon.senla.educational_website.service.UserService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +83,17 @@ public class TheoryServiceImpl implements TheoryService {
         } catch (Exception e) {
             throw new CustomException(HttpStatus.BAD_REQUEST,
                 COULD_NOT_DELETE.value);
+        }
+    }
+
+    @Override
+    public Page<Theory> findAllTheoryByParam(Pageable pageable,
+        String name, String topic, String username) {
+        try {
+            return theoryRepository.findAllTheoryByParam(pageable, name, topic, username);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, theories cannot be found");
         }
     }
 

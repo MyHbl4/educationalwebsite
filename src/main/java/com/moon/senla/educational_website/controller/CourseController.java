@@ -12,7 +12,6 @@ import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
 import com.moon.senla.educational_website.service.CourseService;
 import com.moon.senla.educational_website.service.FeedbackService;
 import com.moon.senla.educational_website.service.GroupService;
-import com.moon.senla.educational_website.service.SearchFilterService;
 import io.swagger.annotations.Api;
 import java.security.Principal;
 import javax.validation.Valid;
@@ -38,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseController {
 
     private final CourseService courseService;
-    private final SearchFilterService searchFilterService;
     private final GroupService groupService;
     private final FeedbackService feedbackService;
     private final CourseMapper courseMapper;
@@ -46,14 +44,12 @@ public class CourseController {
     private final FeedbackMapper feedbackMapper;
 
     public CourseController(CourseService courseService,
-        SearchFilterService searchFilterService,
         GroupService groupService,
         FeedbackService feedbackService,
         CourseMapper courseMapper,
         GroupMapper groupMapper,
         FeedbackMapper feedbackMapper) {
         this.courseService = courseService;
-        this.searchFilterService = searchFilterService;
         this.groupService = groupService;
         this.feedbackService = feedbackService;
         this.courseMapper = courseMapper;
@@ -98,14 +94,14 @@ public class CourseController {
         courseService.deleteById(id);
     }
 
-    @GetMapping(path = "/search")
+    @GetMapping(path = "/search-by-param")
     public Page<CourseDto> findAllCoursesByParam(
         @PageableDefault(sort = {"id"}) Pageable pageable,
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic_name", required = false) String topicName,
         @RequestParam(value = "user_name", required = false) String authorName) {
         log.info("findAllCoursesByParam - find all courses by param");
-        return searchFilterService.findAllCoursesByParam(pageable, name, topicName, authorName)
+        return courseService.findAllCoursesByParam(pageable, name, topicName, authorName)
             .map(courseMapper::courseToCourseDto);
     }
 

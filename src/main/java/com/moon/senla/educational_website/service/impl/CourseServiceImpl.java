@@ -106,4 +106,15 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    @Override
+    public Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
+        String authorName) {
+        try {
+            return courseRepository.findAllCoursesByParam(pageable, name, topicName, authorName);
+        } catch (Exception e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                "Invalid request, courses cannot be found");
+        }
+    }
+
 }

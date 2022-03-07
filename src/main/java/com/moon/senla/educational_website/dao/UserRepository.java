@@ -38,5 +38,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "select id, email, username, first_name, last_name, password, status, group_id, user_id from Users u full join user_group ug ON u.id = ug.user_id WHERE ug.group_id = (:group_id)",
         nativeQuery = true)
     Page<User> getAllUsersByGroupId(Pageable pageable, @Param("group_id") long groupId);
+
+    @Query("select u from User u where (u.firstName like :first_name or :first_name IS NULL) and (u.lastName like :last_name or :last_name IS NULL)")
+    Page<User> findAllUsersByParam(Pageable pageable, @Param("first_name") String firstName,
+        @Param("last_name") String lastname);
 }
 
