@@ -1,5 +1,8 @@
 package com.moon.senla.educational_website.service.impl;
 
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_SAVED;
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_UPDATED;
+
 import com.moon.senla.educational_website.dao.RoleRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
@@ -16,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,12 +44,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public Map<String, String> login(AuthenticationRequestDto requestDto) {
         String username = requestDto.getUsername();
         if (userRepository.findByUsername(username) == null) {
-            throw new CustomException(HttpStatus.NOT_FOUND,
-                "User with username: " + username + ", not found");
+            throw new CustomException("User with username: " + username + ", not found");
         }
         User user = userRepository.findByUsername(username);
         if (user.getStatus().equals(Status.DELETED)) {
-            throw new CustomException(HttpStatus.FORBIDDEN,
+            throw new CustomException(
                 "You cannot log in with this username, because your account has been deleted");
         }
         try {
@@ -57,7 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             response.put("token", token);
             return response;
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid username or password");
+            throw new CustomException("Invalid username or password");
         }
     }
 
@@ -76,8 +77,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             return registeredUser;
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, user could not be saved");
+            throw new CustomException(COULD_NOT_SAVED.value);
         }
     }
 
@@ -94,8 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             return updatedUser;
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, update could not be saved");
+            throw new CustomException(COULD_NOT_UPDATED.value);
         }
     }
 }

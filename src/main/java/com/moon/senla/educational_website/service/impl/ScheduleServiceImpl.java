@@ -1,6 +1,9 @@
 package com.moon.senla.educational_website.service.impl;
 
+import static com.moon.senla.educational_website.utils.StringConstants.ACCESS_DENIED;
 import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_SAVED;
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_UPDATED;
 import static com.moon.senla.educational_website.utils.StringConstants.SCHEDULE_NF;
 
 import com.moon.senla.educational_website.dao.ScheduleRepository;
@@ -17,7 +20,6 @@ import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -48,15 +50,14 @@ public class ScheduleServiceImpl implements ScheduleService {
         try {
             return scheduleRepository.save(schedule);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, schedule could not be saved");
+            throw new CustomException(COULD_NOT_SAVED.value);
         }
     }
 
     @Override
     public Schedule findById(long id) {
         return scheduleRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, SCHEDULE_NF.value));
+            .orElseThrow(() -> new CustomException(SCHEDULE_NF.value));
     }
 
     @Override
@@ -64,21 +65,20 @@ public class ScheduleServiceImpl implements ScheduleService {
         try {
             return scheduleRepository.findAll(pageable);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, schedules cannot be found");
+            throw new CustomException(SCHEDULE_NF.value);
         }
     }
 
     @Override
     public void deleteById(Principal principal, long id) {
         if (!scheduleRepository.findById(id).isPresent()) {
-            throw new CustomException(HttpStatus.NOT_FOUND, SCHEDULE_NF.value);
+            throw new CustomException(SCHEDULE_NF.value);
         }
         checkRequest(principal, id);
         try {
             scheduleRepository.deleteById(id);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.NOT_FOUND, COULD_NOT_DELETE.value);
+            throw new CustomException(COULD_NOT_DELETE.value);
         }
     }
 
@@ -88,22 +88,20 @@ public class ScheduleServiceImpl implements ScheduleService {
         try {
             return scheduleRepository.findAllByGroupId(pageable, group.getId());
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, schedules cannot be found");
+            throw new CustomException(SCHEDULE_NF.value);
         }
     }
 
     @Override
     public Schedule update(Principal principal, Schedule schedule) {
         Schedule oldSchedule = scheduleRepository.findById(schedule.getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, SCHEDULE_NF.value));
+            .orElseThrow(() -> new CustomException(SCHEDULE_NF.value));
         checkRequest(principal, oldSchedule.getGroup().getId());
         oldSchedule.setDate(schedule.getDate());
         try {
             return scheduleRepository.save(oldSchedule);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, schedule could not be updated");
+            throw new CustomException(COULD_NOT_UPDATED.value);
         }
     }
 
@@ -112,8 +110,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Course course = courseService.findById(group.getCourse().getId());
         User user = userService.findById(course.getUser().getId());
         if (!user.getUsername().equals(principal.getName())) {
-            throw new CustomException(HttpStatus.FORBIDDEN,
-                "Invalid request, access is denied");
+            throw new CustomException(ACCESS_DENIED.value);
         }
         return group;
     }

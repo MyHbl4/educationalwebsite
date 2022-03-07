@@ -1,7 +1,10 @@
 package com.moon.senla.educational_website.service.impl;
 
 
+import static com.moon.senla.educational_website.utils.StringConstants.ACCESS_DENIED;
 import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_SAVED;
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_UPDATED;
 import static com.moon.senla.educational_website.utils.StringConstants.GROUP_NF;
 
 import com.moon.senla.educational_website.dao.GroupRepository;
@@ -16,7 +19,6 @@ import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,15 +45,14 @@ public class GroupServiceImpl implements GroupService {
         try {
             return groupRepository.save(newGroup);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, group could not be saved");
+            throw new CustomException(COULD_NOT_SAVED.value);
         }
     }
 
     @Override
     public Group findById(long id) {
         return groupRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
+            .orElseThrow(() -> new CustomException(GROUP_NF.value));
     }
 
     @Override
@@ -59,21 +60,19 @@ public class GroupServiceImpl implements GroupService {
         try {
             return groupRepository.findAll(pageable);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, groups cannot be found");
+            throw new CustomException(GROUP_NF.value);
         }
     }
 
     @Override
     public void deleteById(long id) {
         if (!groupRepository.findById(id).isPresent()) {
-            throw new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value);
+            throw new CustomException(GROUP_NF.value);
         }
         try {
             groupRepository.deleteById(id);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                COULD_NOT_DELETE.value);
+            throw new CustomException(COULD_NOT_DELETE.value);
         }
     }
 
@@ -83,22 +82,20 @@ public class GroupServiceImpl implements GroupService {
         try {
             return groupRepository.findAllByCourseId(pageable, course.getId());
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, groups cannot be found");
+            throw new CustomException(GROUP_NF.value);
         }
     }
 
     @Override
     public Group update(Principal principal, Group groupDto) {
         Group oldGroup = groupRepository.findById(groupDto.getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, GROUP_NF.value));
+            .orElseThrow(() -> new CustomException(GROUP_NF.value));
         checkRequest(principal, oldGroup.getCourse().getId());
         oldGroup.setName(groupDto.getName());
         try {
             return groupRepository.save(oldGroup);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, group could not be updated");
+            throw new CustomException(COULD_NOT_UPDATED.value);
         }
     }
 
@@ -106,8 +103,7 @@ public class GroupServiceImpl implements GroupService {
         Course course = courseService.findById(id);
         User user = userService.findById(course.getUser().getId());
         if (!principal.getName().equals(user.getUsername())) {
-            throw new CustomException(HttpStatus.FORBIDDEN,
-                "Invalid request, access is denied");
+            throw new CustomException(ACCESS_DENIED.value);
         }
         return course;
     }

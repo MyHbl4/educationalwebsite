@@ -1,7 +1,10 @@
 package com.moon.senla.educational_website.service.impl;
 
 
+import static com.moon.senla.educational_website.utils.StringConstants.ACCESS_DENIED;
 import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_SAVED;
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_UPDATED;
 import static com.moon.senla.educational_website.utils.StringConstants.FEEDBACK_NF;
 
 import com.moon.senla.educational_website.dao.FeedbackRepository;
@@ -16,7 +19,6 @@ import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,15 +51,14 @@ public class FeedbackServiceImpl implements FeedbackService {
             ratingCalculation(principal, course);
             return feed;
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, feedback could not be saved");
+            throw new CustomException(COULD_NOT_SAVED.value);
         }
     }
 
     @Override
     public Feedback findById(long id) {
         return feedbackRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, FEEDBACK_NF.value));
+            .orElseThrow(() -> new CustomException(FEEDBACK_NF.value));
     }
 
     @Override
@@ -65,8 +66,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         try {
             return feedbackRepository.findAll(pageable);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, feedback cannot be found");
+            throw new CustomException(FEEDBACK_NF.value);
         }
     }
 
@@ -75,22 +75,20 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public void deleteById(Principal principal, long id) {
         Feedback oldFeedback = feedbackRepository.findById(id)
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, FEEDBACK_NF.value));
+            .orElseThrow(() -> new CustomException(FEEDBACK_NF.value));
         Course course = check(principal, oldFeedback);
         try {
             feedbackRepository.deleteById(id);
             ratingCalculation(principal, course);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                COULD_NOT_DELETE.value);
+            throw new CustomException(COULD_NOT_DELETE.value);
         }
     }
 
     private Course check(Principal principal, Feedback oldFeedback) {
         User user = userService.findById(oldFeedback.getUser().getId());
         if (!user.getUsername().equals(principal.getName())) {
-            throw new CustomException(HttpStatus.FORBIDDEN,
-                "Invalid request, access is denied");
+            throw new CustomException(ACCESS_DENIED.value);
         }
         return courseService.findById(oldFeedback.getCourse().getId());
     }
@@ -101,8 +99,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         try {
             return feedbackRepository.findAllByCourseId(pageable, course.getId());
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, feedbacks cannot be found");
+            throw new CustomException(FEEDBACK_NF.value);
         }
     }
 
@@ -110,7 +107,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public Feedback update(Principal principal, Feedback feedbackToUpdate) {
         Feedback oldFeedback = feedbackRepository.findById(feedbackToUpdate.getId())
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, FEEDBACK_NF.value));
+            .orElseThrow(() -> new CustomException(FEEDBACK_NF.value));
         Course course = check(principal, oldFeedback);
         oldFeedback.setDetention(feedbackToUpdate.getDetention());
         oldFeedback.setRank(feedbackToUpdate.getRank());
@@ -119,8 +116,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             ratingCalculation(principal, course);
             return feed;
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, feedback could not be saved");
+            throw new CustomException(COULD_NOT_UPDATED.value);
         }
     }
 

@@ -9,7 +9,6 @@ import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.GroupService;
 import com.moon.senla.educational_website.service.ManagingSubscriptionsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,16 +31,14 @@ public class ManagingSubscriptionsServiceImpl implements ManagingSubscriptionsSe
     public void addUserToGroup(String username, long groupId) {
         Group group = groupService.findById(groupId);
         if (group.getAvailable() == 0) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, there's no available seats, sorry");
+            throw new CustomException("Invalid request, there's no available seats, sorry");
         }
         try {
             long userId = userRepository.findByUsername(username).getId();
             userRepository.addUserToGroup(userId, groupId);
             group.setAvailable(group.getAvailable() - 1);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, subscription failed");
+            throw new CustomException("Invalid request, subscription failed");
         }
     }
 
@@ -51,13 +48,12 @@ public class ManagingSubscriptionsServiceImpl implements ManagingSubscriptionsSe
         Group group = groupService.findById(groupId);
         User user = group.getUsers().stream().filter(u -> u.getId() == (userId))
             .findAny()
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
+            .orElseThrow(() -> new CustomException(USER_NF.value));
         try {
             userRepository.removeUserFromGroup(user.getId(), groupId);
             group.setAvailable(group.getAvailable() + 1);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, unsubscribe failed");
+            throw new CustomException("Invalid request, unsubscribe failed");
         }
     }
 
@@ -67,13 +63,12 @@ public class ManagingSubscriptionsServiceImpl implements ManagingSubscriptionsSe
         Group group = groupService.findById(groupId);
         User user = group.getUsers().stream().filter(u -> u.getUsername().equals(username))
             .findAny()
-            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, USER_NF.value));
+            .orElseThrow(() -> new CustomException(USER_NF.value));
         try {
             userRepository.removeUserFromGroup(user.getId(), groupId);
             group.setAvailable(group.getAvailable() + 1);
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, unsubscribe failed");
+            throw new CustomException("Invalid request, unsubscribe failed");
         }
     }
 }

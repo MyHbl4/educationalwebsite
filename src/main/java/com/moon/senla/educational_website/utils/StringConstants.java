@@ -9,7 +9,10 @@ public enum StringConstants {
     GROUP_NF("Group not found"),
     FEEDBACK_NF("Feedback not found"),
     COURSE_NF("Course not found"),
-    COULD_NOT_DELETE("Invalid request, failed to delete");
+    COULD_NOT_DELETE("Invalid request, failed to delete"),
+    COULD_NOT_UPDATED("Invalid request, could not be updated"),
+    COULD_NOT_SAVED("Invalid request, could not be saved"),
+    ACCESS_DENIED("Invalid request, access is denied");
 
     public final String value;
 
