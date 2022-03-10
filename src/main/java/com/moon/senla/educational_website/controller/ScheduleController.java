@@ -10,10 +10,6 @@ import io.swagger.annotations.Api;
 import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,15 +32,6 @@ public class ScheduleController {
         ScheduleMapper scheduleMapper) {
         this.scheduleService = scheduleService;
         this.scheduleMapper = scheduleMapper;
-    }
-
-    @GetMapping()
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public Page<ScheduleDto> findAll(@PageableDefault(sort = {"id"})
-        Pageable pageable) {
-        log.info("findAll - find all schedules");
-        return scheduleService.findAll(pageable)
-            .map(scheduleMapper::scheduleToScheduleDto);
     }
 
     @GetMapping(path = "/{id}")

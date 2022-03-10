@@ -10,10 +10,6 @@ import io.swagger.annotations.Api;
 import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,15 +33,6 @@ public class FeedbackController {
         FeedbackMapper feedbackMapper) {
         this.feedbackService = feedbackService;
         this.feedbackMapper = feedbackMapper;
-    }
-
-    @GetMapping()
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public Page<FeedbackDto> findAll(@PageableDefault(sort = {"id"})
-        Pageable pageable) {
-        log.info("findAll - find all feedbacks");
-        return feedbackService.findAll(pageable)
-            .map(feedbackMapper::feedbackToFeedbackDto);
     }
 
     @GetMapping(path = "/{id}")

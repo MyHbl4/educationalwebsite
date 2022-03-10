@@ -12,8 +12,8 @@ import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,9 +82,10 @@ public class UserController {
 
     @GetMapping(path = "/search-by-param")
     public Page<UserDto> findAllUsersByParam(
-        @PageableDefault(sort = {"id"}) Pageable pageable,
         @RequestParam(value = "FirstName", required = false) String firstName,
-        @RequestParam(value = "LastName", required = false) String lastName) {
+        @RequestParam(value = "LastName", required = false) String lastName,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "firstName");
         log.info("findByLastName - find all users by param");
         return userService.findAllUsersByParam(pageable, firstName, lastName)
             .map(userMapper::userToUserDto);

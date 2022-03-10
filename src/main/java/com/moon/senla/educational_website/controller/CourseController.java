@@ -17,8 +17,8 @@ import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,13 +57,6 @@ public class CourseController {
         this.feedbackMapper = feedbackMapper;
     }
 
-    @GetMapping()
-    public Page<CourseDto> findAll(@PageableDefault(sort = {"id"}) Pageable pageable) {
-        log.info("findAll - find all courses");
-        return courseService.findAll(pageable)
-            .map(courseMapper::courseToCourseDto);
-    }
-
     @GetMapping(path = "/{id}")
     public CourseDto findById(@PathVariable(name = "id") long id) {
         log.info("findById - find course by id {}", id);
@@ -96,10 +89,11 @@ public class CourseController {
 
     @GetMapping(path = "/search-by-param")
     public Page<CourseDto> findAllCoursesByParam(
-        @PageableDefault(sort = {"id"}) Pageable pageable,
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic_name", required = false) String topicName,
-        @RequestParam(value = "user_name", required = false) String authorName) {
+        @RequestParam(value = "user_name", required = false) String authorName,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
         log.info("findAllCoursesByParam - find all courses by param");
         return courseService.findAllCoursesByParam(pageable, name, topicName, authorName)
             .map(courseMapper::courseToCourseDto);
@@ -107,16 +101,17 @@ public class CourseController {
 
     @GetMapping(path = "/{id}/groups")
     public Page<GroupDto> findAllGroupsByCourseId(@PathVariable(name = "id") long id,
-        Pageable pageable) {
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
         log.info("findAllGroupsByCourseId - find groups by course id {}", id);
         return groupService.findAllGroupsByCourseId(pageable, id)
             .map(groupMapper::groupToGroupDto);
     }
 
-    @GetMapping(path = "/my-courses")
+    @GetMapping(path = "/search-my-courses")
     public Page<CourseDto> findAllMyCourses(
-        Principal principal,
-        Pageable pageable) {
+        Principal principal, @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "c.name");
         log.info("findAllMyCourses - find courses where author is user: {}", principal.getName());
         return courseService.findAllCoursesByUsername(pageable, principal.getName())
             .map(courseMapper::courseToCourseDto);
@@ -124,7 +119,8 @@ public class CourseController {
 
     @GetMapping(path = "/{id}/feedbacks")
     public Page<FeedbackDto> findAllFeedbacksByCourseId(@PathVariable(name = "id") long id,
-        Pageable pageable) {
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "date");
         log.info("findAllFeedbacksByCourseId - find groups by course id: {}", id);
         return feedbackService.getAllFeedbackByCourseId(pageable, id)
             .map(feedbackMapper::feedbackToFeedbackDto);

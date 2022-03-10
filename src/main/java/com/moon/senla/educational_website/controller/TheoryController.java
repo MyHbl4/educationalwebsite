@@ -11,8 +11,8 @@ import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,10 +71,11 @@ public class TheoryController {
 
     @GetMapping(path = "/search-by-param")
     public Page<TheoryDto> findAllTheoriesByParam(
-        @PageableDefault(sort = {"id"}) Pageable pageable,
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "topic_name", required = false) String topicName,
-        @RequestParam(value = "user_name", required = false) String userName) {
+        @RequestParam(value = "user_name", required = false) String userName,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
         log.info("findAllTheoriesByParam - find all theories by param");
         return theoryService.findAllTheoryByParam(pageable, name, topicName, userName)
             .map(theoryMapper::theoryToTheoryDto);
