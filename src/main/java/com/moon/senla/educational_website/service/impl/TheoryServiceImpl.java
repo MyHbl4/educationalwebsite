@@ -8,7 +8,9 @@ import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT
 import static com.moon.senla.educational_website.utils.StringConstants.THEORY_NF;
 
 import com.moon.senla.educational_website.dao.TheoryRepository;
-import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.error.AuthException;
+import com.moon.senla.educational_website.error.NotFoundException;
+import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Theory;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.TheoryService;
@@ -43,42 +45,42 @@ public class TheoryServiceImpl implements TheoryService {
             newTheory.setTopic(topicService.findById(newTheory.getTopic().getId()));
             return theoryRepository.save(newTheory);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_SAVED.value);
+            throw new ValidationException(COULD_NOT_SAVED.value);
         }
     }
 
     @Override
     public Theory update(Principal principal, Theory theory) {
         Theory oldTheory = theoryRepository.findById(theory.getId())
-            .orElseThrow(() -> new CustomException(THEORY_NF.value));
+            .orElseThrow(() -> new NotFoundException(THEORY_NF.value));
         User user = userService.findById(oldTheory.getUser().getId());
         if (!user.getUsername().equals(principal.getName())) {
-            throw new CustomException(ACCESS_DENIED.value);
+            throw new AuthException(ACCESS_DENIED.value);
         }
         oldTheory.setName(theory.getName());
         oldTheory.setDescription(theory.getDescription());
         try {
             return theoryRepository.save(oldTheory);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_UPDATED.value);
+            throw new ValidationException(COULD_NOT_UPDATED.value);
         }
     }
 
     @Override
     public Theory findById(long id) {
         return theoryRepository.findById(id)
-            .orElseThrow(() -> new CustomException(THEORY_NF.value));
+            .orElseThrow(() -> new NotFoundException(THEORY_NF.value));
     }
 
     @Override
     public void deleteById(long id) {
         if (!theoryRepository.findById(id).isPresent()) {
-            throw new CustomException(THEORY_NF.value);
+            throw new NotFoundException(THEORY_NF.value);
         }
         try {
             theoryRepository.deleteById(id);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_DELETE.value);
+            throw new ValidationException(COULD_NOT_DELETE.value);
         }
     }
 
@@ -88,7 +90,7 @@ public class TheoryServiceImpl implements TheoryService {
         try {
             return theoryRepository.findAllTheoryByParam(pageable, name, topic, username);
         } catch (Exception e) {
-            throw new CustomException(THEORY_NF.value);
+            throw new NotFoundException(THEORY_NF.value);
         }
     }
 

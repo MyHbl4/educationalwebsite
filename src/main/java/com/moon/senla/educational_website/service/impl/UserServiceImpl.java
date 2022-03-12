@@ -6,7 +6,8 @@ import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
 
 import com.moon.senla.educational_website.dao.GroupRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
-import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.error.NotFoundException;
+import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Status;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.UserService;
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
         User result = userRepository.findByUsername(username);
         if (result == null) {
             log.warn("findByUsername - no user found by username: {}", username);
-            throw new CustomException(USER_NF.value);
+            throw new NotFoundException(USER_NF.value);
         }
         log.info("findByUsername - user: {} found by username: {}", username,
             username);
@@ -45,31 +46,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(long id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new CustomException(USER_NF.value));
+            .orElseThrow(() -> new NotFoundException(USER_NF.value));
     }
 
 
     @Override
     public User deleteById(long id) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new CustomException(USER_NF.value));
+            .orElseThrow(() -> new NotFoundException(USER_NF.value));
         user.setStatus(Status.DELETED);
         try {
             return userRepository.save(user);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_DELETE.value);
+            throw new ValidationException(COULD_NOT_DELETE.value);
         }
     }
 
     @Override
     public Page<User> getAllUsersByGroupId(Pageable pageable, long groupId) {
         if (!groupRepository.findById(groupId).isPresent()) {
-            throw new CustomException(GROUP_NF.value);
+            throw new NotFoundException(GROUP_NF.value);
         }
         try {
             return userRepository.getAllUsersByGroupId(pageable, groupId);
         } catch (Exception e) {
-            throw new CustomException(USER_NF.value);
+            throw new NotFoundException(USER_NF.value);
         }
     }
 
@@ -78,7 +79,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userRepository.findAllUsersByParam(pageable, firstName, lastName);
         } catch (Exception e) {
-            throw new CustomException(USER_NF.value);
+            throw new NotFoundException(USER_NF.value);
         }
     }
 }

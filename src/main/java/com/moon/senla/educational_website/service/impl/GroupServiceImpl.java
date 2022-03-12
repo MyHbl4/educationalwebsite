@@ -8,7 +8,10 @@ import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT
 import static com.moon.senla.educational_website.utils.StringConstants.GROUP_NF;
 
 import com.moon.senla.educational_website.dao.GroupRepository;
+import com.moon.senla.educational_website.error.AuthException;
 import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.error.NotFoundException;
+import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.User;
@@ -45,14 +48,14 @@ public class GroupServiceImpl implements GroupService {
         try {
             return groupRepository.save(newGroup);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_SAVED.value);
+            throw new ValidationException(COULD_NOT_SAVED.value);
         }
     }
 
     @Override
     public Group findById(long id) {
         return groupRepository.findById(id)
-            .orElseThrow(() -> new CustomException(GROUP_NF.value));
+            .orElseThrow(() -> new NotFoundException(GROUP_NF.value));
     }
 
     @Override
@@ -60,19 +63,19 @@ public class GroupServiceImpl implements GroupService {
         try {
             return groupRepository.findAll(pageable);
         } catch (Exception e) {
-            throw new CustomException(GROUP_NF.value);
+            throw new NotFoundException(GROUP_NF.value);
         }
     }
 
     @Override
     public void deleteById(long id) {
         if (!groupRepository.findById(id).isPresent()) {
-            throw new CustomException(GROUP_NF.value);
+            throw new NotFoundException(GROUP_NF.value);
         }
         try {
             groupRepository.deleteById(id);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_DELETE.value);
+            throw new ValidationException(COULD_NOT_DELETE.value);
         }
     }
 
@@ -82,7 +85,7 @@ public class GroupServiceImpl implements GroupService {
         try {
             return groupRepository.findAllByCourseId(pageable, course.getId());
         } catch (Exception e) {
-            throw new CustomException(GROUP_NF.value);
+            throw new NotFoundException(GROUP_NF.value);
         }
     }
 
@@ -95,7 +98,7 @@ public class GroupServiceImpl implements GroupService {
         try {
             return groupRepository.save(oldGroup);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_UPDATED.value);
+            throw new ValidationException(COULD_NOT_UPDATED.value);
         }
     }
 
@@ -103,7 +106,7 @@ public class GroupServiceImpl implements GroupService {
         Course course = courseService.findById(id);
         User user = userService.findById(course.getUser().getId());
         if (!principal.getName().equals(user.getUsername())) {
-            throw new CustomException(ACCESS_DENIED.value);
+            throw new AuthException(ACCESS_DENIED.value);
         }
         return course;
     }

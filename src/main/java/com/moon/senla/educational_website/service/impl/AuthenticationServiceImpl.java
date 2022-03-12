@@ -6,6 +6,8 @@ import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT
 import com.moon.senla.educational_website.dao.RoleRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.error.NotFoundException;
+import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.Status;
 import com.moon.senla.educational_website.model.User;
@@ -44,7 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public Map<String, String> login(AuthenticationRequestDto requestDto) {
         String username = requestDto.getUsername();
         if (userRepository.findByUsername(username) == null) {
-            throw new CustomException("User with username: " + username + ", not found");
+            throw new NotFoundException("User with username: " + username + ", not found");
         }
         User user = userRepository.findByUsername(username);
         if (user.getStatus().equals(Status.DELETED)) {
@@ -58,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             response.put("token", token);
             return response;
         } catch (Exception e) {
-            throw new CustomException("Invalid username or password");
+            throw new ValidationException("Invalid username or password");
         }
     }
 
@@ -77,7 +79,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             return registeredUser;
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_SAVED.value);
+            throw new ValidationException(COULD_NOT_SAVED.value);
         }
     }
 
@@ -94,7 +96,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             return updatedUser;
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_UPDATED.value);
+            throw new ValidationException(COULD_NOT_UPDATED.value);
         }
     }
 }

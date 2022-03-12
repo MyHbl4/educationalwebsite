@@ -8,7 +8,9 @@ import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT
 import static com.moon.senla.educational_website.utils.StringConstants.FEEDBACK_NF;
 
 import com.moon.senla.educational_website.dao.FeedbackRepository;
-import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.error.AuthException;
+import com.moon.senla.educational_website.error.NotFoundException;
+import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.User;
@@ -51,14 +53,14 @@ public class FeedbackServiceImpl implements FeedbackService {
             ratingCalculation(principal, course);
             return feed;
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_SAVED.value);
+            throw new ValidationException(COULD_NOT_SAVED.value);
         }
     }
 
     @Override
     public Feedback findById(long id) {
         return feedbackRepository.findById(id)
-            .orElseThrow(() -> new CustomException(FEEDBACK_NF.value));
+            .orElseThrow(() -> new NotFoundException(FEEDBACK_NF.value));
     }
 
     @Override
@@ -66,7 +68,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         try {
             return feedbackRepository.findAll(pageable);
         } catch (Exception e) {
-            throw new CustomException(FEEDBACK_NF.value);
+            throw new NotFoundException(FEEDBACK_NF.value);
         }
     }
 
@@ -75,20 +77,20 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public void deleteById(Principal principal, long id) {
         Feedback oldFeedback = feedbackRepository.findById(id)
-            .orElseThrow(() -> new CustomException(FEEDBACK_NF.value));
+            .orElseThrow(() -> new NotFoundException(FEEDBACK_NF.value));
         Course course = check(principal, oldFeedback);
         try {
             feedbackRepository.deleteById(id);
             ratingCalculation(principal, course);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_DELETE.value);
+            throw new ValidationException(COULD_NOT_DELETE.value);
         }
     }
 
     private Course check(Principal principal, Feedback oldFeedback) {
         User user = userService.findById(oldFeedback.getUser().getId());
         if (!user.getUsername().equals(principal.getName())) {
-            throw new CustomException(ACCESS_DENIED.value);
+            throw new AuthException(ACCESS_DENIED.value);
         }
         return courseService.findById(oldFeedback.getCourse().getId());
     }
@@ -99,7 +101,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         try {
             return feedbackRepository.findAllByCourseId(pageable, course.getId());
         } catch (Exception e) {
-            throw new CustomException(FEEDBACK_NF.value);
+            throw new NotFoundException(FEEDBACK_NF.value);
         }
     }
 
@@ -107,7 +109,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public Feedback update(Principal principal, Feedback feedbackToUpdate) {
         Feedback oldFeedback = feedbackRepository.findById(feedbackToUpdate.getId())
-            .orElseThrow(() -> new CustomException(FEEDBACK_NF.value));
+            .orElseThrow(() -> new NotFoundException(FEEDBACK_NF.value));
         Course course = check(principal, oldFeedback);
         oldFeedback.setDetention(feedbackToUpdate.getDetention());
         oldFeedback.setRank(feedbackToUpdate.getRank());
@@ -116,7 +118,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             ratingCalculation(principal, course);
             return feed;
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_UPDATED.value);
+            throw new ValidationException(COULD_NOT_UPDATED.value);
         }
     }
 

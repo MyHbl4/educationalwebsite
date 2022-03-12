@@ -7,7 +7,9 @@ import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT
 import static com.moon.senla.educational_website.utils.StringConstants.SCHEDULE_NF;
 
 import com.moon.senla.educational_website.dao.ScheduleRepository;
-import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.error.AuthException;
+import com.moon.senla.educational_website.error.NotFoundException;
+import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.Schedule;
@@ -50,14 +52,14 @@ public class ScheduleServiceImpl implements ScheduleService {
         try {
             return scheduleRepository.save(schedule);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_SAVED.value);
+            throw new ValidationException(COULD_NOT_SAVED.value);
         }
     }
 
     @Override
     public Schedule findById(long id) {
         return scheduleRepository.findById(id)
-            .orElseThrow(() -> new CustomException(SCHEDULE_NF.value));
+            .orElseThrow(() -> new NotFoundException(SCHEDULE_NF.value));
     }
 
     @Override
@@ -65,20 +67,20 @@ public class ScheduleServiceImpl implements ScheduleService {
         try {
             return scheduleRepository.findAll(pageable);
         } catch (Exception e) {
-            throw new CustomException(SCHEDULE_NF.value);
+            throw new NotFoundException(SCHEDULE_NF.value);
         }
     }
 
     @Override
     public void deleteById(Principal principal, long id) {
         if (!scheduleRepository.findById(id).isPresent()) {
-            throw new CustomException(SCHEDULE_NF.value);
+            throw new NotFoundException(SCHEDULE_NF.value);
         }
         checkRequest(principal, id);
         try {
             scheduleRepository.deleteById(id);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_DELETE.value);
+            throw new ValidationException(COULD_NOT_DELETE.value);
         }
     }
 
@@ -88,20 +90,20 @@ public class ScheduleServiceImpl implements ScheduleService {
         try {
             return scheduleRepository.findAllByGroupId(pageable, group.getId());
         } catch (Exception e) {
-            throw new CustomException(SCHEDULE_NF.value);
+            throw new NotFoundException(SCHEDULE_NF.value);
         }
     }
 
     @Override
     public Schedule update(Principal principal, Schedule schedule) {
         Schedule oldSchedule = scheduleRepository.findById(schedule.getId())
-            .orElseThrow(() -> new CustomException(SCHEDULE_NF.value));
+            .orElseThrow(() -> new NotFoundException(SCHEDULE_NF.value));
         checkRequest(principal, oldSchedule.getGroup().getId());
         oldSchedule.setDate(schedule.getDate());
         try {
             return scheduleRepository.save(oldSchedule);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_UPDATED.value);
+            throw new ValidationException(COULD_NOT_UPDATED.value);
         }
     }
 
@@ -110,7 +112,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Course course = courseService.findById(group.getCourse().getId());
         User user = userService.findById(course.getUser().getId());
         if (!user.getUsername().equals(principal.getName())) {
-            throw new CustomException(ACCESS_DENIED.value);
+            throw new AuthException(ACCESS_DENIED.value);
         }
         return group;
     }

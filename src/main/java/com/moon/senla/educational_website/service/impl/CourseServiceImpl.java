@@ -7,7 +7,10 @@ import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT
 import static com.moon.senla.educational_website.utils.StringConstants.COURSE_NF;
 
 import com.moon.senla.educational_website.dao.CourseRepository;
+import com.moon.senla.educational_website.error.AuthException;
 import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.error.NotFoundException;
+import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.CourseService;
@@ -42,14 +45,14 @@ public class CourseServiceImpl implements CourseService {
             course.setTopic(topicService.findById(course.getTopic().getId()));
             return courseRepository.save(course);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_SAVED.value);
+            throw new ValidationException(COULD_NOT_SAVED.value);
         }
     }
 
     @Override
     public Course findById(long id) {
         return courseRepository.findById(id)
-            .orElseThrow(() -> new CustomException(COURSE_NF.value));
+            .orElseThrow(() -> new NotFoundException(COURSE_NF.value));
     }
 
     @Override
@@ -57,29 +60,29 @@ public class CourseServiceImpl implements CourseService {
         try {
             return courseRepository.findAll(pageable);
         } catch (Exception e) {
-            throw new CustomException(COURSE_NF.value);
+            throw new NotFoundException(COURSE_NF.value);
         }
     }
 
     @Override
     public void deleteById(long id) {
         if (!courseRepository.findById(id).isPresent()) {
-            throw new CustomException(COURSE_NF.value);
+            throw new NotFoundException(COURSE_NF.value);
         }
         try {
             courseRepository.deleteById(id);
         } catch (Exception e) {
-            throw new CustomException(COULD_NOT_DELETE.value);
+            throw new ValidationException(COULD_NOT_DELETE.value);
         }
     }
 
     @Override
     public Course update(Principal principal, Course courseToUpdate) {
         Course oldCourse = courseRepository.findById(courseToUpdate.getId())
-            .orElseThrow(() -> new CustomException(COURSE_NF.value));
+            .orElseThrow(() -> new NotFoundException(COURSE_NF.value));
         User user = userService.findById(oldCourse.getUser().getId());
         if (!user.getUsername().equals(principal.getName())) {
-            throw new CustomException(ACCESS_DENIED.value);
+            throw new AuthException(ACCESS_DENIED.value);
         }
         oldCourse.setName(courseToUpdate.getName());
         oldCourse.setPrice(courseToUpdate.getPrice());
@@ -95,7 +98,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             return courseRepository.findAllCoursesByUsername(pageable, username);
         } catch (Exception e) {
-            throw new CustomException(COURSE_NF.value);
+            throw new NotFoundException(COURSE_NF.value);
         }
     }
 
@@ -105,7 +108,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             return courseRepository.findAllCoursesByParam(pageable, name, topicName, authorName);
         } catch (Exception e) {
-            throw new CustomException(COURSE_NF.value);
+            throw new NotFoundException(COURSE_NF.value);
         }
     }
 
