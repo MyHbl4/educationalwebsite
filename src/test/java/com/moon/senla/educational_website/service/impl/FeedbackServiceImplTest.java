@@ -6,15 +6,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.moon.senla.educational_website.dao.CourseRepository;
 import com.moon.senla.educational_website.dao.FeedbackRepository;
-import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.service.CourseService;
+import com.moon.senla.educational_website.service.UserService;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,10 +42,10 @@ class FeedbackServiceImplTest {
     private FeedbackRepository feedbackRepository;
 
     @Mock
-    private CourseRepository courseRepository;
+    private CourseService courseService;
 
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;
 
     @InjectMocks
     private FeedbackServiceImpl feedbackService;
@@ -125,10 +126,8 @@ class FeedbackServiceImplTest {
     @Test
     void save() {
         when(principal.getName()).thenReturn("user");
-        when(userRepository.findByUsername(principal.getName())).thenReturn(user);
-        when(courseRepository.findById(newFeedback.getCourse().getId())).thenReturn(
-            Optional.ofNullable(
-                course));
+        when(userService.findByUsername(principal.getName())).thenReturn(user);
+        when(courseService.findById(newFeedback.getCourse().getId())).thenReturn(course);
         when(feedbackRepository.save(
             any())).thenReturn(
             feedback);
@@ -136,8 +135,7 @@ class FeedbackServiceImplTest {
             feedback.getCourse()
                 .getId())).thenReturn(
             5);
-        when(courseRepository.save(
-            course)).thenReturn(feedback.getCourse());
+        when(courseService.save(principal, course)).thenReturn(course);
 
         Feedback savedFeedback = feedbackService.save(principal, newFeedback);
 
@@ -167,11 +165,10 @@ class FeedbackServiceImplTest {
 
     @Test
     void deleteById() {
-        when(feedbackRepository.findById(1L)).thenReturn(Optional.ofNullable(feedback));
-        when(courseRepository.findById(feedback.getCourse().getId())).thenReturn(
-            Optional.ofNullable(course));
-        when(userRepository.findById(feedback.getUser().getId())).thenReturn(
-            Optional.ofNullable(user));
+        when(feedbackRepository.findById(ArgumentMatchers.anyLong())).thenReturn(
+            Optional.ofNullable(feedback));
+        when(courseService.findById(feedback.getCourse().getId())).thenReturn(course);
+        when(userService.findById(feedback.getUser().getId())).thenReturn(user);
         when(principal.getName()).thenReturn("user");
         when(feedbackRepository.findAverageRankByCourseId(
             course.getId())).thenReturn(5);
@@ -179,13 +176,13 @@ class FeedbackServiceImplTest {
         feedbackService.deleteById(principal, 1L);
 
         verify(feedbackRepository, times(1)).deleteById(1L);
-        verify(courseRepository, times(1)).save(course);
+        verify(courseService, times(1)).save(principal, course);
     }
 
     @Test
     void getAllFeedbackByCourseId() {
         Pageable pageable = PageRequest.of(0, 10);
-        when(courseRepository.findById(1L)).thenReturn(Optional.ofNullable(course));
+        when(courseService.findById(1L)).thenReturn(course);
         when(feedbackRepository.findAllByCourseId(pageable, 1L)).thenReturn(page);
 
         Page<Feedback> pageFeedback = feedbackService.getAllFeedbackByCourseId(pageable, 1L);
@@ -197,11 +194,9 @@ class FeedbackServiceImplTest {
     void update() {
         when(feedbackRepository.findById(feedbackUpdateDto.getId())).thenReturn(
             Optional.of(feedback));
-        when(userRepository.findById(feedback.getUser().getId())).thenReturn(
-            Optional.ofNullable(user));
+        when(userService.findById(ArgumentMatchers.anyLong())).thenReturn(user);
         when(principal.getName()).thenReturn("user");
-        when(courseRepository.findById(feedback.getCourse().getId())).thenReturn(
-            Optional.ofNullable(course));
+        when(courseService.findById(feedback.getCourse().getId())).thenReturn(course);
         when(feedbackRepository.save(
             any())).thenReturn(
             feedback);
@@ -209,8 +204,7 @@ class FeedbackServiceImplTest {
             feedback.getCourse()
                 .getId())).thenReturn(
             4);
-        when(courseRepository.save(
-            course)).thenReturn(feedback.getCourse());
+        when(courseService.save(principal, course)).thenReturn(course);
 
         Feedback updatedFeedback = feedbackService.update(principal, feedbackUpdateDto);
 

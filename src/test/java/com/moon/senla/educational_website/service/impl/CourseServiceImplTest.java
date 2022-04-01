@@ -1,19 +1,19 @@
 package com.moon.senla.educational_website.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.moon.senla.educational_website.dao.CourseRepository;
-import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
+import com.moon.senla.educational_website.service.TopicService;
+import com.moon.senla.educational_website.service.UserService;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,7 +41,10 @@ class CourseServiceImplTest {
     private CourseRepository courseRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private TopicService topicService;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private CourseServiceImpl courseService;
@@ -134,13 +138,11 @@ class CourseServiceImplTest {
 
     @Test
     void save() {
-        when(principal.getName()).thenReturn("admin");
-        when(userRepository.findByUsername(principal.getName())).thenReturn(admin);
-        when(courseRepository.save(any())).thenReturn(course);
-
-        Course newCourse = courseService.save(principal, courseNewDto);
-
-        assertEquals(course, newCourse);
+        when(principal.getName()).thenReturn(username);
+        when(userService.findByUsername(ArgumentMatchers.anyString())).thenReturn(admin);
+        when(topicService.findById(course.getTopic().getId())).thenReturn(topic);
+        when(courseRepository.save(course)).thenReturn(course);
+        assertEquals(course, courseService.save(principal, courseNewDto));
     }
 
     @Test
@@ -171,12 +173,12 @@ class CourseServiceImplTest {
         verify(courseRepository, times(1)).deleteById(1L);
     }
 
+
     @Test
     void update() {
         when(courseRepository.findById(courseToUpdate.getId())).thenReturn(
             Optional.ofNullable(course));
-        when(userRepository.findById(course.getUser().getId())).thenReturn(
-            Optional.ofNullable(admin));
+        when(userService.findById(ArgumentMatchers.anyLong())).thenReturn(admin);
         when(principal.getName()).thenReturn("admin");
         when(courseRepository.save(course)).thenReturn(course);
 

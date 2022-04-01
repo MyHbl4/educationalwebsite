@@ -9,13 +9,13 @@ public interface FeedbackService {
 
     Feedback save(Principal principal, Feedback feedback);
 
-    Feedback findById(long id);
+    Feedback findById(Long id);
 
     Page<Feedback> findAll(Pageable pageable);
 
-    void deleteById(Principal principal, long id);
+    void deleteById(Principal principal, Long id);
 
-    Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, long courseId);
+    Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, Long courseId);
 
     Feedback update(Principal principal, Feedback feedback);
 }

@@ -45,7 +45,7 @@ public class CourseServiceImpl implements CourseService {
             course.setTopic(topicService.findById(course.getTopic().getId()));
             return courseRepository.save(course);
         } catch (Exception e) {
-            throw new ValidationException(COULD_NOT_SAVED.value);
+                throw new ValidationException(COULD_NOT_SAVED.value);
         }
     }
 

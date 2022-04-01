@@ -58,7 +58,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public Feedback findById(long id) {
+    public Feedback findById(Long id) {
         return feedbackRepository.findById(id)
             .orElseThrow(() -> new NotFoundException(FEEDBACK_NF.value));
     }
@@ -75,9 +75,8 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     @Transactional
-    public void deleteById(Principal principal, long id) {
-        Feedback oldFeedback = feedbackRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(FEEDBACK_NF.value));
+    public void deleteById(Principal principal, Long id) {
+        Feedback oldFeedback = findById(id);
         Course course = check(principal, oldFeedback);
         try {
             feedbackRepository.deleteById(id);
@@ -96,7 +95,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, long courseId) {
+    public Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, Long courseId) {
         Course course = courseService.findById(courseId);
         try {
             return feedbackRepository.findAllByCourseId(pageable, course.getId());
