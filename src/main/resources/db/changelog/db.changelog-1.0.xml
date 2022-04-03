@@ -301,27 +301,27 @@
   <changeSet id="1641419355076-32" author="gmoon (generated)">
   <sql>
     insert into schedules(date, group_id)
-    values ('21-01-2022, 11:00', '1');
+    values ('2022-01-01 11:00:00', '1');
     insert into schedules(date, group_id)
-    values ('24-01-2022, 14:00', '2');
+    values ('2022-01-01 11:00:00', '2');
     insert into schedules(date, group_id)
-    values ('21-01-2022, 15:00', '3');
+    values ('2022-01-01 11:00:00', '3');
     insert into schedules(date, group_id)
-    values ('26-01-2022, 16:00', '3');
+    values ('2022-01-01 11:00:00', '3');
     insert into schedules(date, group_id)
-    values ('21-01-2022, 17:00', '4');
+    values ('2022-01-01 11:00:00', '4');
     insert into schedules(date, group_id)
-    values ('25-01-2022, 18:00', '4');
+    values ('2022-01-01 11:00:00', '4');
     insert into schedules(date, group_id)
-    values ('21-01-2022, 19:00', '5');
+    values ('2022-01-01 11:00:00', '5');
     insert into schedules(date, group_id)
-    values ('21-01-2022, 10:00', '6');
+    values ('2022-01-01 11:00:00', '6');
     insert into schedules(date, group_id)
-    values ('21-01-2022, 11:00', '7');
+    values ('2022-01-01 11:00:00', '7');
     insert into schedules(date, group_id)
-    values ('21-01-2022, 12:00', '8');
+    values ('2022-01-01 11:00:00', '8');
     insert into schedules(date, group_id)
-    values ('24-01-2022, 13:00', '8');
+    values ('2022-01-01 11:00:00', '8');
   </sql>
   </changeSet>
 
