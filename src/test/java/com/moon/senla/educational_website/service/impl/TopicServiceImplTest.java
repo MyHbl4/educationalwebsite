@@ -11,9 +11,6 @@ import com.moon.senla.educational_website.model.Group;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.mapper.TopicMapper;
-import com.moon.senla.educational_website.model.dto.topic.TopicDto;
-import com.moon.senla.educational_website.model.dto.topic.TopicNewDto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -93,9 +90,8 @@ class TopicServiceImplTest {
     @Test
     void save() {
         when(topicRepository.save(topic)).thenReturn(topic);
-        TopicNewDto topicNewDto = TopicMapper.INSTANCE.topicToTopicNewDto(topic);
 
-        Topic testTopic = topicService.save(topicNewDto);
+        Topic testTopic = topicService.save(topic);
 
         assertEquals(topic, testTopic);
     }
@@ -133,9 +129,8 @@ class TopicServiceImplTest {
         when(topicRepository.findById(topicToUpdate.getId())).thenReturn(
             Optional.ofNullable(topic));
         when(topicRepository.save(topicToUpdate)).thenReturn(topicToUpdate);
-        TopicDto topicDto = TopicMapper.INSTANCE.topicToTopicDto(topicToUpdate);
 
-        Topic updatedTopic = topicService.update(topicDto);
+        Topic updatedTopic = topicService.update(topicToUpdate);
 
         assertEquals("C++", updatedTopic.getName());
     }

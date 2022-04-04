@@ -1,15 +1,13 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Course;
-import com.moon.senla.educational_website.model.dto.course.CourseNewDto;
-import com.moon.senla.educational_website.model.dto.course.CourseUpdateDto;
 import java.security.Principal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CourseService {
 
-    Course save(Principal principal, CourseNewDto course);
+    Course save(Principal principal, Course course);
 
     Course findById(long id);
 
@@ -17,8 +15,11 @@ public interface CourseService {
 
     void deleteById(long id);
 
-    Course update(Principal principal, CourseUpdateDto course);
+    Course update(Principal principal, Course course);
 
     Page<Course> findAllCoursesByUsername(Pageable pageable, String username);
+
+    Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
+        String authorName);
 }
 

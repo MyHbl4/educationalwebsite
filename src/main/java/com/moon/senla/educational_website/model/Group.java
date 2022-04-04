@@ -69,25 +69,12 @@ public class Group implements Serializable {
     @Max(100)
     private int available = capacity;
 
-    public void addUser(User user) {
-        users.add(user);
-        user.addGroup(this);
-    }
-
-    public void removeUser(User user) {
-        users.remove(user);
-        user.removeGroup(this);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Group)) {
-            return false;
-        }
-        if (!super.equals(o)) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
         Group group = (Group) o;

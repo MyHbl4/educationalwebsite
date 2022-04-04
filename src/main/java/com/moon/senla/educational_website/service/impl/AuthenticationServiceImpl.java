@@ -1,15 +1,17 @@
 package com.moon.senla.educational_website.service.impl;
 
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_SAVED;
+import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_UPDATED;
+
 import com.moon.senla.educational_website.dao.RoleRepository;
 import com.moon.senla.educational_website.dao.UserRepository;
 import com.moon.senla.educational_website.error.CustomException;
+import com.moon.senla.educational_website.error.NotFoundException;
+import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Role;
 import com.moon.senla.educational_website.model.Status;
 import com.moon.senla.educational_website.model.User;
-import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
 import com.moon.senla.educational_website.model.dto.user.AuthenticationRequestDto;
-import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
-import com.moon.senla.educational_website.model.dto.user.UserNewDto;
 import com.moon.senla.educational_website.security.jwt.JwtTokenProvider;
 import com.moon.senla.educational_website.service.AuthenticationService;
 import java.security.Principal;
@@ -19,69 +21,52 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-/**
- * @ ClassName  :AuthenticationServiceImpl
- * @ Author     :gmoon
- * @ Description:
- */
 
 @Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
     @Autowired
-    public AuthenticationServiceImpl(
-        AuthenticationManager authenticationManager,
-        JwtTokenProvider jwtTokenProvider, RoleRepository roleRepository,
+    public AuthenticationServiceImpl(JwtTokenProvider jwtTokenProvider,
+        RoleRepository roleRepository,
         BCryptPasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
-    public Map<Object, Object> login(AuthenticationRequestDto requestDto) {
+    public Map<String, String> login(AuthenticationRequestDto requestDto) {
+        String username = requestDto.getUsername();
+        if (userRepository.findByUsername(username) == null) {
+            throw new NotFoundException("User with username: " + username + ", not found");
+        }
+        User user = userRepository.findByUsername(username);
+        if (user.getStatus().equals(Status.DELETED)) {
+            throw new CustomException(
+                "You cannot log in with this username, because your account has been deleted");
+        }
         try {
-            String username = requestDto.getUsername();
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-            User user = userRepository.findByUsername(username);
-
-            if (user == null) {
-                throw new UsernameNotFoundException(
-                    "User with username: " + username + " not found");
-            }
-
             String token = jwtTokenProvider.createToken(username, user.getRoles());
-
-            Map<Object, Object> response = new HashMap<>();
+            Map<String, String> response = new HashMap<>();
             response.put("username", username);
             response.put("token", token);
-
             return response;
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid username or password");
+            throw new ValidationException("Invalid username or password");
         }
     }
 
 
-    public User register(UserNewDto userNew) {
+    public User register(User user) {
         try {
-            User user = UserMapper.INSTANCE.userNewDtoToUser(userNew);
             Role roleUser = roleRepository.findByName("ROLE_USER");
             List<Role> userRoles = new ArrayList<>();
             userRoles.add(roleUser);
@@ -89,30 +74,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setRoles(userRoles);
             user.setStatus(Status.ACTIVE);
             User registeredUser = userRepository.save(user);
-            log.info("Register - user id: {} successfully registered", registeredUser.getId());
+            log.info("register - register user id: {} successfully registered",
+                registeredUser.getId());
 
             return registeredUser;
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, user could not be saved");
+            throw new ValidationException(COULD_NOT_SAVED.value);
         }
     }
 
-    public User update(Principal principal, UserDtoUpdate updateUser) {
+    public User update(Principal principal, User user) {
         try {
             User oldUser = userRepository.findByUsername(principal.getName());
-            oldUser.setEmail(updateUser.getEmail());
-            oldUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
-            oldUser.setFirstName(updateUser.getFirstName());
-            oldUser.setLastName(updateUser.getLastName());
-            oldUser.setStatus(updateUser.getStatus());
+            oldUser.setEmail(user.getEmail());
+            oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            oldUser.setFirstName(user.getFirstName());
+            oldUser.setLastName(user.getLastName());
+            oldUser.setStatus(user.getStatus());
             User updatedUser = userRepository.save(oldUser);
-            log.info("Update - user id: {} successfully updated", updatedUser.getId());
+            log.info("update - update user id: {} successfully updated", updatedUser.getId());
 
             return updatedUser;
         } catch (Exception e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST,
-                "Invalid request, update could not be saved");
+            throw new ValidationException(COULD_NOT_UPDATED.value);
         }
     }
 }

@@ -12,5 +12,7 @@ public interface UserService {
 
     User deleteById(long id);
 
-    Page<User> getAllUsersByGroup_Id(Pageable pageable, long groupId);
+    Page<User> getAllUsersByGroupId(Pageable pageable, long groupId);
+
+    Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName);
 }

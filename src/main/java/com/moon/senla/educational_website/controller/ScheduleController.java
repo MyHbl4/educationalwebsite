@@ -10,10 +10,6 @@ import io.swagger.annotations.Api;
 import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,45 +26,41 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final ScheduleMapper scheduleMapper;
 
-    public ScheduleController(ScheduleService scheduleService) {
+    public ScheduleController(ScheduleService scheduleService,
+        ScheduleMapper scheduleMapper) {
         this.scheduleService = scheduleService;
-    }
-
-    @GetMapping()
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public Page<ScheduleDto> findAll(@PageableDefault(sort = {"id"})
-        Pageable pageable) {
-        log.info("find all schedules");
-        return scheduleService.findAll(pageable)
-            .map(ScheduleMapper.INSTANCE::scheduleToScheduleDto);
+        this.scheduleMapper = scheduleMapper;
     }
 
     @GetMapping(path = "/{id}")
     public ScheduleDto findById(@PathVariable(name = "id") long id) {
-        log.info("find schedule by id {}", id);
+        log.info("findById - find schedule by id: {}", id);
         Schedule schedule = scheduleService.findById(id);
-        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(schedule);
+        return scheduleMapper.scheduleToScheduleDto(schedule);
     }
 
     @PostMapping()
     public ScheduleDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
-        log.info("save schedule: {}", schedule.getDate());
-        Schedule newSchedule = scheduleService.save(principal, schedule);
-        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(newSchedule);
+        log.info("save - save schedule: {}", schedule.getDate());
+        Schedule newSchedule = scheduleService.save(principal,
+            scheduleMapper.scheduleNewDtoToSchedule(schedule));
+        return scheduleMapper.scheduleToScheduleDto(newSchedule);
     }
 
     @PutMapping()
     public ScheduleDto update(Principal principal,
         @Valid @RequestBody ScheduleUpdateDto scheduleToUpdate) {
-        log.info("update schedule: {}", scheduleToUpdate.getId());
-        Schedule schedule = scheduleService.update(principal, scheduleToUpdate);
-        return ScheduleMapper.INSTANCE.scheduleToScheduleDto(schedule);
+        log.info("update - update schedule by id: {}", scheduleToUpdate.getId());
+        Schedule schedule = scheduleService.update(principal,
+            scheduleMapper.scheduleUpdateDtoToSchedule(scheduleToUpdate));
+        return scheduleMapper.scheduleToScheduleDto(schedule);
     }
 
     @DeleteMapping(path = "/{id}")
     public void delete(Principal principal, @PathVariable(name = "id") long id) {
-        log.info("delete schedule by id {}", id);
+        log.info("delete - delete schedule by id: {}", id);
         scheduleService.deleteById(principal, id);
     }
 }

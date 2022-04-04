@@ -1,24 +1,22 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.Feedback;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackNewDto;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackUpdateDto;
 import java.security.Principal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface FeedbackService {
 
-    Feedback save(Principal principal, FeedbackNewDto feedback);
+    Feedback save(Principal principal, Feedback feedback);
 
-    Feedback findById(long id);
+    Feedback findById(Long id);
 
     Page<Feedback> findAll(Pageable pageable);
 
-    void deleteById(Principal principal, long id);
+    void deleteById(Principal principal, Long id);
 
-    Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, long courseId);
+    Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, Long courseId);
 
-    Feedback update(Principal principal, FeedbackUpdateDto feedback);
+    Feedback update(Principal principal, Feedback feedback);
 }
 

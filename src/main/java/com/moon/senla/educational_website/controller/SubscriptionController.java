@@ -11,12 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @ ClassName  :SubscriptionController
- * @ Author     :gmoon
- * @ Description:
- */
-
 @RestController
 @RequestMapping(value = "/api/subscription")
 @Slf4j
@@ -31,25 +25,27 @@ public class SubscriptionController {
     }
 
     @PostMapping(path = "/subscribe")
-    public ResponseEntity<Object> subscribeToGroup(Principal user, long groupId) {
-        log.info("add user id:{} to group id:{}", user.getName(), groupId);
-        managingSubscriptionsService.addUserToGroup(user.getName(), groupId);
+    public ResponseEntity<Object> subscribeToGroup(Principal principal, long groupId) {
+        log.info("subscribeToGroup - add user id: {} to group id: {}", principal.getName(),
+            groupId);
+        managingSubscriptionsService.addUserToGroup(principal.getName(), groupId);
         return new ResponseEntity<>("Subscribe done!", HttpStatus.OK);
     }
 
 
     @PostMapping(path = "/unsubscribe")
-    public ResponseEntity<Object> unsubscribeFromGroup(Principal user, long groupId) {
-        log.info("remove user id:{} from group id:{}", user.getName(), groupId);
-        managingSubscriptionsService.removeUserFromGroup(user.getName(), groupId);
+    public ResponseEntity<Object> unsubscribeFromGroup(Principal principal, long groupId) {
+        log.info("unsubscribeFromGroup - remove user id: {} from group id: {}", principal.getName(),
+            groupId);
+        managingSubscriptionsService.unsubscribeUserFromGroup(principal.getName(), groupId);
         return new ResponseEntity<>("Unsubscribe done!", HttpStatus.OK);
     }
 
     @PostMapping(path = "/remove-user")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> removeUserFromGroup(String username, long groupId) {
-        log.info("remove user id:{} from group id:{}", username, groupId);
-        managingSubscriptionsService.removeUserFromGroup(username, groupId);
+    public ResponseEntity<Object> removeUserFromGroup(long userId, long groupId) {
+        log.info("removeUserFromGroup - remove user id: {} from group id: {}", userId, groupId);
+        managingSubscriptionsService.removeUserFromGroup(userId, groupId);
         return new ResponseEntity<>("User removed from group!", HttpStatus.OK);
     }
 }

@@ -7,14 +7,13 @@ import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
 import com.moon.senla.educational_website.model.dto.user.UserNewDto;
 import com.moon.senla.educational_website.service.AuthenticationService;
 import com.moon.senla.educational_website.service.UserService;
-import com.moon.senla.educational_website.service.impl.SearchFilterServiceImpl;
 import io.swagger.annotations.Api;
 import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,59 +32,62 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    private final SearchFilterServiceImpl searchFilterService;
     private final AuthenticationService authenticationService;
+    private final UserMapper userMapper;
 
     public UserController(UserService userService,
-        SearchFilterServiceImpl searchFilterService,
-        AuthenticationService authenticationService) {
+        AuthenticationService authenticationService,
+        UserMapper userMapper) {
         this.userService = userService;
-        this.searchFilterService = searchFilterService;
         this.authenticationService = authenticationService;
-    }
-
-    @GetMapping(path = "/search")
-    public Page<UserDto> findAllUsersByParam(
-        @PageableDefault(sort = {"id"}) Pageable pageable,
-        @RequestParam(value = "firstName", required = false) String firstName,
-        @RequestParam(value = "LastName", required = false) String lastName) {
-        return searchFilterService.findAllUsersByParam(pageable, firstName, lastName)
-            .map(UserMapper.INSTANCE::userToUserDto);
+        this.userMapper = userMapper;
     }
 
     @GetMapping(path = "/{id}")
     public UserDto findById(@PathVariable(name = "id") long id) {
-        log.info("find user by id {}", id);
+        log.info("findById - find user by id: {}", id);
         User user = userService.findById(id);
-        return UserMapper.INSTANCE.userToUserDto(user);
+        return userMapper.userToUserDto(user);
     }
 
     @PostMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public UserDto newUser(@Valid @RequestBody UserNewDto user) {
-        log.info("save user: {}", user.getUsername());
-        User newUser = authenticationService.register(user);
-        return UserMapper.INSTANCE.userToUserDto(newUser);
+    public UserDto save(@Valid @RequestBody UserNewDto user) {
+        log.info("save - save user with username: {}", user.getUsername());
+        User newUser = authenticationService.register(userMapper.userNewDtoToUser(user));
+        return userMapper.userToUserDto(newUser);
     }
 
     @PutMapping()
-    public UserDto updateUser(Principal principal, @Valid @RequestBody UserDtoUpdate userToUpdate) {
-        log.info("update user: {}", principal.getName());
-        User user = authenticationService.update(principal, userToUpdate);
-        return UserMapper.INSTANCE.userToUserDto(user);
+    public UserDto update(Principal principal, @Valid @RequestBody UserDtoUpdate userToUpdate) {
+        log.info("update - update user with username: {}", principal.getName());
+        User user = authenticationService.update(principal,
+            userMapper.userDtoUpdateToUser(userToUpdate));
+        return userMapper.userToUserDto(user);
     }
 
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public UserDto delete(@PathVariable(name = "id") long id) {
-        log.info("delete user by id {}", id);
-        return UserMapper.INSTANCE.userToUserDto(userService.deleteById(id));
+        log.info("delete - delete user by id: {}", id);
+        return userMapper.userToUserDto(userService.deleteById(id));
     }
 
     @GetMapping(path = "/my-page")
     public UserDto showMyPage(Principal principal) {
-        log.info("show {} page", principal.getName());
+        log.info("showMyPage - show {} page", principal.getName());
         User user = userService.findByUsername(principal.getName());
-        return UserMapper.INSTANCE.userToUserDto(user);
+        return userMapper.userToUserDto(user);
+    }
+
+    @GetMapping(path = "/search-by-param")
+    public Page<UserDto> findAllUsersByParam(
+        @RequestParam(value = "FirstName", required = false) String firstName,
+        @RequestParam(value = "LastName", required = false) String lastName,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "firstName");
+        log.info("findByLastName - find all users by param");
+        return userService.findAllUsersByParam(pageable, firstName, lastName)
+            .map(userMapper::userToUserDto);
     }
 }

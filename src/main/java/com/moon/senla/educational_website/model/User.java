@@ -20,10 +20,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,7 +33,6 @@ import org.springframework.util.ObjectUtils;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-@Data
 public class User extends BaseEntity implements Serializable {
 
     @Id
@@ -99,46 +96,6 @@ public class User extends BaseEntity implements Serializable {
         this.email = ObjectUtils.isEmpty(email) ? "" : email.toLowerCase();
     }
 
-    public void addCourse(Course course) {
-        courses.add(course);
-        course.setUser(this);
-    }
-
-    public void removeCourse(Course course) {
-        courses.remove(course);
-        course.setUser(null);
-    }
-
-    public void addFeedback(Feedback feedback) {
-        feedbacks.add(feedback);
-        feedback.setUser(this);
-    }
-
-    public void removeFeedback(Feedback feedback) {
-        feedbacks.remove(feedback);
-        feedback.setUser(null);
-    }
-
-    public void addTheory(Theory theory) {
-        theories.add(theory);
-        theory.setUser(this);
-    }
-
-    public void removeTheory(Theory theory) {
-        theories.remove(theory);
-        theory.setUser(null);
-    }
-
-    public void addGroup(Group group) {
-        groups.add(group);
-        group.addUser(this);
-    }
-
-    public void removeGroup(Group group) {
-        groups.remove(group);
-        group.removeUser(this);
-    }
-
     public boolean isNew() {
         return id == null;
     }
@@ -148,7 +105,7 @@ public class User extends BaseEntity implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof User)) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
         User user = (User) o;
@@ -168,4 +125,20 @@ public class User extends BaseEntity implements Serializable {
             getPassword(), getCourses(), getFeedbacks(), getTheories(), getRoles(), getGroups());
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+            "id=" + id +
+            ", email='" + email + '\'' +
+            ", username='" + username + '\'' +
+            ", firstName='" + firstName + '\'' +
+            ", lastName='" + lastName + '\'' +
+            ", password='" + password + '\'' +
+            ", courses=" + courses +
+            ", feedbacks=" + feedbacks +
+            ", theories=" + theories +
+            ", roles=" + roles +
+            ", groups=" + groups +
+            "} " + super.toString();
+    }
 }

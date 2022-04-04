@@ -64,39 +64,12 @@ public class Course implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Topic topic;
 
-    public void addGroup(Group group) {
-        groups.add(group);
-        group.setCourse(this);
-    }
-
-    public void removeGroup(Group group) {
-        groups.remove(group);
-        group.setCourse(null);
-    }
-
-    public void addFeedback(Feedback feedback) {
-        feedbacks.add(feedback);
-        feedback.setCourse(this);
-    }
-
-    public void removeFeedback(Feedback feedback) {
-        feedbacks.remove(feedback);
-        feedback.setCourse(null);
-    }
-
-    public void setGroups(List<Group> newGroups) {
-        this.groups.clear();
-        if (newGroups != null) {
-            this.groups.addAll(newGroups);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Course)) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
         Course course = (Course) o;

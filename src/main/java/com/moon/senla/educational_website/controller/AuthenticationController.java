@@ -23,21 +23,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final UserMapper userMapper;
 
     @Autowired
     public AuthenticationController(
-        AuthenticationService authenticationService) {
+        AuthenticationService authenticationService,
+        UserMapper userMapper) {
         this.authenticationService = authenticationService;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody AuthenticationRequestDto requestDto) {
+        log.info("login - login user with username: {}", requestDto.getUsername());
         return ResponseEntity.ok(authenticationService.login(requestDto));
     }
 
     @PostMapping("/register")
     public UserDto registerUser(@RequestBody @Valid UserNewDto user) {
-        User newUser = authenticationService.register(user);
-        return UserMapper.INSTANCE.userToUserDto(newUser);
+        log.info("registerUser - register user with username: {}", user.getUsername());
+        User newUser = authenticationService.register(userMapper.userNewDtoToUser(user));
+        return userMapper.userToUserDto(newUser);
     }
 }

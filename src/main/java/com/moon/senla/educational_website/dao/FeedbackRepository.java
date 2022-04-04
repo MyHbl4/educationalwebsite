@@ -19,5 +19,5 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
         nativeQuery = true)
     int findAverageRankByCourseId(@Param("course_id") long courseId);
 
-    Page<Feedback> findAllByCourse_Id(Pageable pageable, long courseId);
+    Page<Feedback> findAllByCourseId(Pageable pageable, long courseId);
 }

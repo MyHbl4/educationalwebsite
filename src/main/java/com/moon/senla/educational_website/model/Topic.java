@@ -46,32 +46,12 @@ public class Topic implements Serializable {
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Theory> theories = new ArrayList<>();
 
-    public void addCourse(Course course) {
-        courses.add(course);
-        course.setTopic(this);
-    }
-
-    public void removeCourse(Course course) {
-        courses.remove(course);
-        course.setTopic(null);
-    }
-
-    public void addTheory(Theory theory) {
-        theories.add(theory);
-        theory.setTopic(this);
-    }
-
-    public void removeTheory(Theory theory) {
-        theories.remove(theory);
-        theory.setTopic(null);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Topic)) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
         Topic topic = (Topic) o;

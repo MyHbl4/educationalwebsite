@@ -1,7 +1,5 @@
 package com.moon.senla.educational_website.model.dto.group;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.moon.senla.educational_website.model.dto.course.CourseDtoShort;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +8,5 @@ import lombok.Setter;
 public class GroupNewDto {
     private String name;
     private int capacity;
-    @JsonProperty("course")
-    private CourseDtoShort course;
+    private long courseId;
 }

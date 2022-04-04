@@ -66,7 +66,7 @@ public class Theory implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Theory)) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
         Theory theory = (Theory) o;
