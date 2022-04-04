@@ -1,5 +1,5 @@
--- DROP DATABASE IF EXISTS educationalwebsite;
--- CREATE DATABASE educationalwebsite;
+-- DROP DATABASE IF EXISTS websitedb;
+-- CREATE DATABASE websitedb;
 --
 --
 -- create table if not exists databasechangeloglock
