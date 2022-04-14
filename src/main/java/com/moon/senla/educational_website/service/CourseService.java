@@ -9,17 +9,17 @@ public interface CourseService {
 
     Course save(Principal principal, Course course);
 
-    Course findById(long id);
+    Course findById(String id);
 
     Page<Course> findAll(Pageable pageable);
 
-    void deleteById(long id);
+    void deleteById(String id);
 
     Course update(Principal principal, Course course);
 
-    Page<Course> findAllCoursesByUsername(Pageable pageable, String username);
-
-    Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
-        String authorName);
+//    Page<Course> findAllCoursesByUsername(Pageable pageable, String username);
+//
+//    Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
+//        String authorName);
 }
 

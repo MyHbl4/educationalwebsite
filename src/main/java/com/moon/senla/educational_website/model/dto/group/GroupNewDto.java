@@ -8,5 +8,5 @@ import lombok.Setter;
 public class GroupNewDto {
     private String name;
     private int capacity;
-    private long courseId;
+    private String courseId;
 }

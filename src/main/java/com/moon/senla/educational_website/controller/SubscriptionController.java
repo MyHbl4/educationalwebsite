@@ -24,28 +24,28 @@ public class SubscriptionController {
         this.managingSubscriptionsService = managingSubscriptionsService;
     }
 
-    @PostMapping(path = "/subscribe")
-    public ResponseEntity<Object> subscribeToGroup(Principal principal, long groupId) {
-        log.info("subscribeToGroup - add user id: {} to group id: {}", principal.getName(),
-            groupId);
-        managingSubscriptionsService.addUserToGroup(principal.getName(), groupId);
-        return new ResponseEntity<>("Subscribe done!", HttpStatus.OK);
-    }
+//    @PostMapping(path = "/subscribe")
+//    public ResponseEntity<Object> subscribeToGroup(Principal principal, long groupId) {
+//        log.info("subscribeToGroup - add user id: {} to group id: {}", principal.getName(),
+//            groupId);
+//        managingSubscriptionsService.addUserToGroup(principal.getName(), groupId);
+//        return new ResponseEntity<>("Subscribe done!", HttpStatus.OK);
+//    }
 
 
-    @PostMapping(path = "/unsubscribe")
-    public ResponseEntity<Object> unsubscribeFromGroup(Principal principal, long groupId) {
-        log.info("unsubscribeFromGroup - remove user id: {} from group id: {}", principal.getName(),
-            groupId);
-        managingSubscriptionsService.unsubscribeUserFromGroup(principal.getName(), groupId);
-        return new ResponseEntity<>("Unsubscribe done!", HttpStatus.OK);
-    }
-
-    @PostMapping(path = "/remove-user")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Object> removeUserFromGroup(long userId, long groupId) {
-        log.info("removeUserFromGroup - remove user id: {} from group id: {}", userId, groupId);
-        managingSubscriptionsService.removeUserFromGroup(userId, groupId);
-        return new ResponseEntity<>("User removed from group!", HttpStatus.OK);
-    }
+//    @PostMapping(path = "/unsubscribe")
+//    public ResponseEntity<Object> unsubscribeFromGroup(Principal principal, long groupId) {
+//        log.info("unsubscribeFromGroup - remove user id: {} from group id: {}", principal.getName(),
+//            groupId);
+//        managingSubscriptionsService.unsubscribeUserFromGroup(principal.getName(), groupId);
+//        return new ResponseEntity<>("Unsubscribe done!", HttpStatus.OK);
+//    }
+//
+//    @PostMapping(path = "/remove-user")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    public ResponseEntity<Object> removeUserFromGroup(long userId, long groupId) {
+//        log.info("removeUserFromGroup - remove user id: {} from group id: {}", userId, groupId);
+//        managingSubscriptionsService.removeUserFromGroup(userId, groupId);
+//        return new ResponseEntity<>("User removed from group!", HttpStatus.OK);
+//    }
 }

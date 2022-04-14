@@ -8,5 +8,5 @@ import lombok.Setter;
 public class FeedbackNewDto {
     private String detention;
     private int rank;
-    private long courseId;
+    private String courseId;
 }

@@ -9,6 +9,7 @@ import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.GroupService;
 import com.moon.senla.educational_website.service.ManagingSubscriptionsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,58 +18,61 @@ public class ManagingSubscriptionsServiceImpl implements ManagingSubscriptionsSe
 
     private final UserRepository userRepository;
     private final GroupService groupService;
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
     public ManagingSubscriptionsServiceImpl(
         UserRepository userRepository,
-        GroupService groupService) {
+        GroupService groupService,
+        MongoTemplate mongoTemplate) {
         this.userRepository = userRepository;
         this.groupService = groupService;
+        this.mongoTemplate = mongoTemplate;
     }
 
-    @Transactional
-    @Override
-    public void addUserToGroup(String username, long groupId) {
-        Group group = groupService.findById(groupId);
-        if (group.getAvailable() == 0) {
-            throw new CustomException("Invalid request, there's no available seats, sorry");
-        }
-        try {
-            long userId = userRepository.findByUsername(username).getId();
-            userRepository.addUserToGroup(userId, groupId);
-            group.setAvailable(group.getAvailable() - 1);
-        } catch (Exception e) {
-            throw new CustomException("Invalid request, subscription failed");
-        }
-    }
+//    @Transactional
+//    @Override
+//    public void addUserToGroup(String username, long groupId) {
+//        Group group = groupService.findById(groupId);
+//        if (group.getAvailable() == 0) {
+//            throw new CustomException("Invalid request, there's no available seats, sorry");
+//        }
+//        try {
+//            long userId = userRepository.findByUsername(username).getId();
+//            userRepository.addUserToGroup(userId, groupId);
+//            group.setAvailable(group.getAvailable() - 1);
+//        } catch (Exception e) {
+//            throw new CustomException("Invalid request, subscription failed");
+//        }
+//    }
 
-    @Transactional
-    @Override
-    public void removeUserFromGroup(long userId, long groupId) {
-        Group group = groupService.findById(groupId);
-        User user = group.getUsers().stream().filter(u -> u.getId() == (userId))
-            .findAny()
-            .orElseThrow(() -> new CustomException(USER_NF.value));
-        try {
-            userRepository.removeUserFromGroup(user.getId(), groupId);
-            group.setAvailable(group.getAvailable() + 1);
-        } catch (Exception e) {
-            throw new CustomException("Invalid request, unsubscribe failed");
-        }
-    }
+//    @Transactional
+//    @Override
+//    public void removeUserFromGroup(long userId, long groupId) {
+//        Group group = groupService.findById(groupId);
+//        User user = group.getUsers().stream().filter(u -> u.getId() == (userId))
+//            .findAny()
+//            .orElseThrow(() -> new CustomException(USER_NF.value));
+//        try {
+//            userRepository.removeUserFromGroup(user.getId(), groupId);
+//            group.setAvailable(group.getAvailable() + 1);
+//        } catch (Exception e) {
+//            throw new CustomException("Invalid request, unsubscribe failed");
+//        }
+//    }
 
-    @Transactional
-    @Override
-    public void unsubscribeUserFromGroup(String username, long groupId) {
-        Group group = groupService.findById(groupId);
-        User user = group.getUsers().stream().filter(u -> u.getUsername().equals(username))
-            .findAny()
-            .orElseThrow(() -> new CustomException(USER_NF.value));
-        try {
-            userRepository.removeUserFromGroup(user.getId(), groupId);
-            group.setAvailable(group.getAvailable() + 1);
-        } catch (Exception e) {
-            throw new CustomException("Invalid request, unsubscribe failed");
-        }
-    }
+//    @Transactional
+//    @Override
+//    public void unsubscribeUserFromGroup(String username, long groupId) {
+//        Group group = groupService.findById(groupId);
+//        User user = group.getUsers().stream().filter(u -> u.getUsername().equals(username))
+//            .findAny()
+//            .orElseThrow(() -> new CustomException(USER_NF.value));
+//        try {
+//            userRepository.removeUserFromGroup(user.getId(), groupId);
+//            group.setAvailable(group.getAvailable() + 1);
+//        } catch (Exception e) {
+//            throw new CustomException("Invalid request, unsubscribe failed");
+//        }
+//    }
 }

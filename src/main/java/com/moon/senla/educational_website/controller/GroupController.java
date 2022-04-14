@@ -13,6 +13,7 @@ import com.moon.senla.educational_website.service.GroupService;
 import com.moon.senla.educational_website.service.ScheduleService;
 import com.moon.senla.educational_website.service.UserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -57,13 +58,15 @@ public class GroupController {
         this.userMapper = userMapper;
     }
 
+    @ApiOperation(value = "Get group by id")
     @GetMapping(path = "/{id}")
-    public GroupDto findById(@PathVariable(name = "id") long id) {
+    public GroupDto findById(@PathVariable(name = "id") String id) {
         log.info("findById - find group by id: {}", id);
         Group group = groupService.findById(id);
         return groupMapper.groupToGroupDto(group);
     }
 
+    @ApiOperation(value = "Save new group")
     @PostMapping()
     public GroupDto save(Principal principal, @Valid @RequestBody GroupNewDto group) {
         log.info("save - save group by name: {}", group.getName());
@@ -71,6 +74,7 @@ public class GroupController {
         return groupMapper.groupToGroupDto(newGroup);
     }
 
+    @ApiOperation(value = "Update group")
     @PutMapping()
     public GroupDto update(Principal principal, @Valid @RequestBody GroupShortDto groupToUpdate) {
         log.info("update - update group by id: {}", groupToUpdate.getId());
@@ -79,28 +83,29 @@ public class GroupController {
         return groupMapper.groupToGroupDto(group);
     }
 
+    @ApiOperation(value = "Delete group by id, only for admin")
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void delete(@PathVariable(name = "id") long id) {
+    public void delete(@PathVariable(name = "id") String id) {
         log.info("delete - delete group by id: {}", id);
         groupService.deleteById(id);
     }
+//
+//    @GetMapping(path = "/{id}/schedules")
+//    public Page<ScheduleDto> findAllSchedulesByGroupId(@PathVariable(name = "id") long id,
+//        @RequestParam int page) {
+//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "date");
+//        log.info("findAllSchedulesByGroupId - find schedules by group id: {}", id);
+//        return scheduleService.findAllByGroupId(pageable, id)
+//            .map(scheduleMapper::scheduleToScheduleDto);
+//    }
 
-    @GetMapping(path = "/{id}/schedules")
-    public Page<ScheduleDto> findAllSchedulesByGroupId(@PathVariable(name = "id") long id,
-        @RequestParam int page) {
-        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "date");
-        log.info("findAllSchedulesByGroupId - find schedules by group id: {}", id);
-        return scheduleService.findAllByGroupId(pageable, id)
-            .map(scheduleMapper::scheduleToScheduleDto);
-    }
-
-    @GetMapping(path = "/{id}/users")
-    public Page<UserGroupDto> getAllUsersByGroupId(@PathVariable(name = "id") long id,
-        @RequestParam int page) {
-        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "first_name");
-        log.info("getAllUsersByGroupId - find users by group id: {}", id);
-        return userService.getAllUsersByGroupId(pageable, id)
-            .map(userMapper::userToUserGroupDto);
-    }
+//    @GetMapping(path = "/{id}/users")
+//    public Page<UserGroupDto> getAllUsersByGroupId(@PathVariable(name = "id") long id,
+//        @RequestParam int page) {
+//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "first_name");
+//        log.info("getAllUsersByGroupId - find users by group id: {}", id);
+//        return userService.getAllUsersByGroupId(pageable, id)
+//            .map(userMapper::userToUserGroupDto);
+//    }
 }

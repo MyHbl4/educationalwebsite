@@ -12,47 +12,65 @@ import com.moon.senla.educational_website.error.CustomException;
 import com.moon.senla.educational_website.error.NotFoundException;
 import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Course;
+import com.moon.senla.educational_website.model.Topic;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.CourseService;
 import com.moon.senla.educational_website.service.TopicService;
 import com.moon.senla.educational_website.service.UserService;
 import java.security.Principal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final UserService userService;
     private final TopicService topicService;
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
     public CourseServiceImpl(CourseRepository courseRepository,
         UserService userService,
-        TopicService topicService) {
+        TopicService topicService,
+        MongoTemplate mongoTemplate) {
         this.courseRepository = courseRepository;
         this.userService = userService;
         this.topicService = topicService;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
     public Course save(Principal principal, Course course) {
+        Topic topic = topicService.findById(course.getTopic().getId());
+        User user = userService.findByUsername(principal.getName());
         try {
-            course.setUser(userService.findByUsername(principal.getName()));
-            course.setTopic(topicService.findById(course.getTopic().getId()));
+            course.setUser(user);
+            course.setTopic(topic);
             return courseRepository.save(course);
         } catch (Exception e) {
-                throw new ValidationException(COULD_NOT_SAVED.value);
+            throw new ValidationException(COULD_NOT_SAVED.value);
         }
     }
 
     @Override
-    public Course findById(long id) {
-        return courseRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(COURSE_NF.value));
+    public Course findById(String id) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("Id").is(id));
+        Course course = mongoTemplate.findOne(query, Course.class);
+        if (course == null) {
+            log.warn("Course with id {} not found", id);
+            throw new NotFoundException(COURSE_NF.value);
+        }
+        log.info("Course with id {} found", id);
+        return course;
     }
 
     @Override
@@ -65,10 +83,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void deleteById(long id) {
-        if (!courseRepository.findById(id).isPresent()) {
-            throw new NotFoundException(COURSE_NF.value);
-        }
+    public void deleteById(String id) {
+        findById(id);
         try {
             courseRepository.deleteById(id);
         } catch (Exception e) {
@@ -78,8 +94,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course update(Principal principal, Course courseToUpdate) {
-        Course oldCourse = courseRepository.findById(courseToUpdate.getId())
-            .orElseThrow(() -> new NotFoundException(COURSE_NF.value));
+        Course oldCourse = findById(courseToUpdate.getId());
         User user = userService.findById(oldCourse.getUser().getId());
         if (!user.getUsername().equals(principal.getName())) {
             throw new AuthException(ACCESS_DENIED.value);
@@ -93,23 +108,23 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-    @Override
-    public Page<Course> findAllCoursesByUsername(Pageable pageable, String username) {
-        try {
-            return courseRepository.findAllCoursesByUsername(pageable, username);
-        } catch (Exception e) {
-            throw new NotFoundException(COURSE_NF.value);
-        }
-    }
-
-    @Override
-    public Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
-        String authorName) {
-        try {
-            return courseRepository.findAllCoursesByParam(pageable, name, topicName, authorName);
-        } catch (Exception e) {
-            throw new NotFoundException(COURSE_NF.value);
-        }
-    }
+//    @Override
+//    public Page<Course> findAllCoursesByUsername(Pageable pageable, String username) {
+//        try {
+//            return courseRepository.findAllCoursesByUsername(pageable, username);
+//        } catch (Exception e) {
+//            throw new NotFoundException(COURSE_NF.value);
+//        }
+//    }
+//
+//    @Override
+//    public Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
+//        String authorName) {
+//        try {
+//            return courseRepository.findAllCoursesByParam(pageable, name, topicName, authorName);
+//        } catch (Exception e) {
+//            throw new NotFoundException(COURSE_NF.value);
+//        }
+//    }
 
 }

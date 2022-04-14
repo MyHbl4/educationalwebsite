@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CourseDto {
-    private Long id;
+    private String id;
     private String name;
     private int price;
     private int rating;

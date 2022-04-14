@@ -12,7 +12,17 @@ public enum StringConstants {
     COULD_NOT_DELETE("Invalid request, failed to delete"),
     COULD_NOT_UPDATED("Invalid request, could not be updated"),
     COULD_NOT_SAVED("Invalid request, could not be saved"),
-    ACCESS_DENIED("Invalid request, access is denied");
+    ACCESS_DENIED("Invalid request, access is denied"),
+    USERNAME_IS_EXIST("Username is exist"),
+    EMAIL_IS_EXIST("Email is exist"),
+    THEORY_IS_EXIST("Theory is exist"),
+    COURSE_IS_EXIST("Course is exist"),
+    TOPIC_IS_EXIST("Topic is exist"),
+    GROUP_IS_EXIST("Group is exist");
+
+
+
+
 
     public final String value;
 

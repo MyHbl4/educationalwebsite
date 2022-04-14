@@ -35,33 +35,33 @@ public class FeedbackController {
         this.feedbackMapper = feedbackMapper;
     }
 
-    @GetMapping(path = "/{id}")
-    public FeedbackDto findById(@PathVariable(name = "id") long id) {
-        log.info("findById - find feedback by id: {}", id);
-        Feedback feedback = feedbackService.findById(id);
-        return feedbackMapper.feedbackToFeedbackDto(feedback);
-    }
+//    @GetMapping(path = "/{id}")
+//    public FeedbackDto findById(@PathVariable(name = "id") String id) {
+//        log.info("findById - find feedback by id: {}", id);
+//        Feedback feedback = feedbackService.findById(id);
+//        return feedbackMapper.feedbackToFeedbackDto(feedback);
+//    }
 
-    @PostMapping()
-    public FeedbackDto save(Principal principal, @Valid @RequestBody FeedbackNewDto feedback) {
-        log.info("save - save feedback by user: {}", principal.getName());
-        Feedback newFeedback = feedbackService.save(principal,
-            feedbackMapper.feedbackNewDtoToFeedback(feedback));
-        return feedbackMapper.feedbackToFeedbackDto(newFeedback);
-    }
-
-    @PutMapping()
-    public FeedbackDto update(Principal principal,
-        @Valid @RequestBody FeedbackUpdateDto feedbackToUpdate) {
-        log.info("update - update feedback by id: {}", feedbackToUpdate.getId());
-        Feedback feedback = feedbackService.update(principal,
-            feedbackMapper.feedbackUpdateDtoToFeedback(feedbackToUpdate));
-        return feedbackMapper.feedbackToFeedbackDto(feedback);
-    }
-
-    @DeleteMapping(path = "/{id}")
-    public void delete(Principal principal, @PathVariable(name = "id") long id) {
-        log.info("delete - delete feedback by id: {}", id);
-        feedbackService.deleteById(principal, id);
-    }
+//    @PostMapping()
+//    public FeedbackDto save(Principal principal, @Valid @RequestBody FeedbackNewDto feedback) {
+//        log.info("save - save feedback by user: {}", principal.getName());
+//        Feedback newFeedback = feedbackService.save(principal,
+//            feedbackMapper.feedbackNewDtoToFeedback(feedback));
+//        return feedbackMapper.feedbackToFeedbackDto(newFeedback);
+//    }
+//
+//    @PutMapping()
+//    public FeedbackDto update(Principal principal,
+//        @Valid @RequestBody FeedbackUpdateDto feedbackToUpdate) {
+//        log.info("update - update feedback by id: {}", feedbackToUpdate.getId());
+//        Feedback feedback = feedbackService.update(principal,
+//            feedbackMapper.feedbackUpdateDtoToFeedback(feedbackToUpdate));
+//        return feedbackMapper.feedbackToFeedbackDto(feedback);
+//    }
+//
+//    @DeleteMapping(path = "/{id}")
+//    public void delete(Principal principal, @PathVariable(name = "id") long id) {
+//        log.info("delete - delete feedback by id: {}", id);
+//        feedbackService.deleteById(principal, id);
+//    }
 }

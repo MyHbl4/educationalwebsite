@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FeedbackDto {
-    private Long id;
+    private String id;
     private LocalDate date;
     private String detention;
     private int rank;

@@ -34,33 +34,33 @@ public class ScheduleController {
         this.scheduleMapper = scheduleMapper;
     }
 
-    @GetMapping(path = "/{id}")
-    public ScheduleDto findById(@PathVariable(name = "id") long id) {
-        log.info("findById - find schedule by id: {}", id);
-        Schedule schedule = scheduleService.findById(id);
-        return scheduleMapper.scheduleToScheduleDto(schedule);
-    }
-
-    @PostMapping()
-    public ScheduleDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
-        log.info("save - save schedule: {}", schedule.getDate());
-        Schedule newSchedule = scheduleService.save(principal,
-            scheduleMapper.scheduleNewDtoToSchedule(schedule));
-        return scheduleMapper.scheduleToScheduleDto(newSchedule);
-    }
-
-    @PutMapping()
-    public ScheduleDto update(Principal principal,
-        @Valid @RequestBody ScheduleUpdateDto scheduleToUpdate) {
-        log.info("update - update schedule by id: {}", scheduleToUpdate.getId());
-        Schedule schedule = scheduleService.update(principal,
-            scheduleMapper.scheduleUpdateDtoToSchedule(scheduleToUpdate));
-        return scheduleMapper.scheduleToScheduleDto(schedule);
-    }
-
-    @DeleteMapping(path = "/{id}")
-    public void delete(Principal principal, @PathVariable(name = "id") long id) {
-        log.info("delete - delete schedule by id: {}", id);
-        scheduleService.deleteById(principal, id);
-    }
+//    @GetMapping(path = "/{id}")
+//    public ScheduleDto findById(@PathVariable(name = "id") String id) {
+//        log.info("findById - find schedule by id: {}", id);
+//        Schedule schedule = scheduleService.findById(id);
+//        return scheduleMapper.scheduleToScheduleDto(schedule);
+//    }
+//
+//    @PostMapping()
+//    public ScheduleDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
+//        log.info("save - save schedule: {}", schedule.getDate());
+//        Schedule newSchedule = scheduleService.save(principal,
+//            scheduleMapper.scheduleNewDtoToSchedule(schedule));
+//        return scheduleMapper.scheduleToScheduleDto(newSchedule);
+//    }
+//
+//    @PutMapping()
+//    public ScheduleDto update(Principal principal,
+//        @Valid @RequestBody ScheduleUpdateDto scheduleToUpdate) {
+//        log.info("update - update schedule by id: {}", scheduleToUpdate.getId());
+//        Schedule schedule = scheduleService.update(principal,
+//            scheduleMapper.scheduleUpdateDtoToSchedule(scheduleToUpdate));
+//        return scheduleMapper.scheduleToScheduleDto(schedule);
+//    }
+//
+//    @DeleteMapping(path = "/{id}")
+//    public void delete(Principal principal, @PathVariable(name = "id") String id) {
+//        log.info("delete - delete schedule by id: {}", id);
+//        scheduleService.deleteById(principal, id);
+//    }
 }

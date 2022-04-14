@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ScheduleDto {
-    private Long id;
+    private String id;
     private LocalDateTime date;
     @JsonProperty("group")
     private GroupShortDto group;

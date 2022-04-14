@@ -11,11 +11,13 @@ public interface TheoryService {
 
     Theory update(Principal principal, Theory theory);
 
-    Theory findById(long id);
+    Theory findById(String id);
 
-    void deleteById(long id);
+    void deleteById(String id);
 
-    Page<Theory> findAllTheoryByParam(Pageable pageable,
-        String name, String topic, String username);
+    Page<Theory> findAll(Pageable pageable);
+
+//    Page<Theory> findAllTheoryByParam(Pageable pageable,
+//        String name, String topic, String username);
 }
 

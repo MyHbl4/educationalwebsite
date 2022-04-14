@@ -1,18 +1,22 @@
 package com.moon.senla.educational_website.service;
 
 import com.moon.senla.educational_website.model.User;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
     User findByUsername(String username);
 
-    User findById(long id);
+    User findById(String id);
 
-    User deleteById(long id);
+    User deleteById(String id);
 
-    Page<User> getAllUsersByGroupId(Pageable pageable, long groupId);
+    Page<User> findAll(PageRequest pageable);
 
-    Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName);
+//    Page<User> getAllUsersByGroupId(Pageable pageable, long groupId);
+//
+//    Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName);
 }

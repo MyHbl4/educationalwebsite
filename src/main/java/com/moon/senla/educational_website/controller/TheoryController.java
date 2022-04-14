@@ -7,6 +7,7 @@ import com.moon.senla.educational_website.model.dto.theory.TheoryNewDto;
 import com.moon.senla.educational_website.model.dto.theory.TheoryUpdateDto;
 import com.moon.senla.educational_website.service.TheoryService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -39,13 +40,15 @@ public class TheoryController {
         this.theoryMapper = theoryMapper;
     }
 
+    @ApiOperation(value = "Get theory by id")
     @GetMapping(path = "/{id}")
-    public TheoryDto findById(@PathVariable(name = "id") long id) {
+    public TheoryDto findById(@PathVariable(name = "id") String id) {
         log.info("findById - find theory by id {}", id);
         Theory theory = theoryService.findById(id);
         return theoryMapper.theoryToTheoryDto(theory);
     }
 
+    @ApiOperation(value = "Save new theory")
     @PostMapping()
     public TheoryDto save(Principal principal, @Valid @RequestBody TheoryNewDto theory) {
         log.info("save - save theory by name: {}", theory.getName());
@@ -53,6 +56,7 @@ public class TheoryController {
         return theoryMapper.theoryToTheoryDto(newTheory);
     }
 
+    @ApiOperation(value = "Update theory data")
     @PutMapping()
     public TheoryDto update(Principal principal,
         @Valid @RequestBody TheoryUpdateDto theoryToUpdate) {
@@ -62,22 +66,32 @@ public class TheoryController {
         return theoryMapper.theoryToTheoryDto(theory);
     }
 
+    @ApiOperation(value = "Delete theory by id, only for admin")
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void delete(@PathVariable(name = "id") long id) {
+    public void delete(@PathVariable(name = "id") String id) {
         log.info("delete - delete theory by id: {}", id);
         theoryService.deleteById(id);
     }
 
-    @GetMapping(path = "/search-by-param")
-    public Page<TheoryDto> findAllTheoriesByParam(
-        @RequestParam(value = "name", required = false) String name,
-        @RequestParam(value = "topic_name", required = false) String topicName,
-        @RequestParam(value = "user_name", required = false) String userName,
-        @RequestParam int page) {
+    @ApiOperation(value = "Get all theories")
+    @GetMapping()
+    public Page<TheoryDto> findAll(@RequestParam int page) {
         PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
-        log.info("findAllTheoriesByParam - find all theories by param");
-        return theoryService.findAllTheoryByParam(pageable, name, topicName, userName)
+        log.info("findAll - find all theories");
+        return theoryService.findAll(pageable)
             .map(theoryMapper::theoryToTheoryDto);
     }
+
+//    @GetMapping(path = "/search-by-param")
+//    public Page<TheoryDto> findAllTheoriesByParam(
+//        @RequestParam(value = "name", required = false) String name,
+//        @RequestParam(value = "topic_name", required = false) String topicName,
+//        @RequestParam(value = "user_name", required = false) String userName,
+//        @RequestParam int page) {
+//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
+//        log.info("findAllTheoriesByParam - find all theories by param");
+//        return theoryService.findAllTheoryByParam(pageable, name, topicName, userName)
+//            .map(theoryMapper::theoryToTheoryDto);
+//    }
 }

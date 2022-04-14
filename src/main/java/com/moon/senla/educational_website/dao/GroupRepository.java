@@ -3,13 +3,16 @@ package com.moon.senla.educational_website.dao;
 import com.moon.senla.educational_website.model.Group;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GroupRepository extends JpaRepository<Group, Long> {
+public interface GroupRepository extends MongoRepository<Group, Long> {
 
     Page<Group> findAll(Pageable pageable);
 
-    Page<Group> findAllByCourseId(Pageable pageable, long courseId);
+    Page<Group> findAllGroupsByCourseId(Pageable pageable, String courseId);
+
+    void deleteById(String id);
+
 }

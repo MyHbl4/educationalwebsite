@@ -8,11 +8,11 @@ public interface TopicService {
 
     Topic save(Topic topic);
 
-    Topic findById(long id);
+    Topic findById(String id);
 
     Page<Topic> findAll(Pageable pageable);
 
-    void deleteById(long id);
+    void deleteById(String id);
 
     Topic update(Topic topic);
 }

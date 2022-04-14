@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ScheduleUpdateDto {
-    private Long id;
+    private String id;
     private LocalDateTime date;
 }

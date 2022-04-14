@@ -9,13 +9,13 @@ public interface GroupService {
 
     Group save(Principal principal, Group group);
 
-    Group findById(long id);
+    Group findById(String id);
 
     Page<Group> findAll(Pageable pageable);
 
-    void deleteById(long id);
+    void deleteById(String id);
 
-    Page<Group> findAllGroupsByCourseId(Pageable pageable, long id);
+    Page<Group> findAllGroupsByCourseId(Pageable pageable, String id);
 
     Group update(Principal principal, Group group);
 }

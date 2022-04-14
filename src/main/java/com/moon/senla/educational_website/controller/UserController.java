@@ -2,12 +2,14 @@ package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
+import com.moon.senla.educational_website.model.dto.topic.TopicDto;
 import com.moon.senla.educational_website.model.dto.user.UserDto;
 import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
 import com.moon.senla.educational_website.model.dto.user.UserNewDto;
 import com.moon.senla.educational_website.service.AuthenticationService;
 import com.moon.senla.educational_website.service.UserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -43,13 +45,15 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    @ApiOperation(value = "Get user by id")
     @GetMapping(path = "/{id}")
-    public UserDto findById(@PathVariable(name = "id") long id) {
+    public UserDto findById(@PathVariable(name = "id") String id) {
         log.info("findById - find user by id: {}", id);
         User user = userService.findById(id);
         return userMapper.userToUserDto(user);
     }
 
+    @ApiOperation(value = "Save new user, only for admin")
     @PostMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public UserDto save(@Valid @RequestBody UserNewDto user) {
@@ -58,6 +62,7 @@ public class UserController {
         return userMapper.userToUserDto(newUser);
     }
 
+    @ApiOperation(value = "Update user data")
     @PutMapping()
     public UserDto update(Principal principal, @Valid @RequestBody UserDtoUpdate userToUpdate) {
         log.info("update - update user with username: {}", principal.getName());
@@ -66,13 +71,15 @@ public class UserController {
         return userMapper.userToUserDto(user);
     }
 
+    @ApiOperation(value = "Delete user by id, only for admin")
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public UserDto delete(@PathVariable(name = "id") long id) {
+    public UserDto delete(@PathVariable(name = "id") String id) {
         log.info("delete - delete user by id: {}", id);
         return userMapper.userToUserDto(userService.deleteById(id));
     }
 
+    @ApiOperation(value = "Show data about user")
     @GetMapping(path = "/my-page")
     public UserDto showMyPage(Principal principal) {
         log.info("showMyPage - show {} page", principal.getName());
@@ -80,14 +87,22 @@ public class UserController {
         return userMapper.userToUserDto(user);
     }
 
-    @GetMapping(path = "/search-by-param")
-    public Page<UserDto> findAllUsersByParam(
-        @RequestParam(value = "FirstName", required = false) String firstName,
-        @RequestParam(value = "LastName", required = false) String lastName,
-        @RequestParam int page) {
-        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "firstName");
-        log.info("findByLastName - find all users by param");
-        return userService.findAllUsersByParam(pageable, firstName, lastName)
+    @ApiOperation(value = "Get all users")
+    @GetMapping()
+    public Page<UserDto> findAll(@RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "username");
+        log.info("findAll - find all users");
+        return userService.findAll(pageable)
             .map(userMapper::userToUserDto);
     }
+//    @GetMapping(path = "/search-by-param")
+//    public Page<UserDto> findAllUsersByParam(
+//        @RequestParam(value = "FirstName", required = false) String firstName,
+//        @RequestParam(value = "LastName", required = false) String lastName,
+//        @RequestParam int page) {
+//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "firstName");
+//        log.info("findByLastName - find all users by param");
+//        return userService.findAllUsersByParam(pageable, firstName, lastName)
+//            .map(userMapper::userToUserDto);
+//    }
 }

@@ -8,5 +8,5 @@ import lombok.Setter;
 public class TheoryNewDto {
     private String name;
     private String description;
-    private long topicId;
+    private String topicId;
 }

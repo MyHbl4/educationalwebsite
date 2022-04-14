@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TheoryUpdateDto {
-    private Long id;
+    private String id;
     private String name;
     private String description;
 }

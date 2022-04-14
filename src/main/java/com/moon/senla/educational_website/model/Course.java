@@ -1,68 +1,47 @@
 package com.moon.senla.educational_website.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "courses")
+@Document
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Course implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    private String id;
 
-    @Column(name = "name", nullable = false)
-    @Size(max = 128)
-    @NotBlank
+    @Indexed(unique = true)
     private String name;
 
-    @Column(name = "price")
-    @Min(0)
-    @Max(100000)
     private int price;
 
-    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Group> groups = new ArrayList<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Feedback> feedbacks = new ArrayList<>();
 
-    @Column(name = "rating")
     private int rating = 0;
 
-    @ManyToOne(fetch = FetchType.EAGER)
     private Topic topic;
+
+    public Course(String name, int price, User user,
+        Topic topic) {
+        this.name = name;
+        this.price = price;
+        this.user = user;
+        this.topic = topic;
+    }
 
     @Override
     public boolean equals(Object o) {

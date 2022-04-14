@@ -6,6 +6,7 @@ import com.moon.senla.educational_website.model.dto.topic.TopicDto;
 import com.moon.senla.educational_website.model.dto.topic.TopicNewDto;
 import com.moon.senla.educational_website.service.TopicService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,7 @@ public class TopicController {
         this.topicMapper = topicMapper;
     }
 
+    @ApiOperation(value = "Get all topics")
     @GetMapping()
     public Page<TopicDto> findAll(@RequestParam int page) {
         PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
@@ -45,13 +47,15 @@ public class TopicController {
             .map(topicMapper::topicToTopicDto);
     }
 
+    @ApiOperation(value = "Get topic by id")
     @GetMapping(path = "/{id}")
-    public TopicDto findById(@PathVariable(name = "id") long id) {
+    public TopicDto findById(@PathVariable(name = "id") String id) {
         log.info("findById - find topic by id: {}", id);
         Topic topic = topicService.findById(id);
         return topicMapper.topicToTopicDto(topic);
     }
 
+    @ApiOperation(value = "Save new topic, only for admin")
     @PostMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public TopicDto save(@Valid @RequestBody TopicNewDto topic) {
@@ -60,6 +64,7 @@ public class TopicController {
         return topicMapper.topicToTopicDto(newTopic);
     }
 
+    @ApiOperation(value = "Update topic by id, only for admin")
     @PutMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public TopicDto update(@Valid @RequestBody TopicDto topicToUpdate) {
@@ -68,9 +73,10 @@ public class TopicController {
         return topicMapper.topicToTopicDto(topic);
     }
 
+    @ApiOperation(value = "Delete topic by id, only for admin")
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void delete(@PathVariable(name = "id") long id) {
+    public void delete(@PathVariable(name = "id") String id) {
         log.info("delete - delete topic by id: {}", id);
         topicService.deleteById(id);
     }

@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 public class ScheduleNewDto {
     private LocalDateTime date;
-    private long groupId;
+    private String groupId;
 }
