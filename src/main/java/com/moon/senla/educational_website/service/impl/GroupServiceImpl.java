@@ -18,7 +18,6 @@ import com.moon.senla.educational_website.service.CourseService;
 import com.moon.senla.educational_website.service.GroupService;
 import com.moon.senla.educational_website.service.UserService;
 import java.security.Principal;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -95,11 +94,8 @@ public class GroupServiceImpl implements GroupService {
     //
     @Override
     public Page<Group> findAllGroupsByCourseId(Pageable pageable, String id) {
-        courseService.findById(id); // check if course exists
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("course.id").is(id));
-//        return mongoTemplate.find(query, Group.class, "groups");
-         return groupRepository.findAllGroupsByCourseId(pageable, id);
+        courseService.findById(id);
+        return groupRepository.findAllGroupsByCourseId(pageable, id);
     }
 
 

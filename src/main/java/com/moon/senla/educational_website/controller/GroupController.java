@@ -90,15 +90,15 @@ public class GroupController {
         log.info("delete - delete group by id: {}", id);
         groupService.deleteById(id);
     }
-//
-//    @GetMapping(path = "/{id}/schedules")
-//    public Page<ScheduleDto> findAllSchedulesByGroupId(@PathVariable(name = "id") long id,
-//        @RequestParam int page) {
-//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "date");
-//        log.info("findAllSchedulesByGroupId - find schedules by group id: {}", id);
-//        return scheduleService.findAllByGroupId(pageable, id)
-//            .map(scheduleMapper::scheduleToScheduleDto);
-//    }
+
+    @GetMapping(path = "/{id}/schedules")
+    public Page<ScheduleDto> findAllSchedulesByGroupId(@PathVariable(name = "id") String id,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "date");
+        log.info("findAllSchedulesByGroupId - find schedules by group id: {}", id);
+        return scheduleService.findAllByGroupId(pageable, id)
+            .map(scheduleMapper::scheduleToScheduleDto);
+    }
 
 //    @GetMapping(path = "/{id}/users")
 //    public Page<UserGroupDto> getAllUsersByGroupId(@PathVariable(name = "id") long id,

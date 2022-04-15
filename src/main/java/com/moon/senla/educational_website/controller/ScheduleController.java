@@ -7,6 +7,7 @@ import com.moon.senla.educational_website.model.dto.schedule.ScheduleNewDto;
 import com.moon.senla.educational_website.model.dto.schedule.ScheduleUpdateDto;
 import com.moon.senla.educational_website.service.ScheduleService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -34,33 +35,37 @@ public class ScheduleController {
         this.scheduleMapper = scheduleMapper;
     }
 
-//    @GetMapping(path = "/{id}")
-//    public ScheduleDto findById(@PathVariable(name = "id") String id) {
-//        log.info("findById - find schedule by id: {}", id);
-//        Schedule schedule = scheduleService.findById(id);
-//        return scheduleMapper.scheduleToScheduleDto(schedule);
-//    }
-//
-//    @PostMapping()
-//    public ScheduleDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
-//        log.info("save - save schedule: {}", schedule.getDate());
-//        Schedule newSchedule = scheduleService.save(principal,
-//            scheduleMapper.scheduleNewDtoToSchedule(schedule));
-//        return scheduleMapper.scheduleToScheduleDto(newSchedule);
-//    }
-//
-//    @PutMapping()
-//    public ScheduleDto update(Principal principal,
-//        @Valid @RequestBody ScheduleUpdateDto scheduleToUpdate) {
-//        log.info("update - update schedule by id: {}", scheduleToUpdate.getId());
-//        Schedule schedule = scheduleService.update(principal,
-//            scheduleMapper.scheduleUpdateDtoToSchedule(scheduleToUpdate));
-//        return scheduleMapper.scheduleToScheduleDto(schedule);
-//    }
-//
-//    @DeleteMapping(path = "/{id}")
-//    public void delete(Principal principal, @PathVariable(name = "id") String id) {
-//        log.info("delete - delete schedule by id: {}", id);
-//        scheduleService.deleteById(principal, id);
-//    }
+    @ApiOperation(value = "Get schedule by id")
+    @GetMapping(path = "/{id}")
+    public ScheduleDto findById(@PathVariable(name = "id") String id) {
+        log.info("findById - find schedule by id: {}", id);
+        Schedule schedule = scheduleService.findById(id);
+        return scheduleMapper.scheduleToScheduleDto(schedule);
+    }
+
+    @ApiOperation(value = "Create new schedule")
+    @PostMapping()
+    public ScheduleDto save(Principal principal, @Valid @RequestBody ScheduleNewDto schedule) {
+        log.info("save - save schedule: {}", schedule.getDate());
+        Schedule newSchedule = scheduleService.save(principal,
+            scheduleMapper.scheduleNewDtoToSchedule(schedule));
+        return scheduleMapper.scheduleToScheduleDto(newSchedule);
+    }
+
+    @ApiOperation(value = "Update schedule")
+    @PutMapping()
+    public ScheduleDto update(Principal principal,
+        @Valid @RequestBody ScheduleUpdateDto scheduleToUpdate) {
+        log.info("update - update schedule by id: {}", scheduleToUpdate.getId());
+        Schedule schedule = scheduleService.update(principal,
+            scheduleMapper.scheduleUpdateDtoToSchedule(scheduleToUpdate));
+        return scheduleMapper.scheduleToScheduleDto(schedule);
+    }
+
+    @ApiOperation(value = "Delete schedule")
+    @DeleteMapping(path = "/{id}")
+    public void delete(Principal principal, @PathVariable(name = "id") String id) {
+        log.info("delete - delete schedule by id: {}", id);
+        scheduleService.deleteById(principal, id);
+    }
 }

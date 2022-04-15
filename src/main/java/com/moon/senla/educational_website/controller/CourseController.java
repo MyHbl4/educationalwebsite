@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.dto.course.CourseDto;
 import com.moon.senla.educational_website.model.dto.course.CourseNewDto;
 import com.moon.senla.educational_website.model.dto.course.CourseUpdateDto;
+import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
 import com.moon.senla.educational_website.model.dto.mapper.GroupMapper;
@@ -112,23 +113,23 @@ public class CourseController {
 ////            .map(courseMapper::courseToCourseDto);
 ////    }
 //
-//    @GetMapping(path = "/{id}/groups")
-//    public Page<GroupDto> findAllGroupsByCourseId(@PathVariable(name = "id") String id,
-//        @RequestParam int page) {
-//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
-//        log.info("findAllGroupsByCourseId - find groups by course id {}", id);
-//        return groupService.findAllGroupsByCourseId(pageable, id)
-//            .map(groupMapper::groupToGroupDto);
+    @GetMapping(path = "/{id}/groups")
+    public Page<GroupDto> findAllGroupsByCourseId(@PathVariable(name = "id") String id,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
+        log.info("findAllGroupsByCourseId - find groups by course id {}", id);
+        return groupService.findAllGroupsByCourseId(pageable, id)
+            .map(groupMapper::groupToGroupDto);
+    }
+
+//    @GetMapping(path = "/search-my-courses")
+//    public Page<CourseDto> findAllMyCourses(
+//        Principal principal, @RequestParam int page) {
+//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "c.name");
+//        log.info("findAllMyCourses - find courses where author is user: {}", principal.getName());
+//        return courseService.findAllCoursesByUsername(pageable, principal.getName())
+//            .map(courseMapper::courseToCourseDto);
 //    }
-//
-////    @GetMapping(path = "/search-my-courses")
-////    public Page<CourseDto> findAllMyCourses(
-////        Principal principal, @RequestParam int page) {
-////        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "c.name");
-////        log.info("findAllMyCourses - find courses where author is user: {}", principal.getName());
-////        return courseService.findAllCoursesByUsername(pageable, principal.getName())
-////            .map(courseMapper::courseToCourseDto);
-////    }
 //
 //    @GetMapping(path = "/{id}/feedbacks")
 //    public Page<FeedbackDto> findAllFeedbacksByCourseId(@PathVariable(name = "id") String id,

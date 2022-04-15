@@ -47,76 +47,76 @@ public class ScheduleServiceImpl implements ScheduleService {
         this.mongoTemplate = mongoTemplate;
     }
 
-//    @Override
-//    public Schedule save(Principal principal, Schedule schedule) {
-//        Group group = checkRequest(principal, schedule.getGroup().getId());
-//        schedule.setGroup(group);
-//        schedule.setDate(schedule.getDate());
-//        try {
-//            return scheduleRepository.save(schedule);
-//        } catch (Exception e) {
-//            throw new ValidationException(COULD_NOT_SAVED.value);
-//        }
-//    }
-//
-//    @Override
-//    public Schedule findById(long id) {
-//        return scheduleRepository.findById(id)
-//            .orElseThrow(() -> new NotFoundException(SCHEDULE_NF.value));
-//    }
-//
-//    @Override
-//    public Page<Schedule> findAll(Pageable pageable) {
-//        try {
-//            return scheduleRepository.findAll(pageable);
-//        } catch (Exception e) {
-//            throw new NotFoundException(SCHEDULE_NF.value);
-//        }
-//    }
-//
-//    @Override
-//    public void deleteById(Principal principal, long id) {
-//        if (!scheduleRepository.findById(id).isPresent()) {
-//            throw new NotFoundException(SCHEDULE_NF.value);
-//        }
-//        checkRequest(principal, id);
-//        try {
-//            scheduleRepository.deleteById(id);
-//        } catch (Exception e) {
-//            throw new ValidationException(COULD_NOT_DELETE.value);
-//        }
-//    }
-//
-//    @Override
-//    public Page<Schedule> findAllByGroupId(Pageable pageable, long groupId) {
-//        Group group = groupService.findById(groupId);
-//        try {
-//            return scheduleRepository.findAllByGroupId(pageable, group.getId());
-//        } catch (Exception e) {
-//            throw new NotFoundException(SCHEDULE_NF.value);
-//        }
-//    }
-//
-//    @Override
-//    public Schedule update(Principal principal, Schedule schedule) {
-//        Schedule oldSchedule = scheduleRepository.findById(schedule.getId())
-//            .orElseThrow(() -> new NotFoundException(SCHEDULE_NF.value));
-//        checkRequest(principal, oldSchedule.getGroup().getId());
-//        oldSchedule.setDate(schedule.getDate());
-//        try {
-//            return scheduleRepository.save(oldSchedule);
-//        } catch (Exception e) {
-//            throw new ValidationException(COULD_NOT_UPDATED.value);
-//        }
-//    }
-//
-//    private Group checkRequest(Principal principal, Long id) {
-//        Group group = groupService.findById(id);
-//        Course course = courseService.findById(group.getCourse().getId());
-//        User user = userService.findById(course.getUser().getId());
-//        if (!user.getUsername().equals(principal.getName())) {
-//            throw new AuthException(ACCESS_DENIED.value);
-//        }
-//        return group;
-//    }
+    @Override
+    public Schedule save(Principal principal, Schedule schedule) {
+        Group group = checkRequest(principal, schedule.getGroup().getId());
+        schedule.setGroup(group);
+        schedule.setDate(schedule.getDate());
+        try {
+            return scheduleRepository.save(schedule);
+        } catch (Exception e) {
+            throw new ValidationException(COULD_NOT_SAVED.value);
+        }
+    }
+
+    @Override
+    public Schedule findById(String id) {
+        return scheduleRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(SCHEDULE_NF.value));
+    }
+
+    @Override
+    public Page<Schedule> findAll(Pageable pageable) {
+        try {
+            return scheduleRepository.findAll(pageable);
+        } catch (Exception e) {
+            throw new NotFoundException(SCHEDULE_NF.value);
+        }
+    }
+
+    @Override
+    public void deleteById(Principal principal, String id) {
+        if (!scheduleRepository.findById(id).isPresent()) {
+            throw new NotFoundException(SCHEDULE_NF.value);
+        }
+        checkRequest(principal, id);
+        try {
+            scheduleRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new ValidationException(COULD_NOT_DELETE.value);
+        }
+    }
+
+    @Override
+    public Page<Schedule> findAllByGroupId(Pageable pageable, String groupId) {
+        groupService.findById(groupId);
+        try {
+            return scheduleRepository.findAllByGroupId(pageable, groupId);
+        } catch (Exception e) {
+            throw new NotFoundException(SCHEDULE_NF.value);
+        }
+    }
+
+    @Override
+    public Schedule update(Principal principal, Schedule schedule) {
+        Schedule oldSchedule = scheduleRepository.findById(schedule.getId())
+            .orElseThrow(() -> new NotFoundException(SCHEDULE_NF.value));
+        checkRequest(principal, oldSchedule.getGroup().getId());
+        oldSchedule.setDate(schedule.getDate());
+        try {
+            return scheduleRepository.save(oldSchedule);
+        } catch (Exception e) {
+            throw new ValidationException(COULD_NOT_UPDATED.value);
+        }
+    }
+
+    private Group checkRequest(Principal principal, String id) {
+        Group group = groupService.findById(id);
+        Course course = courseService.findById(group.getCourse().getId());
+        User user = userService.findById(course.getUser().getId());
+        if (!user.getUsername().equals(principal.getName())) {
+            throw new AuthException(ACCESS_DENIED.value);
+        }
+        return group;
+    }
 }
