@@ -4,6 +4,7 @@ import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.dto.course.CourseDto;
 import com.moon.senla.educational_website.model.dto.course.CourseNewDto;
 import com.moon.senla.educational_website.model.dto.course.CourseUpdateDto;
+import com.moon.senla.educational_website.model.dto.feedback.FeedbackDto;
 import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.mapper.CourseMapper;
 import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
@@ -100,7 +101,7 @@ public class CourseController {
             .map(courseMapper::courseToCourseDto);
     }
 
-//
+    //
 ////    @GetMapping(path = "/search-by-param")
 ////    public Page<CourseDto> findAllCoursesByParam(
 ////        @RequestParam(value = "name", required = false) String name,
@@ -113,6 +114,7 @@ public class CourseController {
 ////            .map(courseMapper::courseToCourseDto);
 ////    }
 //
+    @ApiOperation(value = "Get all groups by course id")
     @GetMapping(path = "/{id}/groups")
     public Page<GroupDto> findAllGroupsByCourseId(@PathVariable(name = "id") String id,
         @RequestParam int page) {
@@ -130,13 +132,14 @@ public class CourseController {
 //        return courseService.findAllCoursesByUsername(pageable, principal.getName())
 //            .map(courseMapper::courseToCourseDto);
 //    }
-//
-//    @GetMapping(path = "/{id}/feedbacks")
-//    public Page<FeedbackDto> findAllFeedbacksByCourseId(@PathVariable(name = "id") String id,
-//        @RequestParam int page) {
-//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "date");
-//        log.info("findAllFeedbacksByCourseId - find groups by course id: {}", id);
-//        return feedbackService.getAllFeedbackByCourseId(pageable, id)
-//            .map(feedbackMapper::feedbackToFeedbackDto);
-//    }
+
+    @ApiOperation(value = "Get all feedbacks by course id")
+    @GetMapping(path = "/{id}/feedbacks")
+    public Page<FeedbackDto> findAllFeedbacksByCourseId(@PathVariable(name = "id") String id,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "date");
+        log.info("findAllFeedbacksByCourseId - find groups by course id: {}", id);
+        return feedbackService.getAllFeedbackByCourseId(pageable, id)
+            .map(feedbackMapper::feedbackToFeedbackDto);
+    }
 }

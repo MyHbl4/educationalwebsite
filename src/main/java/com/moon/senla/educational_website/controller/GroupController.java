@@ -1,6 +1,7 @@
 package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Group;
+import com.moon.senla.educational_website.model.dto.course.CourseDto;
 import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.group.GroupNewDto;
 import com.moon.senla.educational_website.model.dto.group.GroupShortDto;
@@ -91,6 +92,7 @@ public class GroupController {
         groupService.deleteById(id);
     }
 
+    @ApiOperation(value = "Get all schedule for group by group id")
     @GetMapping(path = "/{id}/schedules")
     public Page<ScheduleDto> findAllSchedulesByGroupId(@PathVariable(name = "id") String id,
         @RequestParam int page) {
@@ -98,6 +100,15 @@ public class GroupController {
         log.info("findAllSchedulesByGroupId - find schedules by group id: {}", id);
         return scheduleService.findAllByGroupId(pageable, id)
             .map(scheduleMapper::scheduleToScheduleDto);
+    }
+
+    @ApiOperation(value = "Get all groups")
+    @GetMapping()
+    public Page<GroupDto> findAll(@RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
+        log.info("findAll - find all groups");
+        return groupService.findAll(pageable)
+            .map(groupMapper::groupToGroupDto);
     }
 
 //    @GetMapping(path = "/{id}/users")

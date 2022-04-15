@@ -2,15 +2,11 @@ package com.moon.senla.educational_website.service.impl;
 
 
 import static com.moon.senla.educational_website.utils.StringConstants.ACCESS_DENIED;
-import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
-import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_SAVED;
-import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_UPDATED;
 import static com.moon.senla.educational_website.utils.StringConstants.FEEDBACK_NF;
 
 import com.moon.senla.educational_website.dao.FeedbackRepository;
 import com.moon.senla.educational_website.error.AuthException;
 import com.moon.senla.educational_website.error.NotFoundException;
-import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Course;
 import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.User;
@@ -23,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
@@ -60,21 +55,20 @@ public class FeedbackServiceImpl implements FeedbackService {
 //        }
 //    }
 
-//    @Override
-//    public Feedback findById(Long id) {
-//        return feedbackRepository.findById(id)
-//            .orElseThrow(() -> new NotFoundException(FEEDBACK_NF.value));
-//    }
-//
-//    @Override
-//    public Page<Feedback> findAll(Pageable pageable) {
-//        try {
-//            return feedbackRepository.findAll(pageable);
-//        } catch (Exception e) {
-//            throw new NotFoundException(FEEDBACK_NF.value);
-//        }
-//    }
+    @Override
+    public Feedback findById(String id) {
+        return feedbackRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(FEEDBACK_NF.value));
+    }
 
+    @Override
+    public Page<Feedback> findAll(Pageable pageable) {
+        try {
+            return feedbackRepository.findAll(pageable);
+        } catch (Exception e) {
+            throw new NotFoundException(FEEDBACK_NF.value);
+        }
+    }
 
 //    @Override
 //    @Transactional
@@ -89,23 +83,23 @@ public class FeedbackServiceImpl implements FeedbackService {
 //        }
 //    }
 
-//    private Course check(Principal principal, Feedback oldFeedback) {
-//        User user = userService.findById(oldFeedback.getUser().getId());
-//        if (!user.getUsername().equals(principal.getName())) {
-//            throw new AuthException(ACCESS_DENIED.value);
-//        }
-//        return courseService.findById(oldFeedback.getCourse().getId());
-//    }
-//
-//    @Override
-//    public Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, Long courseId) {
-//        Course course = courseService.findById(courseId);
-//        try {
-//            return feedbackRepository.findAllByCourseId(pageable, course.getId());
-//        } catch (Exception e) {
-//            throw new NotFoundException(FEEDBACK_NF.value);
-//        }
-//    }
+    private Course check(Principal principal, Feedback oldFeedback) {
+        User user = userService.findById(oldFeedback.getUser().getId());
+        if (!user.getUsername().equals(principal.getName())) {
+            throw new AuthException(ACCESS_DENIED.value);
+        }
+        return courseService.findById(oldFeedback.getCourse().getId());
+    }
+
+    @Override
+    public Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, String courseId) {
+        Course course = courseService.findById(courseId);
+        try {
+            return feedbackRepository.findAllByCourseId(pageable, course.getId());
+        } catch (Exception e) {
+            throw new NotFoundException(FEEDBACK_NF.value);
+        }
+    }
 
 //    @Override
 //    @Transactional

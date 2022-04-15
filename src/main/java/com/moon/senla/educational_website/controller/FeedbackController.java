@@ -2,21 +2,18 @@ package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Feedback;
 import com.moon.senla.educational_website.model.dto.feedback.FeedbackDto;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackNewDto;
-import com.moon.senla.educational_website.model.dto.feedback.FeedbackUpdateDto;
 import com.moon.senla.educational_website.model.dto.mapper.FeedbackMapper;
 import com.moon.senla.educational_website.service.FeedbackService;
 import io.swagger.annotations.Api;
-import java.security.Principal;
-import javax.validation.Valid;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,12 +32,22 @@ public class FeedbackController {
         this.feedbackMapper = feedbackMapper;
     }
 
-//    @GetMapping(path = "/{id}")
-//    public FeedbackDto findById(@PathVariable(name = "id") String id) {
-//        log.info("findById - find feedback by id: {}", id);
-//        Feedback feedback = feedbackService.findById(id);
-//        return feedbackMapper.feedbackToFeedbackDto(feedback);
-//    }
+    @ApiOperation(value = "Get Feedback by id")
+    @GetMapping(path = "/{id}")
+    public FeedbackDto findById(@PathVariable(name = "id") String id) {
+        log.info("findById - find feedback by id: {}", id);
+        Feedback feedback = feedbackService.findById(id);
+        return feedbackMapper.feedbackToFeedbackDto(feedback);
+    }
+
+    @ApiOperation(value = "Get all Feedbacks")
+    @GetMapping()
+    public Page<FeedbackDto> findAll(@RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
+        log.info("findAll - find all groups");
+        return feedbackService.findAll(pageable)
+            .map(feedbackMapper::feedbackToFeedbackDto);
+    }
 
 //    @PostMapping()
 //    public FeedbackDto save(Principal principal, @Valid @RequestBody FeedbackNewDto feedback) {

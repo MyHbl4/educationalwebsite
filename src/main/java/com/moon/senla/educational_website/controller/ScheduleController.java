@@ -11,6 +11,9 @@ import io.swagger.annotations.ApiOperation;
 import java.security.Principal;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -67,5 +71,14 @@ public class ScheduleController {
     public void delete(Principal principal, @PathVariable(name = "id") String id) {
         log.info("delete - delete schedule by id: {}", id);
         scheduleService.deleteById(principal, id);
+    }
+
+    @ApiOperation(value = "Get all schedules")
+    @GetMapping()
+    public Page<ScheduleDto> findAll(@RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
+        log.info("findAll - find all groups");
+        return scheduleService.findAll(pageable)
+            .map(scheduleMapper::scheduleToScheduleDto);
     }
 }

@@ -7,16 +7,16 @@ import org.springframework.data.domain.Pageable;
 
 public interface FeedbackService {
 
+    Feedback findById(String id);
+
+    Page<Feedback> findAll(Pageable pageable);
+
 //    Feedback save(Principal principal, Feedback feedback);
-
-//    Feedback findById(Long id);
-
-//    Page<Feedback> findAll(Pageable pageable);
-
+//
 //    void deleteById(Principal principal, Long id);
 //
-//    Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, String courseId);
-//
 //    Feedback update(Principal principal, Feedback feedback);
+//
+    Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, String courseId);
 }
 
