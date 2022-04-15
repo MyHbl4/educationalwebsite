@@ -48,7 +48,9 @@ public class ManagingSubscriptionsServiceImpl implements ManagingSubscriptionsSe
             users.add(user);
             group.setUsers(users);
             group.setAvailable(group.getAvailable() - 1);
+            user.getGroups().add(group);
             groupRepository.save(group);
+            userRepository.save(user);
         } catch (Exception e) {
             throw new ValidationException("Invalid request, subscription failed");
         }
@@ -65,6 +67,8 @@ public class ManagingSubscriptionsServiceImpl implements ManagingSubscriptionsSe
         try {
             group.getUsers().remove(user);
             group.setAvailable(group.getAvailable() + 1);
+            user.getGroups().remove(group);
+            userRepository.save(user);
             groupRepository.save(group);
         } catch (Exception e) {
             throw new CustomException("Invalid request, unsubscribe failed");
@@ -82,6 +86,8 @@ public class ManagingSubscriptionsServiceImpl implements ManagingSubscriptionsSe
         try {
             group.getUsers().remove(user);
             group.setAvailable(group.getAvailable() + 1);
+            user.getGroups().remove(group);
+            userRepository.save(user);
             groupRepository.save(group);
         } catch (Exception e) {
             throw new CustomException("Invalid request, unsubscribe failed");
