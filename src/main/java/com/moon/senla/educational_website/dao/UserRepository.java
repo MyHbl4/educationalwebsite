@@ -15,22 +15,6 @@ public interface UserRepository extends MongoRepository<User, Long> {
 
     User findUserByEmail(String email);
 
-//    @Transactional
-//    @Modifying
-//    @Query(
-//        value =
-//            "insert into user_group(user_id, group_id) values ((:user_id), (:group_id))",
-//        nativeQuery = true)
-//    void addUserToGroup(@Param("user_id") long userId, @Param("group_id") long groupId);
-//
-//    @Transactional
-//    @Modifying
-//    @Query(
-//        value =
-//            "delete from user_group where user_id = (:user_id) and group_id = (:group_id)",
-//        nativeQuery = true)
-//    void removeUserFromGroup(@Param("user_id") long userId, @Param("group_id") long groupId);
-//
 //    @Query(
 //        value =
 //            "select id, email, username, first_name, last_name, password, status, group_id, user_id from Users u full join user_group ug ON u.id = ug.user_id WHERE ug.group_id = (:group_id)",

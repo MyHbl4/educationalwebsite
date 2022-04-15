@@ -2,9 +2,9 @@ package com.moon.senla.educational_website.service;
 
 public interface ManagingSubscriptionsService {
 
-//    void addUserToGroup(String username, long groupId);
+    void addUserToGroup(String username, String groupId);
 
-//    void removeUserFromGroup(long userId, long groupId);
-//
-//    void unsubscribeUserFromGroup(String username, long groupId);
+    void removeUserFromGroup(String userId, String groupId);
+
+    void unsubscribeUserFromGroup(String username, String groupId);
 }
