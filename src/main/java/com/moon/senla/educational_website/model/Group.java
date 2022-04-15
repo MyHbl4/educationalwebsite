@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -20,13 +21,15 @@ public class Group implements Serializable {
     @Id
     private String id;
 
-    @Indexed(unique = true)
+    @Indexed
     private String name;
 
     private Course course;
 
+    @DBRef
     private List<Schedule> schedules = new ArrayList<>();
 
+    @DBRef
     private List<User> users = new ArrayList<>();
 
     private int capacity;

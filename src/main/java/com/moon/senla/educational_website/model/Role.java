@@ -1,7 +1,6 @@
 package com.moon.senla.educational_website.model;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Id;
 import lombok.Getter;
@@ -19,10 +18,8 @@ public class Role implements Serializable {
     @Id
     private String id;
 
-    @Indexed(unique = true)
+    @Indexed
     private String name;
-
-    private List<User> users;
 
     public Role(String name) {
         this.name = name;
@@ -33,25 +30,24 @@ public class Role implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || this.getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         Role role = (Role) o;
-        return Objects.equals(getId(), role.getId()) && Objects.equals(getName(),
-            role.getName()) && Objects.equals(getUsers(), role.getUsers());
+        return Objects.equals(id, role.id) &&
+            Objects.equals(name, role.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getUsers());
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
         return "Role{" +
-            "id=" + id +
+            "id='" + id + '\'' +
             ", name='" + name + '\'' +
-            ", users=" + users +
             '}';
     }
 }

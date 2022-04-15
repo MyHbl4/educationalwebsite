@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.ObjectUtils;
 
@@ -21,10 +22,10 @@ public class User implements Serializable {
     @Id
     private String id;
 
-    @Indexed(unique = true)
+    @Indexed
     private String email;
 
-    @Indexed(unique = true)
+    @Indexed
     private String username;
 
     private String firstName;
@@ -33,14 +34,18 @@ public class User implements Serializable {
 
     private String password;
 
+    @DBRef
     private List<Course> courses = new ArrayList<>();
 
+    @DBRef
     private List<Feedback> feedbacks = new ArrayList<>();
 
+    @DBRef
     private List<Theory> theories = new ArrayList<>();
 
     private List<Role> roles;
 
+    @DBRef
     private List<Group> groups = new ArrayList<>();
 
     private Status status = Status.ACTIVE;
