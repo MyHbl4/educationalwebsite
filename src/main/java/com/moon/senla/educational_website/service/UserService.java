@@ -16,6 +16,8 @@ public interface UserService {
 
     Page<User> findAll(PageRequest pageable);
 
+    User save(User user);
+
 //    Page<User> getAllUsersByGroupId(Pageable pageable, long groupId);
 //
 //    Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName);

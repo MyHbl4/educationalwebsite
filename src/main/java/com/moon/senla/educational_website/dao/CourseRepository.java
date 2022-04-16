@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CourseRepository extends MongoRepository<Course, Long> {
+public interface CourseRepository extends MongoRepository<Course, String> {
 
     Page<Course> findAll(Pageable pageable);
 

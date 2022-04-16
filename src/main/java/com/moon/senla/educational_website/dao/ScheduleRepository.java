@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ScheduleRepository extends MongoRepository<Schedule, Long> {
+public interface ScheduleRepository extends MongoRepository<Schedule, String> {
 
     Page<Schedule> findAll(Pageable pageable);
 

@@ -97,4 +97,13 @@ public class UserServiceImpl implements UserService {
 //            throw new NotFoundException(USER_NF.value);
 //        }
 //    }
+
+    @Override
+    public User save(User user) {
+        try {
+            return userRepository.save(user);
+        } catch (Exception e) {
+            throw new ValidationException("Could not save user");
+        }
+    }
 }

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GroupRepository extends MongoRepository<Group, Long> {
+public interface GroupRepository extends MongoRepository<Group, String> {
 
     Page<Group> findAll(Pageable pageable);
 

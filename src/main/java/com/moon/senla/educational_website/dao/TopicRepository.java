@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TopicRepository extends MongoRepository<Topic, Long> {
+public interface TopicRepository extends MongoRepository<Topic, String> {
 
     Page<Topic> findAll(Pageable pageable);
 

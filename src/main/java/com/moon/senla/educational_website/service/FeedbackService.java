@@ -11,12 +11,12 @@ public interface FeedbackService {
 
     Page<Feedback> findAll(Pageable pageable);
 
-//    Feedback save(Principal principal, Feedback feedback);
-//
-//    void deleteById(Principal principal, Long id);
-//
-//    Feedback update(Principal principal, Feedback feedback);
-//
+    Feedback save(Principal principal, Feedback feedback);
+
+    void deleteById(Principal principal, String id);
+
+    Feedback update(Principal principal, Feedback feedback);
+
     Page<Feedback> getAllFeedbackByCourseId(Pageable pageable, String courseId);
 }
 
