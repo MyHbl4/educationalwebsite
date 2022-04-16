@@ -1,7 +1,6 @@
 package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.Group;
-import com.moon.senla.educational_website.model.dto.course.CourseDto;
 import com.moon.senla.educational_website.model.dto.group.GroupDto;
 import com.moon.senla.educational_website.model.dto.group.GroupNewDto;
 import com.moon.senla.educational_website.model.dto.group.GroupShortDto;
@@ -111,12 +110,13 @@ public class GroupController {
             .map(groupMapper::groupToGroupDto);
     }
 
-//    @GetMapping(path = "/{id}/users")
-//    public Page<UserGroupDto> getAllUsersByGroupId(@PathVariable(name = "id") long id,
-//        @RequestParam int page) {
-//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "first_name");
-//        log.info("getAllUsersByGroupId - find users by group id: {}", id);
-//        return userService.getAllUsersByGroupId(pageable, id)
-//            .map(userMapper::userToUserGroupDto);
-//    }
+    @ApiOperation(value = "Get all users by group id")
+    @GetMapping(path = "/{id}/users")
+    public Page<UserGroupDto> getAllUsersByGroupId(@PathVariable(name = "id") String id,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "first_name");
+        log.info("getAllUsersByGroupId - find users by group id: {}", id);
+        return userService.getAllUsersByGroupId(pageable, id)
+            .map(userMapper::userToUserGroupDto);
+    }
 }

@@ -124,14 +124,15 @@ public class CourseController {
             .map(groupMapper::groupToGroupDto);
     }
 
-//    @GetMapping(path = "/search-my-courses")
-//    public Page<CourseDto> findAllMyCourses(
-//        Principal principal, @RequestParam int page) {
-//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "c.name");
-//        log.info("findAllMyCourses - find courses where author is user: {}", principal.getName());
-//        return courseService.findAllCoursesByUsername(pageable, principal.getName())
-//            .map(courseMapper::courseToCourseDto);
-//    }
+    @ApiOperation(value = "Get all my courses where I am a teacher")
+    @GetMapping(path = "/search-my-courses")
+    public Page<CourseDto> findAllMyCourses(
+        Principal principal, @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "c.name");
+        log.info("findAllMyCourses - find courses where author is user: {}", principal.getName());
+        return courseService.findAllCoursesByUsername(pageable, principal.getName())
+            .map(courseMapper::courseToCourseDto);
+    }
 
     @ApiOperation(value = "Get all feedbacks by course id")
     @GetMapping(path = "/{id}/feedbacks")

@@ -108,15 +108,15 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-//    @Override
-//    public Page<Course> findAllCoursesByUsername(Pageable pageable, String username) {
-//        try {
-//            return courseRepository.findAllCoursesByUsername(pageable, username);
-//        } catch (Exception e) {
-//            throw new NotFoundException(COURSE_NF.value);
-//        }
-//    }
-//
+    @Override
+    public Page<Course> findAllCoursesByUsername(Pageable pageable, String username) {
+        try {
+            return courseRepository.findAllCoursesByUser_Username(pageable, username);
+        } catch (Exception e) {
+            throw new NotFoundException(COURSE_NF.value);
+        }
+    }
+
 //    @Override
 //    public Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
 //        String authorName) {

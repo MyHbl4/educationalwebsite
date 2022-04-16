@@ -1,6 +1,7 @@
 package com.moon.senla.educational_website.service.impl;
 
 import static com.moon.senla.educational_website.utils.StringConstants.COULD_NOT_DELETE;
+import static com.moon.senla.educational_website.utils.StringConstants.GROUP_NF;
 import static com.moon.senla.educational_website.utils.StringConstants.USER_NF;
 
 import com.moon.senla.educational_website.dao.GroupRepository;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -77,18 +79,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(pageable);
     }
 
-//    @Override
-//    public Page<User> getAllUsersByGroupId(Pageable pageable, long groupId) {
-//        if (!groupRepository.findById(groupId).isPresent()) {
-//            throw new NotFoundException(GROUP_NF.value);
-//        }
-//        try {
-//            return userRepository.getAllUsersByGroupId(pageable, groupId);
-//        } catch (Exception e) {
-//            throw new NotFoundException(USER_NF.value);
-//        }
-//    }
-//
+    @Override
+    public Page<User> getAllUsersByGroupId(Pageable pageable, String groupId) {
+        if (!groupRepository.findById(groupId).isPresent()) {
+            throw new NotFoundException(GROUP_NF.value);
+        }
+        try {
+            return userRepository.getAllUsersByGroups(pageable, groupId);
+        } catch (Exception e) {
+            throw new NotFoundException(USER_NF.value);
+        }
+    }
+
 //    @Override
 //    public Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName) {
 //        try {
