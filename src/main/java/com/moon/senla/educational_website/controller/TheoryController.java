@@ -83,15 +83,16 @@ public class TheoryController {
             .map(theoryMapper::theoryToTheoryDto);
     }
 
-//    @GetMapping(path = "/search-by-param")
-//    public Page<TheoryDto> findAllTheoriesByParam(
-//        @RequestParam(value = "name", required = false) String name,
-//        @RequestParam(value = "topic_name", required = false) String topicName,
-//        @RequestParam(value = "user_name", required = false) String userName,
-//        @RequestParam int page) {
-//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
-//        log.info("findAllTheoriesByParam - find all theories by param");
-//        return theoryService.findAllTheoryByParam(pageable, name, topicName, userName)
-//            .map(theoryMapper::theoryToTheoryDto);
-//    }
+    @ApiOperation(value = "Get all theories by name, topic, author")
+    @GetMapping(path = "/search-by-param")
+    public Page<TheoryDto> findAllTheoriesByParam(
+        @RequestParam(value = "name", required = false) String name,
+        @RequestParam(value = "topic_name", required = false) String topicName,
+        @RequestParam(value = "user_name", required = false) String user,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
+        log.info("findAllTheoriesByParam - find all theories by param");
+        return theoryService.findAllTheoryByParam(pageable, name, topicName, user)
+            .map(theoryMapper::theoryToTheoryDto);
+    }
 }

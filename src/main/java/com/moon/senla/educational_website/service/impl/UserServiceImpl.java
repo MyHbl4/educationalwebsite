@@ -11,9 +11,11 @@ import com.moon.senla.educational_website.error.ValidationException;
 import com.moon.senla.educational_website.model.Status;
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.service.UserService;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -91,14 +93,18 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-//    @Override
-//    public Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName) {
-//        try {
-//            return userRepository.findAllUsersByParam(pageable, firstName, lastName);
-//        } catch (Exception e) {
-//            throw new NotFoundException(USER_NF.value);
-//        }
-//    }
+    @Override
+    public Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName) {
+        Query query = new Query();
+        if (firstName != null) {
+            query.addCriteria(Criteria.where("firstName").regex(firstName, "i"));
+        }
+        if (lastName != null) {
+            query.addCriteria(Criteria.where("lastName").regex(lastName, "i"));
+        }
+        List<User> users = mongoTemplate.find(query, User.class);
+        return new PageImpl<>(users, pageable, users.size());
+    }
 
     @Override
     public User save(User user) {

@@ -19,5 +19,5 @@ public interface UserService {
 
     Page<User> getAllUsersByGroupId(Pageable pageable, String groupId);
 
-//    Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName);
+    Page<User> findAllUsersByParam(Pageable pageable, String firstName, String lastName);
 }

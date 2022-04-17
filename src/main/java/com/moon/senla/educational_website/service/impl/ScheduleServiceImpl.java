@@ -22,7 +22,6 @@ import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,19 +31,17 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final GroupService groupService;
     private final CourseService courseService;
     private final UserService userService;
-    private final MongoTemplate mongoTemplate;
 
     @Autowired
     public ScheduleServiceImpl(
         ScheduleRepository scheduleRepository,
         GroupService groupService,
         CourseService courseService,
-        UserService userService, MongoTemplate mongoTemplate) {
+        UserService userService) {
         this.scheduleRepository = scheduleRepository;
         this.groupService = groupService;
         this.courseService = courseService;
         this.userService = userService;
-        this.mongoTemplate = mongoTemplate;
     }
 
     @Override

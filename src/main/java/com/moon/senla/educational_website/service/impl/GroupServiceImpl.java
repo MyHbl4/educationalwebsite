@@ -91,7 +91,6 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
-    //
     @Override
     public Page<Group> findAllGroupsByCourseId(Pageable pageable, String id) {
         courseService.findById(id);

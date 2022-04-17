@@ -2,7 +2,6 @@ package com.moon.senla.educational_website.controller;
 
 import com.moon.senla.educational_website.model.User;
 import com.moon.senla.educational_website.model.dto.mapper.UserMapper;
-import com.moon.senla.educational_website.model.dto.topic.TopicDto;
 import com.moon.senla.educational_website.model.dto.user.UserDto;
 import com.moon.senla.educational_website.model.dto.user.UserDtoUpdate;
 import com.moon.senla.educational_website.model.dto.user.UserNewDto;
@@ -95,14 +94,16 @@ public class UserController {
         return userService.findAll(pageable)
             .map(userMapper::userToUserDto);
     }
-//    @GetMapping(path = "/search-by-param")
-//    public Page<UserDto> findAllUsersByParam(
-//        @RequestParam(value = "FirstName", required = false) String firstName,
-//        @RequestParam(value = "LastName", required = false) String lastName,
-//        @RequestParam int page) {
-//        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "firstName");
-//        log.info("findByLastName - find all users by param");
-//        return userService.findAllUsersByParam(pageable, firstName, lastName)
-//            .map(userMapper::userToUserDto);
-//    }
+
+    @ApiOperation(value = "Get all users by first name and last name")
+    @GetMapping(path = "/search-by-param")
+    public Page<UserDto> findAllUsersByParam(
+        @RequestParam(value = "FirstName", required = false) String firstName,
+        @RequestParam(value = "LastName", required = false) String lastName,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "firstName");
+        log.info("findByLastName - find all users by param");
+        return userService.findAllUsersByParam(pageable, firstName, lastName)
+            .map(userMapper::userToUserDto);
+    }
 }

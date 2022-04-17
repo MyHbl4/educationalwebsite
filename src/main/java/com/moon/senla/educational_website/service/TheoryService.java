@@ -17,7 +17,6 @@ public interface TheoryService {
 
     Page<Theory> findAll(Pageable pageable);
 
-//    Page<Theory> findAllTheoryByParam(Pageable pageable,
-//        String name, String topic, String username);
+    Page<Theory> findAllTheoryByParam(Pageable pageable, String name, String topic, String user);
 }
 

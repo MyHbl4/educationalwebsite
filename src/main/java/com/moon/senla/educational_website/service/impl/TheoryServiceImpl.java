@@ -16,9 +16,11 @@ import com.moon.senla.educational_website.service.TheoryService;
 import com.moon.senla.educational_website.service.TopicService;
 import com.moon.senla.educational_website.service.UserService;
 import java.security.Principal;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -100,14 +102,12 @@ public class TheoryServiceImpl implements TheoryService {
         return theoryRepository.findAll(pageable);
     }
 
-//    @Override
-//    public Page<Theory> findAllTheoryByParam(Pageable pageable,
-//        String name, String topic, String username) {
-//        try {
-//            return theoryRepository.findAllTheoryByParam(pageable, name, topic, username);
-//        } catch (Exception e) {
-//            throw new NotFoundException(THEORY_NF.value);
-//        }
-//    }
-
+    @Override
+    public Page<Theory> findAllTheoryByParam(Pageable pageable,
+        String name, String topic, String user) {
+        Query query = CourseServiceImpl.addCriteriaByNameTopicAuthor(name, topic, user);
+        List<Theory> theories = mongoTemplate.find(query, Theory.class);
+        return new PageImpl<>(theories, pageable, theories.size());
+    }
 }
+

@@ -64,15 +64,7 @@ public class ManagingSubscriptionsServiceImpl implements ManagingSubscriptionsSe
             .findAny()
             .orElseThrow(
                 () -> new NotFoundException("Invalid request, user don't belong to group"));
-        try {
-            group.getUsers().remove(user);
-            group.setAvailable(group.getAvailable() + 1);
-            user.getGroups().remove(group);
-            userRepository.save(user);
-            groupRepository.save(group);
-        } catch (Exception e) {
-            throw new CustomException("Invalid request, unsubscribe failed");
-        }
+        saveGroupAndUser(group, user);
     }
 
     @Transactional
@@ -83,6 +75,10 @@ public class ManagingSubscriptionsServiceImpl implements ManagingSubscriptionsSe
             .findAny()
             .orElseThrow(
                 () -> new NotFoundException("Invalid request, user don't belong to group"));
+        saveGroupAndUser(group, user);
+    }
+
+    private void saveGroupAndUser(Group group, User user) {
         try {
             group.getUsers().remove(user);
             group.setAvailable(group.getAvailable() + 1);

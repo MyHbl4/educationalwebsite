@@ -19,7 +19,7 @@ public interface CourseService {
 
     Page<Course> findAllCoursesByUsername(Pageable pageable, String username);
 
-//    Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
-//        String authorName);
+    Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
+        String authorName);
 }
 

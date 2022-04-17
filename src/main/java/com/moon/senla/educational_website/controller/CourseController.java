@@ -101,19 +101,19 @@ public class CourseController {
             .map(courseMapper::courseToCourseDto);
     }
 
-    //
-////    @GetMapping(path = "/search-by-param")
-////    public Page<CourseDto> findAllCoursesByParam(
-////        @RequestParam(value = "name", required = false) String name,
-////        @RequestParam(value = "topic_name", required = false) String topicName,
-////        @RequestParam(value = "user_name", required = false) String authorName,
-////        @RequestParam int page) {
-////        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
-////        log.info("findAllCoursesByParam - find all courses by param");
-////        return courseService.findAllCoursesByParam(pageable, name, topicName, authorName)
-////            .map(courseMapper::courseToCourseDto);
-////    }
-//
+    @ApiOperation(value = "Get all courses by name, topic, teacher")
+    @GetMapping(path = "/search-by-param")
+    public Page<CourseDto> findAllCoursesByParam(
+        @RequestParam(value = "name", required = false) String name,
+        @RequestParam(value = "topic_name", required = false) String topicName,
+        @RequestParam(value = "teacher", required = false) String teacher,
+        @RequestParam int page) {
+        PageRequest pageable = PageRequest.of(page, 5, Direction.ASC, "name");
+        log.info("findAllCoursesByParam - find all courses by param");
+        return courseService.findAllCoursesByParam(pageable, name, topicName, teacher)
+            .map(courseMapper::courseToCourseDto);
+    }
+
     @ApiOperation(value = "Get all groups by course id")
     @GetMapping(path = "/{id}/groups")
     public Page<GroupDto> findAllGroupsByCourseId(@PathVariable(name = "id") String id,

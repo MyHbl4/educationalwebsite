@@ -18,9 +18,11 @@ import com.moon.senla.educational_website.service.CourseService;
 import com.moon.senla.educational_website.service.TopicService;
 import com.moon.senla.educational_website.service.UserService;
 import java.security.Principal;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -117,14 +119,25 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-//    @Override
-//    public Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
-//        String authorName) {
-//        try {
-//            return courseRepository.findAllCoursesByParam(pageable, name, topicName, authorName);
-//        } catch (Exception e) {
-//            throw new NotFoundException(COURSE_NF.value);
-//        }
-//    }
+    @Override
+    public Page<Course> findAllCoursesByParam(Pageable pageable, String name, String topicName,
+        String authorName) {
+        Query query = addCriteriaByNameTopicAuthor(name, topicName, authorName);
+        List<Course> courses = mongoTemplate.find(query.with(pageable), Course.class);
+        return new PageImpl<>(courses, pageable, courses.size());
+    }
 
+    static Query addCriteriaByNameTopicAuthor(String name, String topicName, String authorName) {
+        Query query = new Query();
+        if (name != null) {
+            query.addCriteria(Criteria.where("name").regex(name, "i"));
+        }
+        if (topicName != null) {
+            query.addCriteria(Criteria.where("topic.name").regex(topicName, "i"));
+        }
+        if (authorName != null) {
+            query.addCriteria(Criteria.where("user.username").regex(authorName, "i"));
+        }
+        return query;
+    }
 }

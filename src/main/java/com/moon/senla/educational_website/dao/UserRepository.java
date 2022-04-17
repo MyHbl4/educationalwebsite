@@ -14,9 +14,5 @@ public interface UserRepository extends MongoRepository<User, String> {
     User findUserByEmail(String email);
 
     Page<User> getAllUsersByGroups(Pageable pageable, String groupId);
-
-//    @Query("select u from User u where (u.firstName like :first_name or :first_name IS NULL) and (u.lastName like :last_name or :last_name IS NULL)")
-//    Page<User> findAllUsersByParam(Pageable pageable, @Param("first_name") String firstName,
-//        @Param("last_name") String lastname);
 }
 
