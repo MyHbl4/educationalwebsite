@@ -1,0 +1,5 @@
+2022-05-30 02:36:37.142  INFO 103896 --- [main] c.m.s.b.BusinessServiceApplicationTests  : Starting BusinessServiceApplicationTests using Java 16.0.2 on DESKTOP-1VBTA7M with PID 103896 (started by gmoon in D:\IT\IDEA_project\educational_website\business-service)
+2022-05-30 02:36:37.144 DEBUG 103896 --- [main] c.m.s.b.BusinessServiceApplicationTests  : Running with Spring Boot v2.6.3, Spring v5.3.15
+2022-05-30 02:36:37.145  INFO 103896 --- [main] c.m.s.b.BusinessServiceApplicationTests  : No active profile set, falling back to default profiles: default
+2022-05-30 02:36:45.610  INFO 103896 --- [main] c.m.s.b.BusinessServiceApplicationTests  : Started BusinessServiceApplicationTests in 9.001 seconds (JVM running for 10.28)
+2022-05-30 02:36:46.227  INFO 103896 --- [main] c.m.s.b.service.impl.UserServiceImpl     : findByUsername - user: user found by username: user
