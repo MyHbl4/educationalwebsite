@@ -39,7 +39,7 @@ public class AdvisorController {
 
     @ExceptionHandler(AuthException.class)
     @ResponseStatus(FORBIDDEN)
-    public ErrorResponse handleNotFoundException(AuthException authException) {
+    public ErrorResponse handleAuthException(AuthException authException) {
         return ErrorResponse.builder()
             .message(authException.getMessage())
             .status(HttpStatus.FORBIDDEN)

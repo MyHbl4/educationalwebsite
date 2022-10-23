@@ -20,6 +20,7 @@
       <column name="topic_id" type="BIGINT"/>
     </createTable>
   </changeSet>
+
   <changeSet id="1644484240975-2" author="gmoon (generated)">
     <createTable tableName="feedbacks">
       <column autoIncrement="true" name="id" type="BIGINT">
@@ -34,6 +35,7 @@
       <column name="date" type="DATE"/>
     </createTable>
   </changeSet>
+
   <changeSet id="1644484240975-3" author="gmoon (generated)">
     <createTable tableName="groups">
       <column autoIncrement="true" name="id" type="BIGINT">
@@ -51,6 +53,7 @@
       </column>
     </createTable>
   </changeSet>
+
   <changeSet id="1644484240975-4" author="gmoon (generated)">
     <createTable tableName="roles">
       <column autoIncrement="true" name="id" type="BIGINT">
@@ -59,6 +62,7 @@
       <column name="name" type="VARCHAR(255)"/>
     </createTable>
   </changeSet>
+
   <changeSet id="1644484240975-5" author="gmoon (generated)">
     <createTable tableName="schedules">
       <column autoIncrement="true" name="id" type="BIGINT">
@@ -68,6 +72,7 @@
       <column name="group_id" type="BIGINT"/>
     </createTable>
   </changeSet>
+
   <changeSet id="1644484240975-6" author="gmoon (generated)">
     <createTable tableName="theories">
       <column autoIncrement="true" name="id" type="BIGINT">
@@ -82,6 +87,7 @@
       <column name="date" type="DATE"/>
     </createTable>
   </changeSet>
+
   <changeSet id="1644484240975-7" author="gmoon (generated)">
     <createTable tableName="topics">
       <column autoIncrement="true" name="id" type="BIGINT">
@@ -92,6 +98,7 @@
       </column>
     </createTable>
   </changeSet>
+
   <changeSet id="1644484240975-8" author="gmoon (generated)">
     <createTable tableName="user_group">
       <column name="group_id" type="BIGINT">
@@ -102,6 +109,7 @@
       </column>
     </createTable>
   </changeSet>
+
   <changeSet id="1644484240975-9" author="gmoon (generated)">
     <createTable tableName="user_roles">
       <column name="role_id" type="BIGINT">
@@ -112,6 +120,7 @@
       </column>
     </createTable>
   </changeSet>
+
   <changeSet id="1644484240975-10" author="gmoon (generated)">
     <createTable tableName="users">
       <column autoIncrement="true" name="id" type="BIGINT">
@@ -135,6 +144,7 @@
       </column>
     </createTable>
   </changeSet>
+
   <changeSet id="1644484240975-11" author="gmoon (generated)">
     <addUniqueConstraint columnNames="name" constraintName="uc_groups_name" tableName="groups"/>
   </changeSet>
