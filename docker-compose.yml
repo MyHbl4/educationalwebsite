@@ -7,10 +7,10 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.postgres
-    ports:
-      - "5432:5432"
+#    ports:
+#      - "5432:5432"
     environment:
-      - POSTGRES_DB=websitedb
+      - POSTGRES_DB=educationalwebsite
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1988
       - POSTGRES_HOST_AUTH_METHOD=trust
@@ -18,16 +18,16 @@ services:
   educational_website:
     container_name: educational_website
     restart: on-failure
-    image: educational_website
-    build:
-      context: ./
+#    image: educational_website
+    build: ./
+#      context: ./
     ports:
       - "9000:9000"
     depends_on:
       - db
       - liquibase
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/websitedb
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/educationalwebsite
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=1988
 
@@ -39,6 +39,6 @@ services:
       - db
     hostname: liquibase
     environment:
-      POSTGRES_DB: websitedb
+      POSTGRES_DB: educationalwebsite
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1988
