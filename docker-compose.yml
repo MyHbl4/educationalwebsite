@@ -1,26 +1,18 @@
 version: '3.5'
 services:
   db:
-    image: 'postgres:14.2'
+    image: 'postgres:14.2-alpine'
     restart: always
     container_name: db
-    build:
-      context: ./
-      dockerfile: Dockerfile.postgres
-#    ports:
-#      - "5432:5432"
     environment:
       - POSTGRES_DB=educationalwebsite
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1988
       - POSTGRES_HOST_AUTH_METHOD=trust
 
   educational_website:
     container_name: educational_website
     restart: on-failure
-#    image: educational_website
     build: ./
-#      context: ./
     ports:
       - "9000:9000"
     depends_on:
@@ -29,8 +21,6 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/educationalwebsite
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=1988
-
 
   liquibase:
     image: 'liquibase/liquibase'
@@ -41,4 +31,3 @@ services:
     environment:
       POSTGRES_DB: educationalwebsite
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1988
